@@ -22,6 +22,13 @@
       --radius: 14px;
       --shadow: 0 10px 30px rgba(36, 31, 41, 0.08);
       --content-width: 68rem;
+      /* Amber warning palette, deliberately distinct from the provisional brand. */
+      --notice-bg: #fff7e3;
+      --notice-surface: #fffdf6;
+      --notice-ink: #3b2a08;
+      --notice-muted: #5c4516;
+      --notice-border: #a35c00;
+      --notice-focus: #7a3e00;
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -113,6 +120,36 @@
     .topbar__note {
       color: var(--muted);
       font-size: 0.9rem;
+    }
+
+    /* Full-width construction banner: visible without scrolling, no JS or motion. */
+    .construction {
+      width: 100%;
+      border-bottom: 1px dashed var(--notice-border);
+      background: var(--notice-bg);
+      color: var(--notice-ink);
+    }
+    .construction__inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.25rem 1rem;
+      padding: clamp(1rem, 2.5vw, 1.5rem) clamp(1rem, 2.5vw, 1.5rem);
+      border-left: 0.5rem solid var(--notice-border);
+      background: var(--notice-surface);
+    }
+    .construction__title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.01em;
+    }
+    .construction__detail {
+      flex: 1 1 22rem;
+      color: var(--notice-muted);
+    }
+    .construction :focus-visible {
+      outline: 3px solid var(--notice-focus);
+      outline-offset: 3px;
     }
 
     .hero {
@@ -272,6 +309,13 @@
       <p class="topbar__note">Página protegida · excluida de índices de búsqueda</p>
     </div>
   </header>
+
+  <div class="construction" role="status" aria-label="Aviso: página en construcción">
+    <div class="shell construction__inner">
+      <p class="construction__title">Página en construcción</p>
+      <p class="construction__detail">Estamos preparando la vitrina oficial. El contenido puede cambiar y todavía no representa la tienda publicada.</p>
+    </div>
+  </div>
 
   <main id="contenido" class="shell">
     <section class="hero" aria-labelledby="titulo">
