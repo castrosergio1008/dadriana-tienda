@@ -533,6 +533,8 @@ Ejecución: **subconjunto smoke en cada PR** (los marcados ●); **las 28 filas 
 - Previews con **Vercel Authentication/SSO** (sin contraseñas compartidas), datos ficticios y `noindex`; `DATABASE_URL` de Preview **sí existe** y es distinta de cualquier credencial productiva.
 - Esta configuración se versiona en `vercel.json` y en el [`runbook-mvp.md`](../../07-infra/runbook-mvp.md); los clicks en consola son solo verificación, no fuente de verdad (F-2).
 
+> **Excepción temporal `DD-MVP-23` (25-nov-2026):** el Comandante eligió publicar `presentacion/mvp/index.html` como página estática en **`dadriana-tienda`**, sin aplicación ni `package.json`. Es un artefacto de comunicación, no la tienda: se sirve con `X-Robots-Tag: noindex, nofollow` **y** `<meta name="robots" content="noindex, nofollow">`, sin secretos, sin variables de entorno y sin datos reales. La protección se retira **solo para ese despliegue estático temporal** mediante un `vercel.json` temporal; **no deroga A2/DD-MVP-18 para la futura app**: la Deployment Protection se restaura antes de desplegar la aplicación o en cuanto aparezcan datos reales. Detalle en [ADR-MVP-006](./adr-mvp/ADR-MVP-006.md) y en el [runbook §3.4](../../07-infra/runbook-mvp.md).
+
 ### 10.2 Matriz de entornos
 
 | Entorno | Fuente | Datos | Protección | Cabeceras | `DATABASE_URL` |
@@ -541,6 +543,9 @@ Ejecución: **subconjunto smoke en cada PR** (los marcados ●); **las 28 filas 
 | Preview (por PR) | Commit del PR | Ficticios, sembrados y aislados | Vercel Authentication/SSO | `X-Robots-Tag: noindex`, `report-only` → `enforce` | **SÍ existe**, separada de Production |
 | Production pre-go-live | `main` | Sin contenido indexable | **Deployment Protection ON** | `X-Robots-Tag: noindex`, `report-only` → `enforce` | **NO CREAR TODAVÍA** — ver 10.3 |
 | Production post-go-live | `main` | Reales autorizados (Q-MVP-08) | Protección retirada solo tras A2 | `enforce`, sin `noindex` | Creada tras el checklist 10.3 |
+| Presentación temporal (`DD-MVP-23`) | `presentacion/mvp/index.html` estático, sin build de app | Ninguno: texto ilustrativo; sin catálogo, precios, tiendas ni contacto real | Retirada solo para este despliegue estático; se restaura antes de la app o ante datos reales | `X-Robots-Tag: noindex, nofollow` + meta `robots`; CSP estricta en `enforce`; sin secretos | **No se usa ni se crea** |
+
+> La fila de la presentación es un artefacto temporal, **no un entorno nuevo de la aplicación**. No cambia las reglas de las filas anteriores: A2/DD-MVP-18 sigue vigente para Preview, Production pre-go-live y post-go-live de la app.
 
 ### 10.3 Checklist para crear `DATABASE_URL` en Production y abrir el sitio
 
@@ -678,6 +683,7 @@ IDs nuevos, sin colisionar con C-01…C-15 ni con los `DD-Qn` históricos.
 | DD-MVP-20 | CI/CD del MVP con workflow versionado, required checks, CODEOWNERS y sin variables heredadas de pago/DIAN/GA4/Sentry | F-8/F-9/F-11; fases 2–8 del pipeline del MVP, no el producto Fase 2 | ADR-MVP-005 | Propuesta |
 | DD-MVP-21 | Excepción autorizada a A1: `REVIEW_HASH_PEPPER` como tercera variable, secreta y exclusiva de Vercel, para `HMAC-SHA256(peppers[version], valor)`; columnas `email_hmac_key_version`/`ip_hmac_key_version` en `reviews` | H-2/A4; el pepper no es contenido, no va en `app_config` ni en el repo | ADR-MVP-002 / ADR-MVP-005 | Propuesta |
 | DD-MVP-22 | Rotación sin romper baja/rectificación: pepper `N+1`, conservar el anterior como `REVIEW_HASH_PEPPER_PREVIOUS` durante la ventana, rehash en escritura/lectura y registro fecha + versión + responsable | La verificación usa la versión persistida, no la vigente; sin procedimiento la comparación falla | ADR-MVP-002 / ADR-MVP-003 / runbook | Propuesta |
+| DD-MVP-23 | Exposición pública temporal de `presentacion/mvp/index.html` en `dadriana-tienda`: HTML estático sin app ni `package.json`, sin datos reales ni secretos; visible por URL, no indexable, con reversión al llegar la app | Elección del Comandante para compartir la presentación; excepción acotada que **no deroga** A2/DD-MVP-18 | ADR-MVP-006 | Aceptada el 25-nov-2026; temporal y reversible |
 
 ---
 
@@ -690,7 +696,10 @@ ADRs nuevos creados junto con este documento:
 - [`adr-mvp/ADR-MVP-003.md`](./adr-mvp/ADR-MVP-003.md) — Sin panel interno; moderación y baja/rectificación desde consola.
 - [`adr-mvp/ADR-MVP-004.md`](./adr-mvp/ADR-MVP-004.md) — Rediseño de identidad conservando el diseño anterior.
 - [`adr-mvp/ADR-MVP-005.md`](./adr-mvp/ADR-MVP-005.md) — Despliegue, entornos protectores y CI/CD del MVP.
+- [`adr-mvp/ADR-MVP-006.md`](./adr-mvp/ADR-MVP-006.md) — Exposición pública temporal de la presentación: excepción acotada a A2/DD-MVP-18.
 - Runbook operativo: [`docs/07-infra/runbook-mvp.md`](../../07-infra/runbook-mvp.md).
+
+**Límite de la excepción (`DD-MVP-23`):** publicar la presentación no autoriza a desplegar la app sin protección ni a publicar datos reales. La protección se restaura **antes de desplegar la aplicación o en cuanto aparezcan datos reales**; `noindex` se mantiene siempre en la presentación, que es visible por URL pero no indexable.
 
 | Rol | Estado | Condición |
 |---|---|---|
@@ -718,7 +727,7 @@ ADRs nuevos creados junto con este documento:
 
 ## 17. Matriz de cierre de revisiones
 
-Convención de estado: **cerrado en diseño** = la decisión y el control están especificados; **condición de release** = además debe verificarse antes del Go-Live. Las referencias `archivo:línea` apuntan al texto vigente tras estas enmiendas.
+Convención de estado: **cerrado en diseño** = la decisión y el control están especificados; **condición de release** = además debe verificarse antes del Go-Live. Las referencias `archivo:línea` apuntan al texto vigente tras estas enmiendas y son **orientativas** después de añadir `DD-MVP-23`/`ADR-MVP-006`: si un número de línea se desplaza, mandan el ID de decisión y el encabezado de sección.
 
 ### 17.1 `forge-sentinel` — H-1…H-10
 

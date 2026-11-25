@@ -42,6 +42,8 @@ Canonical:     https://dadriana-tienda.vercel.app (Q-MVP-04 abierta, sin dominio
 
 La configuración vive en `vercel.json`, `next.config.*` y en este runbook. Los clicks en la consola son solo **verificación**; cualquier cambio manual debe replicarse en el repositorio en el mismo PR (F-2).
 
+**Excepción acotada (`DD-MVP-23`):** la publicación temporal de la presentación se describe en §3.4. No modifica esta matriz ni las reglas de A2/`DD-MVP-18` para la aplicación.
+
 | Entorno | Datos | Protección | Cabeceras | `DATABASE_URL` |
 |---|---|---|---|---|
 | Development | Ficticios, locales | Local | `report-only` | Local; nunca productiva |
@@ -102,6 +104,47 @@ curl -I https://dadriana-tienda.vercel.app
 Comprobar: ausencia de `X-Powered-By`; `Referrer-Policy: strict-origin-when-cross-origin`; `X-Frame-Options: DENY`; `X-Content-Type-Options: nosniff`; `Permissions-Policy: camera=(), microphone=(), geolocation=()`; HSTS; `Content-Security-Policy-Report-Only` con `report-uri` **sin PII**; `X-Robots-Tag: noindex` mientras A2 esté vigente. Repetir `curl -I` en el host temporal y en el dominio definitivo cuando se resuelva Q-MVP-04.
 
 **Promoción de CSP a `enforce`:** solo tras ≥ 7 días de reportes sin violaciones reales, E2E completo en verde bajo `report-only` y LGTM de `forge-sentinel` + `forge-infra`. Tras el cambio, repetir MVP-E2E-25; si falla, volver a `report-only` y abrir issue.
+
+### 3.4 Despliegue temporal de la presentación (`DD-MVP-23` / `ADR-MVP-006`)
+
+Alcance: **solo** `presentacion/mvp/index.html` (HTML autocontenido, CSS inline, sin JavaScript, sin formularios y sin recursos externos). Es visible por URL, **no indexable**. No es la aplicación ni un go-live del MVP; A2/`DD-MVP-18` sigue vigente para la app.
+
+**Publicación**
+
+1. `forge-infra` añade un `vercel.json` **temporal**, versionado, que publica el HTML estático de `presentacion/mvp/` en la URL pública de `dadriana-tienda` (canonical temporal `https://dadriana-tienda.vercel.app`, sin dominio propio). Sin build de Next.js para este artefacto, sin `package.json`, sin `DATABASE_URL`, sin variables de entorno y sin secretos. Revisión: PR + LGTM de `forge-reviewer` y OK de `forge-infra` y `forge-sentinel` para configuración y cabeceras.
+2. Mantener en el HTML `<meta name="robots" content="noindex, nofollow">` **siempre** y añadir `X-Robots-Tag: noindex, nofollow` en la respuesta.
+3. CSP estricta en `enforce` acorde al HTML: `default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests`. Sin `report-uri` (no hay endpoint en un sitio estático). Añadir `Referrer-Policy: strict-origin-when-cross-origin`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY` y HSTS por HTTPS. El criterio `report-only` → `enforce` de la app (Design Doc §8.3) no se aplica a esta página.
+4. En la consola de Vercel, proyecto `dadriana-tienda` → **Settings → Deployment Protection**: Vercel Authentication = **Only Preview Deployments** (Production pública, Previews con SSO); **Password Protection OFF**; **Trusted IPs sin bloqueo**; **sin Shareable Links ni bypasses**. Anotar en el acta el valor anterior. Deployment Protection **no se configura en `vercel.json`**: retirar el archivo no reactiva la protección por sí solo.
+5. Registrar en el acta hora de publicación, ID del deployment y quién autorizó, indicando explícitamente «excepción temporal, no Go-Live».
+
+**Verificación antes de compartir el enlace**
+
+```bash
+BASE=https://dadriana-tienda.vercel.app
+curl -sSI "$BASE/" | grep -iE '^(HTTP/|x-robots-tag:|content-security-policy:|referrer-policy:|x-content-type-options:|x-frame-options:|strict-transport-security:)'
+curl -sS -o /dev/null -w '%{http_code}\n' "$BASE/"
+curl -fsS "$BASE/" | grep -io 'name="robots" content="noindex, nofollow"'
+```
+
+| Comprobación | Esperado |
+|---|---|
+| Estado HTTP | 200; repetir 3 veces ⇒ **0 respuestas 5xx** |
+| `X-Robots-Tag` | `noindex, nofollow` |
+| Meta `robots` del HTML | `noindex, nofollow` (visible por URL, no indexable) |
+| CSP | `enforce` estricta, sin `script-src` permisivo; `style-src 'unsafe-inline'` únicamente por el CSS inline |
+| Contenido | 0 `<script>`, 0 formularios, 0 fetch/telemetría, 0 secretos o variables; **0 datos reales**: sin enlace `wa.me` con número real (solo texto descriptivo), correos, teléfonos, direcciones, precios ni catálogo de Q-MVP-08 |
+| Configuración | Sin `package.json`, sin `DATABASE_URL`, sin variables de entorno en el despliegue |
+
+Si falta una cabecera, aparece un 5xx o aparece cualquier dato real, **no se comparte el enlace**: se corrige o se retira el `vercel.json` temporal.
+
+**Disparadores para volver a proteger (restaurar A2/`DD-MVP-18`)**
+
+- Se va a desplegar la aplicación (aparece `package.json`/código de la app): protección **antes** del despliegue.
+- Aparece cualquier dato real o autorizado (catálogo, precios, tiendas, WhatsApp, reseñas): **inmediato**.
+- Se cierran Q-MVP-03/04/08 y se crea `DATABASE_URL` de Production: **antes** de continuar con el checklist §4.
+- Incidente: cabecera `noindex` ausente, CSP derivada, 5xx sostenidos o contenido no aprobado: **inmediato**.
+
+**Acción de reversión:** retirar el `vercel.json` temporal **y, de forma manual en la consola**, volver a poner Vercel Authentication en **All Deployments** (o el valor anterior anotado), con Password Protection OFF y sin Shareable Links; los Previews no se modifican. Después ejecutar `MVP-E2E-23` (sin autenticar ⇒ 401 + `X-Robots-Tag: noindex`), repetir `curl -I` y registrar hora y responsable en el acta. Borrar el archivo **no** basta para proteger: la consola es la fuente de verdad de Deployment Protection. No hay base de datos que revertir: no se creó `DATABASE_URL` ni se ejecutaron migraciones.
 
 ---
 
@@ -207,8 +250,8 @@ Firma forge-qualis / forge-infra:
 
 ## 10. Referencias
 
-- [Design Doc MVP](../02-arquitectura/design-doc-mvp.md) — fuente de verdad del alcance y de las 22 decisiones `DD-MVP`.
-- [ADR-MVP-001](../02-arquitectura/adr-mvp/ADR-MVP-001.md), [002](../02-arquitectura/adr-mvp/ADR-MVP-002.md), [003](../02-arquitectura/adr-mvp/ADR-MVP-003.md), [004](../02-arquitectura/adr-mvp/ADR-MVP-004.md), [005](../02-arquitectura/adr-mvp/ADR-MVP-005.md).
+- [Design Doc MVP](../02-arquitectura/design-doc-mvp.md) — fuente de verdad del alcance y de las 23 decisiones `DD-MVP`.
+- [ADR-MVP-001](../02-arquitectura/adr-mvp/ADR-MVP-001.md), [002](../02-arquitectura/adr-mvp/ADR-MVP-002.md), [003](../02-arquitectura/adr-mvp/ADR-MVP-003.md), [004](../02-arquitectura/adr-mvp/ADR-MVP-004.md), [005](../02-arquitectura/adr-mvp/ADR-MVP-005.md), [006](../02-arquitectura/adr-mvp/ADR-MVP-006.md) — la excepción temporal de publicación se rige por §3.4.
 - [Requisitos MVP](../01-requisitos/mvp-requisitos.md) — el «qué» aprobado.
 - `docs/07-infra/checklist-lanzamiento.md` — **no aplica al MVP** (diseño transaccional).
 - `docs/07-infra/arquitectura-despliegue.md:284-297` — variables **no heredadas**.
