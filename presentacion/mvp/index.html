@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>D'Adriana Tienda — MVP (presentación temporal)</title>
+  <meta name="description" content="Presentación temporal e interna del MVP redefinido de D'Adriana Tienda: vitrina de belleza para piel y cabello, con venta acordada por WhatsApp.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="color-scheme" content="light">
+  <style>
+    /* Provisional palette only: this is not the approved brand identity. */
+    :root {
+      --bg: #fbf8f6;
+      --surface: #ffffff;
+      --ink: #241f29;
+      --muted: #574f5e;
+      --accent: #8a2b5b;
+      --accent-soft: #f6e9f0;
+      --line: #d9cdd5;
+      --focus: #5b1f4a;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(36, 31, 41, 0.08);
+      --content-width: 68rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+    }
+
+    h1, h2 {
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      line-height: 1.18;
+      letter-spacing: -0.015em;
+      margin: 0;
+    }
+
+    h1 { font-size: clamp(2rem, 5vw, 3.15rem); }
+    h2 { font-size: clamp(1.4rem, 3vw, 1.85rem); }
+    p { margin: 0; }
+
+    a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+    a:hover { color: var(--focus); }
+    a:focus-visible, :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+      background: var(--accent-soft);
+      color: var(--focus);
+      padding: 0.1em 0.35em;
+      border-radius: 5px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0.5rem;
+      z-index: 10;
+      padding: 0.6rem 0.9rem;
+      background: var(--surface);
+      border: 2px solid var(--focus);
+    }
+    .skip-link:focus { left: 0.5rem; }
+
+    .shell {
+      width: min(100% - 2rem, var(--content-width));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .topbar__inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.25rem 1rem;
+      padding-block: 0.85rem;
+    }
+    .brand {
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .brand__tag {
+      display: inline-block;
+      margin-left: 0.45rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .topbar__note {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin-block: 2rem 1.25rem;
+      padding: clamp(1.5rem, 4vw, 2.75rem);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--surface) 0%, var(--accent-soft) 100%);
+      box-shadow: var(--shadow);
+    }
+    /* Decorative motif built with CSS only; no external images. */
+    .hero::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: -6rem;
+      right: -5rem;
+      width: 18rem;
+      height: 18rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138, 43, 91, 0.14), transparent 68%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      margin-bottom: 0.75rem;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .hero h1 { max-width: 46rem; }
+    .lead {
+      max-width: 44rem;
+      margin-top: 1rem;
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+    }
+    .status-pill {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.5rem 0.85rem;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--focus);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .index {
+      margin-bottom: 2rem;
+      padding: 1rem 1.15rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .index h2 {
+      font-family: inherit;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .index ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      margin: 0.75rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .section { margin-bottom: 2.5rem; }
+    .section__head { max-width: 46rem; margin-bottom: 1.1rem; }
+    .section__head p { margin-top: 0.5rem; color: var(--muted); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .card {
+      padding: 1.15rem 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .card h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1.05rem;
+      line-height: 1.3;
+    }
+    .card p { color: var(--muted); }
+
+    .note {
+      padding: 1.25rem;
+      border-left: 4px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      background: var(--surface);
+    }
+    .note p + p { margin-top: 0.75rem; }
+
+    .excluded { border-color: var(--accent); }
+    .excluded h3 { color: var(--accent); }
+
+    footer {
+      margin-top: 3rem;
+      border-top: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .footer__inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.5rem 1.5rem;
+      padding-block: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .footer__notice {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    @media (min-width: 48rem) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 90rem) {
+      .cards--wide { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 23.5rem) {
+      .topbar__inner { flex-direction: column; }
+    }
+
+    /* CSS-first motion, disabled when the user prefers reduced motion. */
+    a { transition: color 120ms ease; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Internal-only presentation page: keep noindex and zero external assets. -->
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="topbar">
+    <div class="shell topbar__inner">
+      <p class="brand">D'Adriana Tienda <span class="brand__tag">MVP</span></p>
+      <p class="topbar__note">Página protegida · excluida de índices de búsqueda</p>
+    </div>
+  </header>
+
+  <main id="contenido" class="shell">
+    <section class="hero" aria-labelledby="titulo">
+      <p class="eyebrow">Presentación temporal e interna</p>
+      <h1 id="titulo">D'Adriana Tienda — MVP (presentación temporal)</h1>
+      <p class="lead">Vitrina digital de belleza para piel y cabello. La venta se acuerda por WhatsApp: la web informa y organiza la intención de compra, sin cobrar ni facturar.</p>
+      <p class="status-pill">Diseño aprobado · en planificación · sin fecha de lanzamiento prometida</p>
+    </section>
+
+    <nav class="index" aria-label="Índice de la página">
+      <h2>Índice</h2>
+      <ul>
+        <li><a href="#estado">Estado del proyecto</a></li>
+        <li><a href="#alcance">Alcance del MVP</a></li>
+        <li><a href="#fuera">Fuera del MVP</a></li>
+        <li><a href="#pendientes">Datos pendientes</a></li>
+        <li><a href="#identidad">Nota de identidad</a></li>
+      </ul>
+    </nav>
+
+    <section id="estado" class="section" aria-labelledby="estado-titulo">
+      <div class="section__head">
+        <h2 id="estado-titulo">Estado del proyecto</h2>
+        <p>El diseño del MVP redefinido está aprobado y el trabajo se encuentra en planificación. No hay una fecha de lanzamiento prometida.</p>
+      </div>
+      <div class="note">
+        <p>Esta página es un apoyo interno de presentación. Está protegida y lleva <code>noindex, nofollow</code> como defensa en profundidad: no está pensada para posicionarse en buscadores ni para sustituir la tienda pública.</p>
+        <p>La referencia de diseño es el documento de arquitectura <code>docs/02-arquitectura/design-doc-mvp.md</code> y las decisiones <code>ADR-MVP-001</code> y <code>ADR-MVP-004</code>. El diseño aprobado A2/DD-MVP-18 no se modifica aquí.</p>
+      </div>
+    </section>
+
+    <section id="alcance" class="section" aria-labelledby="alcance-titulo">
+      <div class="section__head">
+        <h2 id="alcance-titulo">Alcance del MVP</h2>
+        <p>Lo que se contempla construir y mostrar en la vitrina, con información honesta y sin promesas que la aplicación no pueda cumplir.</p>
+      </div>
+      <ul class="cards cards--wide">
+        <li class="card">
+          <h3>Catálogo por categorías</h3>
+          <p>Organización de productos en piel, cabello y marcas.</p>
+        </li>
+        <li class="card">
+          <h3>Precios en COP</h3>
+          <p>Valores expresados en pesos colombianos.</p>
+        </li>
+        <li class="card">
+          <h3>Filtros</h3>
+          <p>Búsqueda y filtrado por precio, categoría y marca.</p>
+        </li>
+        <li class="card">
+          <h3>Carruseles</h3>
+          <p>Mostradores de productos y contenido dentro de la vitrina.</p>
+        </li>
+        <li class="card">
+          <h3>Selecciones curadas</h3>
+          <p>Secciones «más vendidos» y «más referenciadas».</p>
+        </li>
+        <li class="card">
+          <h3>Lista de pedido en memoria</h3>
+          <p>Borrador que se pierde al cerrar la pestaña y genera un enlace <code>wa.me</code> para acordar la compra con el asesor.</p>
+        </li>
+        <li class="card">
+          <h3>Tiendas físicas</h3>
+          <p>Información de los puntos de venta.</p>
+        </li>
+        <li class="card">
+          <h3>Reseñas públicas moderadas</h3>
+          <p>Solo se muestran las reseñas aprobadas por moderación.</p>
+        </li>
+        <li class="card">
+          <h3>Disponibilidad informativa</h3>
+          <p>Estado orientativo del producto: no reserva, no promete entrega ni gestiona pedidos.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="fuera" class="section" aria-labelledby="fuera-titulo">
+      <div class="section__head">
+        <h2 id="fuera-titulo">Explícitamente fuera del MVP</h2>
+        <p>Estas capacidades no se construyen en esta entrega.</p>
+      </div>
+      <ul class="cards">
+        <li class="card excluded">
+          <h3>Pago en línea</h3>
+          <p>La aplicación no cobra ni procesa medios de pago.</p>
+        </li>
+        <li class="card excluded">
+          <h3>Carrito</h3>
+          <p>No hay carrito persistente ni checkout: solo la lista de pedido en memoria.</p>
+        </li>
+        <li class="card excluded">
+          <h3>Cuenta de cliente</h3>
+          <p>No hay registro, inicio de sesión ni áreas privadas.</p>
+        </li>
+        <li class="card excluded">
+          <h3>Facturación electrónica dentro de la app</h3>
+          <p>La factura la emite el asesor en su POS externo.</p>
+        </li>
+        <li class="card excluded">
+          <h3>Seguimiento con datos personales</h3>
+          <p>No se recogen ni se usan datos personales para seguir pedidos.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="pendientes" class="section" aria-labelledby="pendientes-titulo">
+      <div class="section__head">
+        <h2 id="pendientes-titulo">Datos pendientes antes del lanzamiento</h2>
+        <p>Información que todavía debe confirmarse con el cliente.</p>
+      </div>
+      <div class="note">
+        <p>El número oficial de WhatsApp, los enlaces de Instagram y Facebook, las tiendas físicas, el catálogo, las fotos y los precios reales se definen antes del go-live.</p>
+        <p>En esta presentación no se inventa ninguno de esos datos. Tampoco se incluye un enlace <code>wa.me</code> con un número ficticio ni enlaces a cuentas sociales sin confirmar.</p>
+      </div>
+    </section>
+
+    <section id="identidad" class="section" aria-labelledby="identidad-titulo">
+      <div class="section__head">
+        <h2 id="identidad-titulo">Nota de identidad</h2>
+      </div>
+      <div class="note">
+        <p>El rediseño del MVP es nuevo. Los colores usados en esta página son <strong>provisionales</strong> y no deben entenderse como la identidad definitiva de la marca.</p>
+        <p>La paleta verde/dorada anterior se conserva como referencia histórica para Fase 2; no se usa aquí como identidad del MVP.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer__inner">
+      <p class="footer__notice">Página temporal de presentación interna. No es la tienda pública.</p>
+      <p>D'Adriana Tienda · MVP · documento de apoyo interno</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,277 @@
+@import "tailwindcss";
+@source "../index.html";
+
+/* ============================================================
+   DIGITALDEVS · DESIGN TOKENS
+   ============================================================ */
+@theme {
+  /* Official Digitaldevs palette (Manual de Imagen Corporativa v1) */
+  --color-ink: #090f4b;        /* brand navy, logo background */
+  --color-ink-2: #101c5a;
+  --color-graphite: #1b2a6b;
+  --color-paper: #ffffff;
+  --color-sand: #f5f5f5;       /* Gris Claro */
+  --color-sand-2: #eceef2;
+  --color-line: #e2e6ed;
+  --color-line-dark: #25316b;
+  --color-muted: #666666;      /* Gris Corporativo */
+  --color-muted-2: #9aa1a8;
+  --color-cyan: #00ccff;       /* Cian Brillante */
+  --color-blue: #0066ff;       /* Azul Tecnológico */
+  --color-blue-deep: #003399;  /* Azul Profundo */
+  --color-blue-wash: #e9f1ff;
+  --color-orange: #ff6600;     /* Naranja Energético */
+  --color-coral: #ff3366;      /* Coral Vibrante */
+
+  --font-display: "Inter Display", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+@layer base {
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    @apply bg-[#e6e9ef] font-sans text-ink antialiased;
+  }
+  ::selection {
+    background: #00ccff;
+    color: #090f4b;
+  }
+  strong {
+    @apply font-semibold;
+  }
+}
+
+/* ============================================================
+   DOCUMENT SHEETS (A4)
+   ============================================================ */
+@layer components {
+  .sheet {
+    width: 210mm;
+    height: 297mm;
+    padding: 13mm 15mm 12mm;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+
+  @media screen {
+    .sheet {
+      margin-bottom: 9mm;
+      box-shadow:
+        0 1px 2px rgba(9, 15, 75, 0.08),
+        0 18px 45px rgba(9, 15, 75, 0.16);
+    }
+    body {
+      padding: 10mm 0;
+    }
+  }
+
+  .sheet--cover {
+    @apply bg-ink text-white;
+    padding: 15mm;
+  }
+
+  .sheet-head {
+    @apply flex items-center justify-between border-b border-line pb-3;
+  }
+  .sheet-foot {
+    @apply mt-auto flex items-center justify-between border-t border-line pt-2.5 font-mono text-[8.5px] uppercase tracking-[0.14em] text-muted;
+  }
+
+  /* ---------- Typography ---------- */
+  .eyebrow {
+    @apply font-mono text-[9px] font-medium uppercase tracking-[0.2em];
+  }
+  .page-title {
+    @apply mt-1 font-display text-[30px] font-semibold leading-[1.05] tracking-[-0.02em] text-ink;
+  }
+  .page-lead {
+    @apply mt-2 max-w-[150mm] text-[12.5px] leading-[1.6] text-muted;
+  }
+  .h3 {
+    @apply font-display text-[14px] font-semibold tracking-[-0.01em] text-ink;
+  }
+  .body-copy {
+    @apply text-[12px] leading-[1.62] text-[#39414f];
+  }
+  .micro {
+    @apply font-mono text-[8.5px] uppercase tracking-[0.14em] text-muted;
+  }
+
+  /* ---------- Brand ---------- */
+  .brand {
+    @apply inline-flex items-center gap-2.5;
+  }
+  .brand-mark {
+    @apply h-7 w-7 shrink-0 object-contain;
+  }
+  .brand-word {
+    @apply font-display text-[17px] font-bold tracking-[-0.035em];
+  }
+
+  /* ---------- Tables ---------- */
+  .table-dd {
+    @apply w-full border-collapse text-left;
+  }
+  .table-dd thead th {
+    @apply border-b border-ink/15 pb-2 font-mono text-[8px] font-medium uppercase tracking-[0.12em] text-muted;
+  }
+  .table-dd tbody td {
+    @apply border-b border-line py-[7px] pr-3 align-top text-[10.5px] leading-[1.45] text-[#39414f];
+  }
+  .table-dd tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .table-dd tbody tr:nth-child(even) td {
+    background: #f7f8fa;
+  }
+  .table-dd td:first-child,
+  .table-dd th:first-child {
+    @apply pl-2;
+  }
+  .table-dd td:last-child,
+  .table-dd th:last-child {
+    @apply pr-2;
+  }
+  .num {
+    @apply font-mono tabular-nums text-[10px] text-ink;
+  }
+
+  /* ---------- Cards & blocks ---------- */
+  .card {
+    @apply rounded-xl border border-line bg-white p-4;
+  }
+  .card-sand {
+    @apply rounded-xl border border-line bg-sand p-4;
+  }
+  .card-dark {
+    @apply rounded-xl bg-ink p-4 text-white;
+  }
+  .kpi {
+    @apply rounded-lg border border-line bg-sand px-3 py-2.5;
+  }
+  .kpi-value {
+    @apply font-display text-[21px] font-semibold leading-none tracking-[-0.03em] text-ink;
+  }
+  .kpi-label {
+    @apply mt-1 font-mono text-[7.5px] uppercase leading-tight tracking-[0.12em] text-muted;
+  }
+  .pill {
+    @apply inline-flex items-center rounded-full border border-line bg-white px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.1em] text-[#39414f];
+  }
+  .pill-cyan {
+    @apply inline-flex items-center rounded-full bg-cyan px-2.5 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.1em] text-ink;
+  }
+  .check {
+    @apply flex gap-2 text-[10.5px] leading-[1.5] text-[#39414f];
+  }
+  .check::before {
+    content: "";
+    @apply mt-[5px] h-[5px] w-[5px] shrink-0 rounded-[1px] bg-blue-deep;
+  }
+
+  /* ---------- Cover ---------- */
+  .cover-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 14mm 14mm;
+  }
+  .cover-glow {
+    background:
+      radial-gradient(70% 55% at 78% 18%, rgba(0, 204, 255, 0.18), transparent 70%),
+      radial-gradient(60% 50% at 10% 95%, rgba(0, 102, 255, 0.16), transparent 70%),
+      radial-gradient(45% 40% at 92% 88%, rgba(255, 102, 0, 0.07), transparent 70%);
+  }
+
+  /* ---------- Gantt ---------- */
+  .gantt {
+    display: grid;
+    grid-template-columns: 104px repeat(17, 1fr);
+    row-gap: 5px;
+    align-items: center;
+  }
+  .gantt-label {
+    @apply font-mono text-[8px] uppercase tracking-[0.08em] text-muted;
+  }
+  .gantt-bar {
+    @apply h-[13px] rounded-[3px] bg-ink;
+  }
+  .gantt-bar--cyan {
+    @apply bg-cyan;
+  }
+  .gantt-bar--soft {
+    background: #dde2ea;
+  }
+  .gantt-week {
+    @apply pb-1 text-center font-mono text-[7px] text-muted-2;
+  }
+
+  /* ---------- Architecture ---------- */
+  .arch-row {
+    @apply flex items-stretch gap-2;
+  }
+  .arch-box {
+    @apply flex-1 rounded-lg border border-line bg-white px-3 py-2.5;
+  }
+  .arch-box--ink {
+    @apply border-ink bg-ink text-white;
+  }
+  .arch-box--accent {
+    @apply border-blue bg-blue-wash;
+  }
+  .arch-arrow {
+    @apply flex items-center justify-center py-1 font-mono text-[11px] text-muted-2;
+  }
+
+  /* ---------- Signature ---------- */
+  .sign-line {
+    @apply mt-9 border-t border-ink/40 pt-1.5;
+  }
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  body {
+    background: #fff;
+    padding: 0;
+  }
+  .sheet {
+    margin: 0;
+    box-shadow: none;
+    break-after: page;
+    page-break-after: always;
+  }
+  .sheet:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

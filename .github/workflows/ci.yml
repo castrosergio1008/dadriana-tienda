@@ -1,0 +1,421 @@
+# CI for the MVP - APEX FORGE phases 2-8 (design-doc-mvp.md 10.5, F-8/F-9, ADR-MVP-005).
+#
+# TEMPORARY GUARD (remove when the app lands): docs-only commits have no package.json.
+# `hashFiles()` is only available in step-level `if`, NOT in job-level `if`; the
+# `detect` job evaluates `if: hashFiles('package.json') != ''` in a step and
+# publishes `has_app` as an output for every app-dependent job. Documentation PRs
+# stay green, and app checks cannot be silently skipped once package.json exists.
+#
+# Node: 20.20.2 is pinned to the local toolchain (LTS, supported by Next.js 15).
+# The Node 22 worker belongs to the transactional design and is out of scope here;
+# one single version avoids build drift between local and CI.
+#
+# Install: `npm ci` when package-lock.json exists; the documented fallback is
+# `npm install --no-audit --no-fund` until the first app commit adds the lockfile.
+#
+# WHEN THE APP LANDS (remove the temporary guard): require package-lock.json
+# with `npm ci`, add `npm audit --audit-level=high`, and make the detect guard
+# fail closed so removing package.json cannot skip app checks (sentinel notes).
+#
+# MANUAL in GitHub: protect `main` with PR + required checks + 1 LGTM from
+# forge-reviewer (plus forge-sentinel OK for data/secret/header changes).
+# While the guard is active require only `secrets (gitleaks)` and `detect`;
+# add the full check list when the app lands. Vercel deploys via its Git
+# integration: no VERCEL_TOKEN, no secrets in this file or in logs, and no
+# pull_request_target (untrusted code never runs with secrets).
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      e2e_profile:
+        description: E2E profile (full on release, smoke otherwise)
+        required: false
+        type: choice
+        default: smoke
+        options: [smoke, full]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  NODE_VERSION: '20.20.2'
+  NEXT_PUBLIC_SITE_URL: https://dadriana-tienda.vercel.app
+  # Immutable gitleaks image reference (v8.30.1).
+  GITLEAKS_IMAGE: zricethezav/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+
+jobs:
+  detect:
+    name: detect (temporary guard)
+    runs-on: ubuntu-latest
+    outputs:
+      has_app: ${{ steps.probe.outputs.has_app }}
+      has_lockfile: ${{ steps.probe.outputs.has_lockfile }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Probe package.json (temporary hashFiles guard)
+        id: guard
+        if: hashFiles('package.json') != ''
+        run: echo "present=true" >> "$GITHUB_OUTPUT"
+
+      - name: Publish guard outputs to app jobs
+        id: probe
+        env:
+          GUARD_PRESENT: ${{ steps.guard.outputs.present || 'false' }}
+        run: |
+          echo "has_app=$GUARD_PRESENT" >> "$GITHUB_OUTPUT"
+          if [ -f package-lock.json ]; then
+            echo "has_lockfile=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_lockfile=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$GUARD_PRESENT" != "true" ]; then
+            echo "::notice::No package.json yet: app-dependent jobs are skipped (documentation-only PR)."
+          fi
+
+  secrets:
+    name: secrets (gitleaks)
+    # Always runs: this job never depends on package.json (F-8, H-8).
+    runs-on: ubuntu-latest
+    env:
+      # Embedded config: skip the historical prototype dependencies; no extra
+      # config file is needed and default gitleaks rules stay enabled.
+      GITLEAKS_CONFIG_TOML: |
+        title = "MVP CI secret scan"
+
+        [extend]
+        useDefault = true
+
+        [[allowlists]]
+        description = "Historical prototype dependencies are not MVP application code"
+        paths = ['''(^|/)node_modules/''']
+    steps:
+      - name: Check out repository with full history
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Scan working tree for secrets
+        run: |
+          docker run --rm -e GITLEAKS_CONFIG_TOML -v "$PWD:/repo" -w /repo \
+            "$GITLEAKS_IMAGE" dir --no-banner --redact --max-target-megabytes 5 \
+            --exit-code 1 /repo
+
+      - name: Scan Git history when commits exist
+        run: |
+          if git rev-parse --verify HEAD >/dev/null 2>&1; then
+            docker run --rm -e GITLEAKS_CONFIG_TOML -v "$PWD:/repo" -w /repo \
+              "$GITLEAKS_IMAGE" git --no-banner --redact --max-target-megabytes 5 \
+              --exit-code 1 /repo
+          else
+            echo "No commits yet: history scan skipped after a clean working-tree scan."
+          fi
+
+      - name: Verify env-file contract (H-8)
+        run: |
+          grep -qxF '.env*' .gitignore
+          grep -qxF '!.env.example' .gitignore
+
+      - name: Assert no tracked .env files
+        run: |
+          leaks="$(git ls-files | grep -E '(^|/)\.env' | grep -vE '(^|/)\.env\.example$' || true)"
+          if [ -n "$leaks" ]; then
+            echo "::error::Tracked environment file(s) detected: $leaks"
+            exit 1
+          fi
+
+  lint:
+    name: lint
+    needs: [detect, secrets]
+    if: needs.detect.outputs.has_app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache npm downloads
+        if: needs.detect.outputs.has_lockfile == 'true'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (npm ci when lockfile exists)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "::warning::package-lock.json missing; temporary npm install fallback. Commit the lockfile with the app."
+            npm install --no-audit --no-fund
+          fi
+      - name: ESLint and Prettier
+        run: npm run lint
+
+  typecheck:
+    name: typecheck
+    needs: [detect, secrets]
+    if: needs.detect.outputs.has_app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache npm downloads
+        if: needs.detect.outputs.has_lockfile == 'true'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (npm ci when lockfile exists)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "::warning::package-lock.json missing; temporary npm install fallback. Commit the lockfile with the app."
+            npm install --no-audit --no-fund
+          fi
+      - name: TypeScript strict (tsc --noEmit)
+        run: npm run typecheck
+
+  unit:
+    name: unit
+    needs: [detect, secrets]
+    if: needs.detect.outputs.has_app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache npm downloads
+        if: needs.detect.outputs.has_lockfile == 'true'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (npm ci when lockfile exists)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "::warning::package-lock.json missing; temporary npm install fallback. Commit the lockfile with the app."
+            npm install --no-audit --no-fund
+          fi
+      # Thresholds live in the Vitest config: global >= 70%, critical >= 90%,
+      # no drop > 2 percentage points without justification (DD-MVP 9.4).
+      - name: Vitest unit tests with coverage
+        run: npm run test:unit -- --coverage
+
+  integration:
+    name: integration
+    needs: [detect, secrets]
+    if: needs.detect.outputs.has_app == 'true'
+    runs-on: ubuntu-latest
+    # Ephemeral PostgreSQL dedicated to this job. Credentials are throwaway
+    # CI-only values, not secrets and never a production database.
+    services:
+      postgres:
+        image: postgres:16.4-alpine@sha256:5660c2cbfea50c7a9127d17dc4e48543eedd3d7a41a595a2dfa572471e37e64c
+        env:
+          POSTGRES_USER: mvp
+          POSTGRES_PASSWORD: mvp
+          POSTGRES_DB: mvp_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mvp -d mvp_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://mvp:mvp@127.0.0.1:5432/mvp_test
+      # Throwaway CI value for HMAC tests (DD-MVP-21/22); never a real pepper.
+      REVIEW_HASH_PEPPER: ci-only-synthetic-pepper-not-a-secret
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache npm downloads
+        if: needs.detect.outputs.has_lockfile == 'true'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (npm ci when lockfile exists)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "::warning::package-lock.json missing; temporary npm install fallback. Commit the lockfile with the app."
+            npm install --no-audit --no-fund
+          fi
+      - name: Load synthetic fixtures (no PII, no production data)
+        run: |
+          if npm run | grep -q 'db:fixtures'; then
+            npm run db:fixtures
+          elif npm run | grep -q 'db:seed'; then
+            npm run db:seed
+          else
+            echo "::error::Define db:fixtures with synthetic data before enabling integration checks"
+            exit 1
+          fi
+      - name: Integration tests
+        run: npm run test:integration
+
+  build:
+    name: build
+    needs: [detect, secrets]
+    if: needs.detect.outputs.has_app == 'true'
+    runs-on: ubuntu-latest
+    env:
+      # Synthetic local placeholder for Prisma generate; no real credential.
+      DATABASE_URL: postgresql://localhost:5432/mvp_build
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache npm downloads
+        if: needs.detect.outputs.has_lockfile == 'true'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (npm ci when lockfile exists)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "::warning::package-lock.json missing; temporary npm install fallback. Commit the lockfile with the app."
+            npm install --no-audit --no-fund
+          fi
+      - name: Next.js build
+        run: npm run build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: next-static
+          path: .next/static
+          if-no-files-found: error
+
+  bundle-budget:
+    name: bundle budget
+    needs: [detect, secrets, build]
+    if: needs.detect.outputs.has_app == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache npm downloads
+        if: needs.detect.outputs.has_lockfile == 'true'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (npm ci when lockfile exists)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "::warning::package-lock.json missing; temporary npm install fallback. Commit the lockfile with the app."
+            npm install --no-audit --no-fund
+          fi
+      - name: Download build artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: next-static
+          path: .next/static
+      # Home <= 150 KB, PLP <= 160 KB, PDP <= 170 KB gzip; the list chunk is
+      # absorbed into PDP/PLP (DD-MVP 9.4, QA-03).
+      - name: Check gzip budgets
+        run: npm run check:bundle
+
+  e2e:
+    name: e2e (Playwright + axe)
+    needs: [detect, secrets]
+    if: needs.detect.outputs.has_app == 'true'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.4-alpine@sha256:5660c2cbfea50c7a9127d17dc4e48543eedd3d7a41a595a2dfa572471e37e64c
+        env:
+          POSTGRES_USER: mvp
+          POSTGRES_PASSWORD: mvp
+          POSTGRES_DB: mvp_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mvp -d mvp_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # PR => smoke (●); push to main / release => full suite (x3 per runbook 3.2).
+      E2E_PROFILE: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' && inputs.e2e_profile == 'full') && 'full' || 'smoke' }}
+      DATABASE_URL: postgresql://mvp:mvp@127.0.0.1:5432/mvp_test
+      REVIEW_HASH_PEPPER: ci-only-synthetic-pepper-not-a-secret
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache npm downloads
+        if: needs.detect.outputs.has_lockfile == 'true'
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (npm ci when lockfile exists)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "::warning::package-lock.json missing; temporary npm install fallback. Commit the lockfile with the app."
+            npm install --no-audit --no-fund
+          fi
+      # The Playwright webServer starts the app locally with synthetic data;
+      # no Vercel deployment and no production credentials are used in CI.
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Smoke E2E (PR, tests marked ●)
+        if: env.E2E_PROFILE == 'smoke'
+        run: npm run test:e2e:smoke
+      - name: Full E2E (release, 3 passes)
+        if: env.E2E_PROFILE == 'full'
+        run: |
+          for pass in 1 2 3; do
+            echo "::group::Full E2E pass $pass/3"
+            npm run test:e2e
+            echo "::endgroup::"
+          done
+      - name: axe accessibility checks (0 critical / serious)
+        run: npm run test:a11y

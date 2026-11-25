@@ -1,0 +1,15 @@
+{
+  "name": "adriana-tienda-prototipo-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Headless Chrome smoke/QA tests for the Adriana Tienda prototype (no build required).",
+  "scripts": {
+    "test": "node smoke.test.js",
+    "test:qa": "node qa.test.js",
+    "test:layout": "node layout.test.js",
+    "test:tracking": "node tracking.test.js"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.0.0"
+  }
+}

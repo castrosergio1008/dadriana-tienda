@@ -1,0 +1,31 @@
+# Dependencies and framework build output
+node_modules/
+.next/
+out/
+
+# Tests and coverage reports
+coverage/
+playwright-report/
+test-results/
+
+# Local tooling and deployment metadata
+.vercel/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+
+# Secrets: ignore every .env variant, keep the documented template (H-8)
+.env*
+!.env.example
+
+# NOTE: DESIGN_DOC.md, docs/, prototipo/, Imagenes/, cotizacion/ and
+# presentacion/ are approved historical reference and are intentionally NOT ignored.

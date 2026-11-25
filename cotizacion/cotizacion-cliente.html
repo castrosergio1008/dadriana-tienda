@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Propuesta para Adriana Tienda · Digitaldevs</title>
+    <meta name="description" content="Propuesta para crear una tienda en línea para Adriana Tienda, igual o mejor que Recamier." />
+    <meta name="author" content="Digitaldevs" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <!-- Botón descargar PDF -->
+    <div class="no-print fixed bottom-5 right-5 z-50 flex items-center gap-2">
+      <button
+        onclick="window.print()"
+        class="rounded-full bg-orange px-5 py-3 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-white shadow-xl transition hover:bg-[#E65C00] focus:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+      >
+        Descargar PDF
+      </button>
+    </div>
+
+    <!-- ============================================================
+         PÁGINA 1 · PORTADA
+    ============================================================= -->
+    <section class="sheet sheet--cover">
+      <div class="cover-grid pointer-events-none absolute inset-0"></div>
+      <div class="cover-glow pointer-events-none absolute inset-0"></div>
+
+      <div class="relative flex h-full flex-col">
+        <div class="flex items-start justify-between">
+          <img src="./assets/logo-full-dark.png" alt="Digitaldevs" class="w-[30mm]" />
+          <div class="text-right">
+            <p class="font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">Estudio de software</p>
+            <p class="mt-1 font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">Colombia · 2026</p>
+          </div>
+        </div>
+
+        <div class="mt-[30mm]">
+          <p class="eyebrow text-cyan">Propuesta para su tienda en línea</p>
+
+          <h1 class="mt-4 max-w-[165mm] font-display text-[47px] font-semibold leading-[0.98] tracking-[-0.035em] text-white">
+            Adriana Tienda<br />vende por internet
+          </h1>
+
+          <p class="mt-5 max-w-[135mm] text-[13.5px] leading-[1.6] text-white/60">
+            Vamos a crear una tienda en línea hermosa y rápida, igual o mejor que la de Recamier.
+            Sus clientas podrán comprar desde el celular, pagar como prefieran y recibir su pedido en la puerta de su casa.
+          </p>
+
+          <div class="mt-9 flex flex-wrap gap-2.5">
+            <span class="inline-flex items-center rounded-full bg-orange px-2.5 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.1em] text-white">Listo en 17 semanas</span>
+            <span class="rounded-full border border-white/15 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.1em] text-white/70">COP $159 millones</span>
+            <span class="rounded-full border border-white/15 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.1em] text-white/70">Pago contra entrega</span>
+          </div>
+        </div>
+
+        <div class="mt-auto">
+          <div class="grid grid-cols-4 gap-5 border-t border-white/15 pt-5">
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Para</p>
+              <p class="mt-1 text-[11px] font-medium text-white">Adriana Tienda</p>
+              <p class="mt-0.5 text-[9.5px] text-white/45">Colombia</p>
+            </div>
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Inspirada en</p>
+              <p class="mt-1 text-[11px] font-medium text-white">Recamier</p>
+              <p class="mt-0.5 text-[9.5px] text-white/45">Tienda de referencia</p>
+            </div>
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Fecha</p>
+              <p class="mt-1 text-[11px] font-medium text-white">11 de noviembre de 2026</p>
+            </div>
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Válida hasta</p>
+              <p class="mt-1 text-[11px] font-medium text-white">11 de diciembre de 2026</p>
+            </div>
+          </div>
+
+          <p class="mt-4 font-mono text-[7.5px] uppercase tracking-[0.18em] text-white/25">
+            Preparado por Digitaldevs para Adriana Tienda
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 2 · RESUMEN
+    ============================================================= -->
+    <section class="sheet">
+      <div class="sheet-header">
+        <span class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">01</span>
+        <h2 class="font-display text-[22px] font-semibold tracking-[-0.02em] text-ink">En resumen</h2>
+        <span class="ml-auto font-mono text-[8px] uppercase tracking-[0.2em] text-muted-2">02 / 08</span>
+      </div>
+
+      <div class="mt-6">
+        <p class="text-[13px] leading-[1.7] text-ink">
+          Hoy en día, sus clientas buscan productos de belleza en internet antes de comprar.
+          Si no encuentran una tienda en línea fácil y confiable, se van a otra parte.
+        </p>
+        <p class="mt-3 text-[13px] leading-[1.7] text-ink">
+          Nosotros le vamos a construir a <strong>Adriana Tienda</strong> su propia tienda en línea,
+          rápida y hermosa, donde sus clientas puedan:
+        </p>
+      </div>
+
+      <div class="mt-6 grid grid-cols-2 gap-4">
+        <div class="rounded-lg border border-line bg-sand p-4">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-orange/10 text-[10px] font-bold text-orange">1</span>
+            <p class="text-[11px] font-semibold text-ink">Comprar desde el celular</p>
+          </div>
+          <p class="mt-2 text-[10px] leading-[1.5] text-muted">
+            Más del 70% de las compras en línea en Colombia se hacen desde el celular.
+            Nuestra tienda será rapidísima y fácil de usar en cualquier teléfono.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-line bg-sand p-4">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-orange/10 text-[10px] font-bold text-orange">2</span>
+            <p class="text-[11px] font-semibold text-ink">Pagar como prefieran</p>
+          </div>
+          <p class="mt-2 text-[10px] leading-[1.5] text-muted">
+            Tarjeta, PSE, Nequi, Daviplata, efectivo (Efecty, Baloto) o "pague después" con cuotas.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-line bg-sand p-4">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-orange/10 text-[10px] font-bold text-orange">3</span>
+            <p class="text-[11px] font-semibold text-ink">Recibir en casa o recoger</p>
+          </div>
+          <p class="mt-2 text-[10px] leading-[1.5] text-muted">
+            Envíos a todo el país con tracking, o recogida en su bodega/tienda.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-line bg-sand p-4">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-orange/10 text-[10px] font-bold text-orange">4</span>
+            <p class="text-[11px] font-semibold text-ink">Usted controla todo</p>
+          </div>
+          <p class="mt-2 text-[10px] leading-[1.5] text-muted">
+            Un panel sencillo para administrar productos, precios, pedidos y inventario sin llamar a nadie.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 rounded-lg bg-blue-wash p-4">
+        <p class="text-[11px] font-semibold text-ink">Lo más importante</p>
+        <p class="mt-1 text-[11px] leading-[1.6] text-muted">
+          No le vamos a vender una "plantilla" o un sistema genérico. Vamos a construir su tienda
+          <strong>a la medida</strong>, con su marca, sus productos y su forma de trabajar.
+          Y si en el futuro quiere agregar cosas nuevas, se puede.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 3 · QUÉ VAMOS A CONSTRUIR
+    ============================================================= -->
+    <section class="sheet">
+      <div class="sheet-header">
+        <span class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">02</span>
+        <h2 class="font-display text-[22px] font-semibold tracking-[-0.02em] text-ink">Qué va a tener su tienda</h2>
+        <span class="ml-auto font-mono text-[8px] uppercase tracking-[0.2em] text-muted-2">03 / 08</span>
+      </div>
+
+      <p class="mt-4 text-[12px] leading-[1.6] text-muted">
+        Todo lo que necesita para vender en línea desde el día uno:
+      </p>
+
+      <div class="mt-5 space-y-3">
+        <div class="flex gap-3 rounded-lg border border-line p-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue/10 text-[9px] font-bold text-blue">✓</span>
+          <div>
+            <p class="text-[11px] font-semibold text-ink">Página de inicio hermosa</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Con las promociones del momento, productos destacados y acceso rápido a las categorías.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 rounded-lg border border-line p-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue/10 text-[9px] font-bold text-blue">✓</span>
+          <div>
+            <p class="text-[11px] font-semibold text-ink">Catálogo organizado por necesidad</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Sus clientas podrán filtrar por tipo de cabello, piel, marca, precio... no solo por nombre de producto.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 rounded-lg border border-line p-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue/10 text-[9px] font-bold text-blue">✓</span>
+          <div>
+            <p class="text-[11px] font-semibold text-ink">Páginas de producto que venden</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Fotos grandes, descripción clara, reseñas de otras clientas, precio con IVA y fecha estimada de entrega.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 rounded-lg border border-line p-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue/10 text-[9px] font-bold text-blue">✓</span>
+          <div>
+            <p class="text-[11px] font-semibold text-ink">Búsqueda inteligente</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Si alguien escribe "shampoo para rizos" o se equivoca en una letra, igual encuentra lo que busca.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 rounded-lg border border-line p-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue/10 text-[9px] font-bold text-blue">✓</span>
+          <div>
+            <p class="text-[11px] font-semibold text-ink">Carrito de compras fácil</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Que se guarde aunque la clienta cierre la página. Cupones de descuento incluidos.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 rounded-lg border border-line p-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange/10 text-[9px] font-bold text-orange">★</span>
+          <div>
+            <p class="text-[11px] font-semibold text-ink">Pago seguro y sencillo</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Una sola página para pagar. Sin registrarse obligatoriamente. Con todos los medios de pago de Colombia.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 rounded-lg border border-line p-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue/10 text-[9px] font-bold text-blue">✓</span>
+          <div>
+            <p class="text-[11px] font-semibold text-ink">Facturación automática para la DIAN</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Cada venta genera su factura electrónica automáticamente. Usted no tiene que hacer nada.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 rounded-lg border border-line p-3">
+          <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue/10 text-[9px] font-bold text-blue">✓</span>
+          <div>
+            <p class="text-[11px] font-semibold text-ink">Panel de administración</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Para que usted o su equipo administren productos, precios, inventario, pedidos y clientes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 4 · POR QUÉ MEJOR QUE LA REFERENCIA
+    ============================================================= -->
+    <section class="sheet">
+      <div class="sheet-header">
+        <span class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">03</span>
+        <h2 class="font-display text-[22px] font-semibold tracking-[-0.02em] text-ink">Por qué nuestra tienda será mejor que Recamier</h2>
+        <span class="ml-auto font-mono text-[8px] uppercase tracking-[0.2em] text-muted-2">04 / 08</span>
+      </div>
+
+      <p class="mt-4 text-[12px] leading-[1.6] text-muted">
+        Estudiamos la tienda de Recamier para entender qué les gusta a sus clientas.
+        Y encontramos cosas que podemos hacer mejor:
+      </p>
+
+      <div class="mt-5 space-y-3">
+        <div class="rounded-lg border border-line p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-red-500">Recamier</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-muted">Dos botones iguales de "Agregar" que confunden</p>
+            </div>
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-green-600">Adriana Tienda</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-ink">Un solo botón claro que dice qué pasa si lo presionan</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-line p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-red-500">Recamier</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-muted">No muestra opiniones de otras clientas</p>
+            </div>
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-green-600">Adriana Tienda</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-ink">Reseñas verificadas en cada producto, para generar confianza</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-line p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-red-500">Recamier</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-muted">Búsqueda básica que no entiende errores</p>
+            </div>
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-green-600">Adriana Tienda</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-ink">Búsqueda que entiende lo que las clientas quieren, aunque escriban mal</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-line p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-red-500">Recamier</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-muted">No dice cuánto tarda el pedido</p>
+            </div>
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-green-600">Adriana Tienda</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-ink">Desde el producto, la clienta sabe la fecha estimada de entrega</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-line p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-red-500">Recamier</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-muted">Lenta en el celular (carga 1,7 MB de información)</p>
+            </div>
+            <div class="shrink-0">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-green-600">Adriana Tienda</p>
+              <p class="mt-1 text-[10px] leading-[1.4] text-ink">Rapidísima: carga menos de la mitad, para que nadie se desespere</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-lg bg-sand p-4">
+        <p class="text-[11px] font-semibold text-ink">En palabras sencillas</p>
+        <p class="mt-1 text-[11px] leading-[1.6] text-muted">
+          Una clienta que entra a la tienda de Adriana Tienda va a encontrar lo que necesita más rápido,
+          va a saber cuándo llega su pedido y va a poder pagar como ella prefiera.
+          <strong>Eso significa más ventas y menos clientes que se van a otra parte.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 5 · FORMA DE PAGO
+    ============================================================= -->
+    <section class="sheet">
+      <div class="sheet-header">
+        <span class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">04</span>
+        <h2 class="font-display text-[22px] font-semibold tracking-[-0.02em] text-ink">Formas de pago para sus clientas</h2>
+        <span class="ml-auto font-mono text-[8px] uppercase tracking-[0.2em] text-muted-2">05 / 08</span>
+      </div>
+
+      <p class="mt-4 text-[12px] leading-[1.6] text-muted">
+        En Colombia, cada quien paga de una forma diferente. Por eso, su tienda aceptará todas:
+      </p>
+
+      <div class="mt-5 grid grid-cols-3 gap-3">
+        <div class="rounded-lg border border-line p-3 text-center">
+          <p class="text-[20px]">💳</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">Tarjeta de crédito o débito</p>
+          <p class="mt-0.5 text-[9px] text-muted">Visa, Mastercard, American Express</p>
+        </div>
+
+        <div class="rounded-lg border border-line p-3 text-center">
+          <p class="text-[20px]">🏦</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">PSE</p>
+          <p class="mt-0.5 text-[9px] text-muted">Pago desde la app de su banco</p>
+        </div>
+
+        <div class="rounded-lg border border-line p-3 text-center">
+          <p class="text-[20px]">📱</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">Nequi y Daviplata</p>
+          <p class="mt-0.5 text-[9px] text-muted">Las billeteras digitales más usadas</p>
+        </div>
+
+        <div class="rounded-lg border border-line p-3 text-center">
+          <p class="text-[20px]">💵</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">Efectivo</p>
+          <p class="mt-0.5 text-[9px] text-muted">Efecty, Baloto, SuRed</p>
+        </div>
+
+        <div class="rounded-lg border border-line p-3 text-center">
+          <p class="text-[20px]">📦</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">Pague contra entrega</p>
+          <p class="mt-0.5 text-[9px] text-muted">Para clientas que prefieren pagar al recibir</p>
+        </div>
+
+        <div class="rounded-lg border border-line p-3 text-center">
+          <p class="text-[20px]">🗓️</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">Cuotas sin tarjeta</p>
+          <p class="mt-0.5 text-[9px] text-muted">Pague en 1 a 12 cuotas con SU+Pay</p>
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-lg bg-blue-wash p-4">
+        <p class="text-[11px] font-semibold text-ink">¿Quién recibe el dinero?</p>
+        <p class="mt-1 text-[11px] leading-[1.6] text-muted">
+          El dinero de cada venta va directo a la cuenta bancaria de Adriana Tienda.
+          Nosotros configuramos todo para que funcione automáticamente.
+        </p>
+      </div>
+
+      <div class="mt-4 rounded-lg bg-sand p-4">
+        <p class="text-[11px] font-semibold text-ink">Costo de las transacciones</p>
+        <p class="mt-1 text-[11px] leading-[1.6] text-muted">
+          El proveedor de pagos (Wompi) cobra una comisión por cada transacción: aproximadamente
+          <strong>3,6% del valor de la venta</strong>. Por ejemplo, en una venta de $190.000,
+          ellos cobran unos $6.825. <strong>Este costo no va por nuestra cuenta</strong>, es parte
+          de operar una tienda en línea, igual que tener un datáfono.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 6 · INVERSIÓN Y FORMA DE PAGO DEL PROYECTO
+    ============================================================= -->
+    <section class="sheet">
+      <div class="sheet-header">
+        <span class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">05</span>
+        <h2 class="font-display text-[22px] font-semibold tracking-[-0.02em] text-ink">Inversión del proyecto</h2>
+        <span class="ml-auto font-mono text-[8px] uppercase tracking-[0.2em] text-muted-2">06 / 08</span>
+      </div>
+
+      <div class="mt-6 rounded-xl bg-ink p-6 text-white">
+        <p class="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">Precio del proyecto completo</p>
+        <p class="mt-2 font-display text-[32px] font-semibold tracking-[-0.02em]">COP $159.000.000</p>
+        <p class="mt-1 text-[11px] text-white/50">IVA no incluido · Precio fijo, no hay sorpresas</p>
+
+        <div class="mt-5 grid grid-cols-3 gap-4 border-t border-white/15 pt-4">
+          <div>
+            <p class="font-mono text-[8px] uppercase tracking-[0.15em] text-white/40">Tiempo</p>
+            <p class="mt-1 text-[14px] font-semibold">17 semanas</p>
+            <p class="text-[9px] text-white/40">≈ 4 meses</p>
+          </div>
+          <div>
+            <p class="font-mono text-[8px] uppercase tracking-[0.15em] text-white/40">Inicio</p>
+            <p class="mt-1 text-[14px] font-semibold">30% de anticipo</p>
+            <p class="text-[9px] text-white/40">COP $74,7 millones</p>
+          </div>
+          <div>
+            <p class="font-mono text-[8px] uppercase tracking-[0.15em] text-white/40">Garantía</p>
+            <p class="mt-1 text-[14px] font-semibold">60 días</p>
+            <p class="text-[9px] text-white/40">Gratis después de lanzar</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <p class="text-[12px] font-semibold text-ink">Cómo se paga el proyecto</p>
+        <p class="mt-1 text-[11px] leading-[1.5] text-muted">
+          Pagos por avance, para que usted siempre vea lo que está comprando:
+        </p>
+
+        <div class="mt-3 space-y-2">
+          <div class="flex items-center justify-between rounded-lg border border-line p-3">
+            <div>
+              <p class="text-[11px] font-semibold text-ink">1. Al firmar el contrato</p>
+              <p class="text-[10px] text-muted">Empieza el trabajo</p>
+            </div>
+            <p class="text-[11px] font-bold text-ink">30% · $74,7 M</p>
+          </div>
+
+          <div class="flex items-center justify-between rounded-lg border border-line p-3">
+            <div>
+              <p class="text-[11px] font-semibold text-ink">2. Al terminar el catálogo y la tienda</p>
+              <p class="text-[10px] text-muted">Semana 9: se ven productos y páginas</p>
+            </div>
+            <p class="text-[11px] font-bold text-ink">25% · $62,25 M</p>
+          </div>
+
+          <div class="flex items-center justify-between rounded-lg border border-line p-3">
+            <div>
+              <p class="text-[11px] font-semibold text-ink">3. Al tener pagos funcionando</p>
+              <p class="text-[10px] text-muted">Semana 13: primera venta real de prueba</p>
+            </div>
+            <p class="text-[11px] font-bold text-ink">25% · $62,25 M</p>
+          </div>
+
+          <div class="flex items-center justify-between rounded-lg border border-line p-3">
+            <div>
+              <p class="text-[11px] font-semibold text-ink">4. Al probar todo (usted lo revisa)</p>
+              <p class="text-[10px] text-muted">Semana 16: ajustes finales</p>
+            </div>
+            <p class="text-[11px] font-bold text-ink">15% · $37,35 M</p>
+          </div>
+
+          <div class="flex items-center justify-between rounded-lg border border-line bg-blue-wash p-3">
+            <div>
+              <p class="text-[11px] font-semibold text-ink">5. Al lanzar la tienda al público</p>
+              <p class="text-[10px] text-muted">Semana 17: ¡a vender!</p>
+            </div>
+            <p class="text-[11px] font-bold text-ink">5% · $12,45 M</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-lg border border-dashed border-line p-4">
+        <p class="text-[11px] font-semibold text-ink">Gastos mensuales después del lanzamiento (estimados)</p>
+        <div class="mt-2 space-y-1">
+          <p class="text-[10px] text-muted">• Servidores y servicios técnicos: <strong>COP $830.000–1.560.000/mes</strong></p>
+          <p class="text-[10px] text-muted">• Facturación electrónica DIAN: <strong>COP $133.000–332.000/mes</strong></p>
+          <p class="text-[10px] text-muted">• WhatsApp para notificaciones: <strong>COP $66.000–199.000/mes</strong></p>
+          <p class="text-[10px] text-muted">• Mantenimiento y mejoras (opcional): <strong>COP $6,9 M/mes</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 7 · CRONOGRAMA
+    ============================================================= -->
+    <section class="sheet">
+      <div class="sheet-header">
+        <span class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">06</span>
+        <h2 class="font-display text-[22px] font-semibold tracking-[-0.02em] text-ink">Cómo vamos a trabajar</h2>
+        <span class="ml-auto font-mono text-[8px] uppercase tracking-[0.2em] text-muted-2">07 / 08</span>
+      </div>
+
+      <p class="mt-4 text-[12px] leading-[1.6] text-muted">
+        Trabajamos por etapas de 2 semanas. Al final de cada etapa, usted ve algo funcionando,
+        no solo documentos.
+      </p>
+
+      <div class="mt-5 space-y-2">
+        <div class="flex gap-3">
+          <div class="flex flex-col items-center">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-ink text-[9px] font-bold text-white">1</span>
+            <span class="w-px flex-1 bg-line"></span>
+          </div>
+          <div class="pb-4">
+            <p class="text-[11px] font-semibold text-ink">Semanas 1–2 · Planificación</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Nos cuenta cómo funciona su negocio, definimos detalles y cargamos el catálogo.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div class="flex flex-col items-center">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-ink text-[9px] font-bold text-white">2</span>
+            <span class="w-px flex-1 bg-line"></span>
+          </div>
+          <div class="pb-4">
+            <p class="text-[11px] font-semibold text-ink">Semanas 3–8 · Catálogo y diseño de las páginas</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Se ven los productos en la tienda, las páginas de cada producto y la búsqueda.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div class="flex flex-col items-center">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-ink text-[9px] font-bold text-white">3</span>
+            <span class="w-px flex-1 bg-line"></span>
+          </div>
+          <div class="pb-4">
+            <p class="text-[11px] font-semibold text-ink">Semanas 9–12 · Carrito y pagos</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">La clienta puede agregar al carrito y pagar con todos los medios.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div class="flex flex-col items-center">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-ink text-[9px] font-bold text-white">4</span>
+            <span class="w-px flex-1 bg-line"></span>
+          </div>
+          <div class="pb-4">
+            <p class="text-[11px] font-semibold text-ink">Semanas 13–15 · Pedidos, facturación y envíos</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Todo el sistema de pedidos, facturas DIAN y conexión con envíos.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div class="flex flex-col items-center">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-orange text-[9px] font-bold text-white">★</span>
+          </div>
+          <div class="pb-2">
+            <p class="text-[11px] font-semibold text-ink">Semanas 16–17 · Pruebas y lanzamiento</p>
+            <p class="mt-0.5 text-[10px] leading-[1.4] text-muted">Usted prueba todo, corregimos detalles y lanzamos la tienda.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-lg bg-sand p-4">
+        <p class="text-[11px] font-semibold text-ink">¿Qué necesitamos de usted?</p>
+        <ul class="mt-2 space-y-1 text-[10px] leading-[1.5] text-muted">
+          <li>• Fotos y descripciones de los productos (podemos ayudarle a organizarlas)</li>
+          <li>• Información de sus bodegas/tiendas para calcular envíos</li>
+          <li>• Una persona del equipo que nos apruebe avances cada 2 semanas</li>
+          <li>• Los contratos con la DIAN y la transportadora los tramitamos juntos</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 8 · GARANTÍA Y SIGUIENTE PASO
+    ============================================================= -->
+    <section class="sheet sheet--last">
+      <div class="sheet-header">
+        <span class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">07</span>
+        <h2 class="font-display text-[22px] font-semibold tracking-[-0.02em] text-ink">Garantía y siguiente paso</h2>
+        <span class="ml-auto font-mono text-[8px] uppercase tracking-[0.2em] text-muted-2">08 / 08</span>
+      </div>
+
+      <div class="mt-5 grid grid-cols-3 gap-4">
+        <div class="rounded-lg border border-line p-4 text-center">
+          <p class="font-display text-[28px] font-semibold text-ink">60</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">días de garantía</p>
+          <p class="mt-1 text-[9px] leading-[1.4] text-muted">Después del lanzamiento, si algo no funciona como debe, lo arreglamos gratis.</p>
+        </div>
+
+        <div class="rounded-lg border border-line p-4 text-center">
+          <p class="font-display text-[28px] font-semibold text-ink">4 h</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">respuesta rápida</p>
+          <p class="mt-1 text-[9px] leading-[1.4] text-muted">Si la tienda se cae o hay un problema grave, respondemos en 4 horas.</p>
+        </div>
+
+        <div class="rounded-lg border border-line p-4 text-center">
+          <p class="font-display text-[28px] font-semibold text-ink">99,9%</p>
+          <p class="mt-1 text-[10px] font-semibold text-ink">disponibilidad</p>
+          <p class="mt-1 text-[9px] leading-[1.4] text-muted">Queremos que su tienda esté disponible casi todo el tiempo.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 rounded-xl bg-ink p-5 text-white">
+        <p class="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50">¿Empezamos?</p>
+        <p class="mt-2 text-[14px] font-medium leading-[1.5]">
+          Si le gusta esta propuesta, el siguiente paso es firmar el contrato y pagar el anticipo del 30%.
+          En una semana ya estaremos trabajando.
+        </p>
+
+        <div class="mt-4 grid grid-cols-3 gap-3 border-t border-white/15 pt-3 text-[9px] text-white/60">
+          <div>
+            <p class="font-mono text-[8px] uppercase tracking-[0.12em] text-white/40">Contacto</p>
+            <p class="mt-1">hola@digitaldevs.co</p>
+          </div>
+          <div>
+            <p class="font-mono text-[8px] uppercase tracking-[0.12em] text-white/40">Inversión</p>
+            <p class="mt-1">COP $159 M + IVA</p>
+          </div>
+          <div>
+            <p class="font-mono text-[8px] uppercase tracking-[0.12em] text-white/40">Anticipo</p>
+            <p class="mt-1">COP $74,7 M</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-2 gap-6">
+        <div>
+          <p class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">Por Digitaldevs</p>
+          <div class="mt-8 border-b border-line pb-1">
+            <p class="text-[10px] text-muted">Nombre y firma</p>
+          </div>
+          <p class="mt-2 text-[9px] text-muted">Fecha: ____ / ____ / 2026</p>
+        </div>
+        <div>
+          <p class="font-mono text-[8px] uppercase tracking-[0.2em] text-muted">Por Adriana Tienda</p>
+          <div class="mt-8 border-b border-line pb-1">
+            <p class="text-[10px] text-muted">Nombre y firma</p>
+          </div>
+          <p class="mt-2 text-[9px] text-muted">Fecha: ____ / ____ / 2026</p>
+        </div>
+      </div>
+
+      <div class="mt-auto pt-4">
+        <p class="text-center font-display text-[12px] italic text-muted">
+          "No solo le hacemos una tienda bonita. Le construimos el sistema que hace que venda,
+          facture y entregue sin que tenga que preocuparse por la tecnología."
+        </p>
+      </div>
+    </section>
+  </body>
+</html>

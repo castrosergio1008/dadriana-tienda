@@ -1,0 +1,1643 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cotización DD-2026-0117 · E-commerce Adriana Tienda · Digitaldevs</title>
+    <meta name="description" content="Propuesta técnica y económica para el diseño, construcción y lanzamiento de un e-commerce de belleza y cuidado personal en Colombia." />
+    <meta name="author" content="Digitaldevs" />
+    <meta name="keywords" content="cotización, e-commerce, Colombia, Wompi, Next.js, PostgreSQL, Digitaldevs" />
+    <meta name="theme-color" content="#090F4B" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <!-- ============================================================
+         SCREEN-ONLY TOOLBAR
+    ============================================================= -->
+    <div class="no-print fixed bottom-5 right-5 z-50 flex items-center gap-2">
+      <span class="hidden rounded-full bg-ink/80 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-white/70 backdrop-blur sm:inline">
+        12 páginas · A4
+      </span>
+      <button
+        onclick="window.print()"
+        class="rounded-full bg-orange px-5 py-3 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-white shadow-xl transition hover:bg-[#E65C00] focus:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+      >
+        Descargar PDF
+      </button>
+    </div>
+
+    <!-- ============================================================
+         PÁGINA 01 · PORTADA
+    ============================================================= -->
+    <section class="sheet sheet--cover">
+      <div class="cover-grid pointer-events-none absolute inset-0"></div>
+      <div class="cover-glow pointer-events-none absolute inset-0"></div>
+
+      <div class="relative flex h-full flex-col">
+        <div class="flex items-start justify-between">
+          <img src="./assets/logo-full-dark.png" alt="Digitaldevs" class="w-[30mm]" />
+
+          <div class="text-right">
+            <p class="font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">Estudio de software</p>
+            <p class="mt-1 font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">Colombia · 2026</p>
+          </div>
+        </div>
+
+        <div class="mt-[30mm]">
+          <p class="eyebrow text-cyan">Propuesta técnica y económica</p>
+
+          <h1 class="mt-4 max-w-[165mm] font-display text-[47px] font-semibold leading-[0.98] tracking-[-0.035em] text-white">
+            E-commerce de belleza y&nbsp;cuidado personal
+          </h1>
+
+          <p class="mt-5 max-w-[135mm] text-[13.5px] leading-[1.6] text-white/60">
+            Diseño, construcción y lanzamiento de una tienda transaccional a la medida para Colombia.
+            Igual o mejor que la referencia, con velocidad móvil, checkout propio y operación completa.
+          </p>
+
+          <div class="mt-9 flex gap-2.5">
+            <span class="inline-flex items-center rounded-full bg-orange px-2.5 py-1 font-mono text-[8px] font-medium uppercase tracking-[0.1em] text-white">17 semanas</span>
+            <span class="rounded-full border border-white/15 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.1em] text-white/70">4,7 FTE</span>
+            <span class="rounded-full border border-white/15 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.1em] text-white/70">46 modelos de datos</span>
+            <span class="rounded-full border border-white/15 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.1em] text-white/70">13 pantallas</span>
+          </div>
+        </div>
+
+        <div class="mt-auto">
+          <div class="grid grid-cols-5 gap-5 border-t border-white/15 pt-5">
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Cliente</p>
+              <p class="mt-1 text-[11px] font-medium text-white">Adriana Tienda</p>
+              <p class="mt-0.5 text-[9.5px] text-white/45">Colombia</p>
+            </div>
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Referencia</p>
+              <p class="mt-1 text-[11px] font-medium text-white">Recamier / VTEX IO</p>
+              <p class="mt-0.5 text-[9.5px] text-white/45">Benchmark de experiencia</p>
+            </div>
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Cotización</p>
+              <p class="mt-1 font-mono text-[11px] font-medium text-cyan">DD-2026-0117</p>
+              <p class="mt-0.5 text-[9.5px] text-white/45">Versión 1.0</p>
+            </div>
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Fecha</p>
+              <p class="mt-1 text-[11px] font-medium text-white">11 nov 2026</p>
+              <p class="mt-0.5 text-[9.5px] text-white/45">Emisión</p>
+            </div>
+            <div>
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.16em] text-white/35">Vigencia</p>
+              <p class="mt-1 text-[11px] font-medium text-white">30 días</p>
+              <p class="mt-0.5 text-[9.5px] text-white/45">Hasta 11 dic 2026</p>
+            </div>
+          </div>
+
+          <p class="mt-4 font-mono text-[7.5px] uppercase tracking-[0.18em] text-white/25">
+            Documento confidencial · Preparado por Digitaldevs para Adriana Tienda
+          </p>
+        </div>
+      </div>
+
+      <img src="./assets/brand-strip.png" alt="" class="absolute bottom-0 left-0 right-0 h-[7mm] w-full object-cover" />
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 02 · RESUMEN EJECUTIVO
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">01 — Resumen ejecutivo</p>
+            <h2 class="page-title">Una tienda que vende,<br />no solo una vitrina.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">02 / 12</span>
+        </div>
+
+        <div class="mt-6 grid grid-cols-[1.55fr_1fr] gap-7">
+          <div>
+            <p class="body-copy">
+              Adriana Tienda necesita un canal transaccional propio que iguale o supere la experiencia de
+              <strong>Recamier sobre VTEX IO</strong> y que convierta en móvil, donde ocurrirá más del 70% del tráfico.
+              Proponemos construir la tienda <strong>a la medida</strong> sobre Next.js 15 y PostgreSQL, con checkout
+              propio, pagos locales y operación completa: catálogo, inventario, pedidos, facturación DIAN y logística.
+            </p>
+            <p class="body-copy mt-3">
+              No vendemos una plataforma: construimos el producto. Eso nos permite controlar velocidad, checkout,
+              datos y costos variables, y evita pagar licencia + apps + comisiones de ecosistema cerrado.
+            </p>
+
+            <div class="mt-6 grid grid-cols-2 gap-2.5">
+              <div class="kpi">
+                <p class="kpi-value">17<span class="text-[13px] font-medium text-muted"> sem</span></p>
+                <p class="kpi-label">Plazo realista del MVP</p>
+              </div>
+              <div class="kpi">
+                <p class="kpi-value">COP 159 M</p>
+                <p class="kpi-label">Inversión MVP · IVA no incluido</p>
+              </div>
+              <div class="kpi">
+                <p class="kpi-value">4,7 FTE</p>
+                <p class="kpi-label">Equipo pico dedicado</p>
+              </div>
+              <div class="kpi">
+                <p class="kpi-value">COP 830–1.560 mil</p>
+                <p class="kpi-label">Infraestructura mensual</p>
+              </div>
+            </div>
+
+            <div class="mt-5 rounded-lg border border-line bg-sand px-4 py-3">
+              <p class="micro text-blue-deep">Tesis de producto</p>
+              <p class="mt-1.5 text-[11.5px] leading-[1.55] text-[#39414F]">
+                Ganar en móvil con <strong>velocidad</strong>, <strong>descubrimiento por necesidad</strong> y
+                <strong>confianza transaccional</strong>: stock real, fecha de entrega estimada, reseñas verificadas
+                y precio con IVA claro antes de pagar.
+              </p>
+            </div>
+          </div>
+
+          <div class="card-dark flex flex-col">
+            <p class="font-mono text-[8px] uppercase tracking-[0.16em] text-cyan">Contenido</p>
+            <ol class="mt-3 space-y-[7px] text-[10.5px] text-white/70">
+              <li class="flex justify-between gap-2"><span>01 · Resumen ejecutivo</span><span class="font-mono text-white/35">02</span></li>
+              <li class="flex justify-between gap-2"><span>02 · Entendimiento y diagnóstico</span><span class="font-mono text-white/35">03</span></li>
+              <li class="flex justify-between gap-2"><span>03 · Solución y arquitectura</span><span class="font-mono text-white/35">04</span></li>
+              <li class="flex justify-between gap-2"><span>04 · Alcance del MVP</span><span class="font-mono text-white/35">05</span></li>
+              <li class="flex justify-between gap-2"><span>05 · Experiencia de compra</span><span class="font-mono text-white/35">06</span></li>
+              <li class="flex justify-between gap-2"><span>06 · Pagos y checkout</span><span class="font-mono text-white/35">07</span></li>
+              <li class="flex justify-between gap-2"><span>07 · Modelo de datos</span><span class="font-mono text-white/35">08</span></li>
+              <li class="flex justify-between gap-2"><span>08 · Plan de ejecución</span><span class="font-mono text-white/35">09</span></li>
+              <li class="flex justify-between gap-2"><span>09 · Inversión</span><span class="font-mono text-white/35">10</span></li>
+              <li class="flex justify-between gap-2"><span>10 · Supuestos y garantía</span><span class="font-mono text-white/35">11</span></li>
+              <li class="flex justify-between gap-2"><span>11 · Aceptación</span><span class="font-mono text-white/35">12</span></li>
+            </ol>
+
+            <div class="mt-auto border-t border-white/15 pt-3">
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-white/35">Documento base</p>
+              <p class="mt-1 text-[10px] leading-snug text-white/70">
+                Design Doc v1.0 · 2.778 líneas · schema validado con <span class="font-mono text-cyan">prisma validate</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <p class="micro">Lo que entregamos</p>
+          <div class="mt-2.5 grid grid-cols-3 gap-2.5">
+            <div class="card py-3">
+              <p class="h3">Storefront completo</p>
+              <p class="mt-1 text-[10px] leading-[1.45] text-muted">Home, PLP facetada, PDP, búsqueda, bolsa y checkout de una página.</p>
+            </div>
+            <div class="card py-3">
+              <p class="h3">Operación real</p>
+              <p class="mt-1 text-[10px] leading-[1.45] text-muted">Pedidos, inventario multi-bodega, DIAN, guías y tracking.</p>
+            </div>
+            <div class="card py-3">
+              <p class="h3">Admin propio</p>
+              <p class="mt-1 text-[10px] leading-[1.45] text-muted">Catálogo, precios, cupones, reseñas, roles y auditoría.</p>
+            </div>
+            <div class="card py-3">
+              <p class="h3">Pagos locales</p>
+              <p class="mt-1 text-[10px] leading-[1.45] text-muted">Tarjeta, PSE, Nequi, Daviplata, efectivo, BNPL y contraentrega.</p>
+            </div>
+            <div class="card py-3">
+              <p class="h3">Rendimiento y SEO</p>
+              <p class="mt-1 text-[10px] leading-[1.45] text-muted">LCP &lt; 2,5 s, INP &lt; 200 ms, CLS &lt; 0,1 y URLs limpias.</p>
+            </div>
+            <div class="card py-3">
+              <p class="h3">Cumplimiento</p>
+              <p class="mt-1 text-[10px] leading-[1.45] text-muted">Ley 1581, Ley 1480, cookies granulares y facturación DIAN.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>02 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 03 · ENTENDIMIENTO Y DIAGNÓSTICO
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">02 — Entendimiento y diagnóstico</p>
+            <h2 class="page-title">La referencia es el listón,<br />no el destino.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">03 / 12</span>
+        </div>
+
+        <p class="page-lead">
+          Medimos la tienda de referencia (Recamier, sobre VTEX IO) antes de proponer nada. El servidor no es el
+          problema: el peso del documento y la cascada de datos en producto sí. Ese es el margen que vamos a ganar.
+        </p>
+
+        <div class="mt-5">
+          <p class="micro">Medición propia · noviembre 2026</p>
+          <table class="table-dd mt-2">
+            <thead>
+              <tr>
+                <th>Plantilla</th>
+                <th>TTFB</th>
+                <th>HTML sin comprimir</th>
+                <th>Lectura</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-medium text-ink">Home</td>
+                <td class="num">0,19 s</td>
+                <td class="num">1,73 MB</td>
+                <td>Documento sobredimensionado; 35 referencias JS/CSS</td>
+              </tr>
+              <tr>
+                <td class="font-medium text-ink">PLP</td>
+                <td class="num">0,34 s</td>
+                <td class="num">0,24 MB</td>
+                <td>Correcta; HTML razonable</td>
+              </tr>
+              <tr>
+                <td class="font-medium text-ink">PDP</td>
+                <td class="num">0,66 s</td>
+                <td class="num">0,16 MB</td>
+                <td>TTFB más alto: APIs de catálogo en cascada</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-6 grid grid-cols-[1.35fr_1fr] gap-6">
+          <div>
+            <p class="micro">Brechas explotables de la referencia</p>
+            <table class="table-dd mt-2">
+              <thead>
+                <tr>
+                  <th>Brecha observada</th>
+                  <th>Impacto en negocio</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Dos CTAs “Agregar a la bolsa” sin jerarquía</td><td>Fricción en el momento clave</td></tr>
+                <tr><td>Cero reseñas visibles</td><td>Sin prueba social; el usuario sale a Google</td></tr>
+                <tr><td>Sin venta cruzada</td><td>AOV subóptimo</td></tr>
+                <tr><td>Búsqueda sin autocompletado ni tolerancia a errores</td><td>Se pierde intención de compra</td></tr>
+                <tr><td>Filtros solo por marca/categoría</td><td>No se compra por necesidad (“se me cae el cabello”)</td></tr>
+                <tr><td>Sin quick-add en listados</td><td>Más pasos hasta el carrito en móvil</td></tr>
+                <tr><td>Sin stock ni fecha de entrega transparente</td><td>Abandono por incertidumbre</td></tr>
+                <tr><td>URLs con query params de plataforma</td><td>Mala higiene SEO y canibalización</td></tr>
+                <tr><td>Consentimiento de cookies débil</td><td>Riesgo Ley 1581 y pérdida de señal en GA4</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <div class="card-dark">
+              <p class="font-mono text-[8px] uppercase tracking-[0.16em] text-cyan">Nuestra tesis</p>
+              <p class="mt-2 text-[11.5px] leading-[1.55] text-white/75">
+                El comprador de belleza no busca una marca: busca resolver un problema. La tienda debe permitir
+                entrar por <strong class="text-white">necesidad</strong>, entender la diferencia entre productos y
+                pagar sin fricción.
+              </p>
+            </div>
+
+            <div class="card-sand">
+              <p class="micro text-blue-deep">Cómo ganamos</p>
+              <ul class="mt-2 space-y-1.5">
+                <li class="check">Velocidad móvil como feature de diseño</li>
+                <li class="check">Descubrimiento por necesidad, no solo por marca</li>
+                <li class="check">Transparencia de stock, entrega y precio final</li>
+                <li class="check">Checkout propio, sin límites de plataforma</li>
+              </ul>
+            </div>
+
+            <div class="rounded-lg border border-line px-4 py-3">
+              <p class="micro">Meta técnica</p>
+              <p class="mt-1 font-display text-[15px] font-semibold leading-tight text-ink">
+                HTML de Home &lt; 250 KB y TTFB p75 &lt; 800 ms
+              </p>
+              <p class="mt-1 text-[9.5px] leading-[1.45] text-muted">Con caché en CDN, para sostener LCP &lt; 2,5 s en 4G.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 rounded-lg border-l-2 border-blue-deep bg-sand px-4 py-3">
+          <p class="text-[10.5px] leading-[1.55] text-[#39414F]">
+            <strong>Conclusión:</strong> “tener VTEX” no garantiza el resultado. La ventaja competitiva está en la
+            ejecución del producto —catálogo, búsqueda, PDP, checkout y operación— no en la plataforma.
+          </p>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>03 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 04 · SOLUCIÓN Y ARQUITECTURA
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">03 — Solución y arquitectura</p>
+            <h2 class="page-title">Un monolito modular,<br />sin complejidad innecesaria.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">04 / 12</span>
+        </div>
+
+        <p class="page-lead">
+          300–800 SKUs no justifican microservicios. Un solo despliegue con dominio separado nos da transacciones
+          ACID simples, menos latencia y menos operación. Si mañana hace falta, se extrae un servicio sin reescribir.
+        </p>
+
+        <div class="mt-5">
+          <p class="micro">Arquitectura en cuatro capas</p>
+          <div class="mt-2 space-y-1">
+            <div class="arch-row">
+              <div class="arch-box arch-box--ink">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-cyan">Capa 1 · Cliente</p>
+                <p class="mt-1 text-[11px] font-medium">Storefront Next.js 15 (RSC) + Admin</p>
+              </div>
+              <div class="arch-box arch-box--ink">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-cyan">Capa 2 · Edge</p>
+                <p class="mt-1 text-[11px] font-medium">Cloudflare WAF + Vercel CDN / ISR</p>
+              </div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-row">
+              <div class="arch-box arch-box--accent flex-[1.6]">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-blue-deep">Capa 3 · Dominio</p>
+                <p class="mt-1 text-[11px] font-medium text-ink">packages/core: catálogo · carrito · pedidos · pagos · precios · stock</p>
+              </div>
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Worker</p>
+                <p class="mt-1 text-[11px] font-medium">Node 22 + BullMQ</p>
+              </div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-row">
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">PostgreSQL 16</p>
+                <p class="mt-1 text-[10px] text-muted">Fuente de verdad · Prisma</p>
+              </div>
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Redis</p>
+                <p class="mt-1 text-[10px] text-muted">Caché · colas · rate limit</p>
+              </div>
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Meilisearch</p>
+                <p class="mt-1 text-[10px] text-muted">Índice derivado · facetas</p>
+              </div>
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Cloudflare R2</p>
+                <p class="mt-1 text-[10px] text-muted">Media optimizada AVIF/WebP</p>
+              </div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-row">
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Wompi</p>
+                <p class="mt-1 text-[10px] text-muted">Tarjeta · PSE · Nequi · BNPL</p>
+              </div>
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">DIAN</p>
+                <p class="mt-1 text-[10px] text-muted">Proveedor tecnológico</p>
+              </div>
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Transportadora</p>
+                <p class="mt-1 text-[10px] text-muted">Guías · tracking · recaudo</p>
+              </div>
+              <div class="arch-box">
+                <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Email / WhatsApp</p>
+                <p class="mt-1 text-[10px] text-muted">Resend · Cloud API</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 grid grid-cols-[1.15fr_1fr] gap-6">
+          <div>
+            <p class="micro">Stack seleccionado</p>
+            <table class="table-dd mt-2">
+              <thead>
+                <tr><th>Capa</th><th>Tecnología</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Frontend</td><td>Next.js 15 · React 19 · TypeScript strict</td></tr>
+                <tr><td>Estilos / UI</td><td>Tailwind v4 · Radix primitives</td></tr>
+                <tr><td>Backend</td><td>Route Handlers · packages/core</td></tr>
+                <tr><td>Datos</td><td>PostgreSQL 16 · Prisma</td></tr>
+                <tr><td>Búsqueda</td><td>Meilisearch (fallback pg_trgm)</td></tr>
+                <tr><td>Caché / colas</td><td>Redis · BullMQ</td></tr>
+                <tr><td>Media</td><td>Cloudflare R2 · Image Resizing</td></tr>
+                <tr><td>Hosting</td><td>Vercel · Fly.io · Cloudflare</td></tr>
+                <tr><td>Calidad</td><td>Vitest · Playwright · Testing Library</td></tr>
+                <tr><td>Observabilidad</td><td>Sentry · Vercel Analytics · pino</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex flex-col gap-2.5">
+            <div class="card-sand">
+              <p class="micro text-blue-deep">Por qué no una plataforma</p>
+              <ul class="mt-2 space-y-1.5 text-[10px] leading-[1.45] text-[#39414F]">
+                <li class="check"><strong>Shopify:</strong> checkout no personalizable sin Plus y comisión de terceros.</li>
+                <li class="check"><strong>VTEX:</strong> costo de plataforma + agencia para 800 SKUs.</li>
+                <li class="check"><strong>Medusa:</strong> igual hay que construir todo lo local y añade capa.</li>
+                <li class="check"><strong>WooCommerce:</strong> rendimiento y seguridad frágiles.</li>
+              </ul>
+            </div>
+            <div class="rounded-lg border border-line px-4 py-3">
+              <p class="micro">Regla de diseño</p>
+              <p class="mt-1 text-[10.5px] leading-[1.5] text-[#39414F]">
+                Postgres es la fuente de verdad; Meilisearch es un índice derivado. Nunca al revés.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>04 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 05 · ALCANCE DEL MVP
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">04 — Alcance del MVP</p>
+            <h2 class="page-title">Doce módulos que hacen<br />que la tienda opere sola.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">05 / 12</span>
+        </div>
+
+        <p class="page-lead">
+          Alcance cerrado y verificable. Cada módulo se acepta con criterio explícito, no con una demo.
+          Todo lo que no está aquí es Fase 2 o cambio de alcance.
+        </p>
+
+        <div class="mt-5 grid grid-cols-2 gap-2.5">
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">01 · Catálogo</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Marcas, categorías de 2 niveles, productos, variantes, atributos, imágenes optimizadas e inventario multi-bodega.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">02 · PLP facetada</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Filtros por marca, precio, necesidad, tono, disponibilidad y rating. Quick-add y URLs limpias indexables.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">03 · PDP</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Galería, variantes con stock, ETA por ciudad, un solo CTA, tabs de detalle, relacionados y reseñas.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">04 · Búsqueda</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Autocompletado 150 ms, sinónimos, tolerancia a typos, búsquedas populares y “quizás quisiste decir”.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">05 · Bolsa</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Drawer y página, persistencia invitado/autenticado, merge sin duplicados, cupón y barra de envío gratis.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">06 · Checkout</p>
+              <span class="font-mono text-[8px] text-muted-2">CRÍTICO</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Una página con resumen sticky, direcciones dependientes, envío cotizado, recogida en tienda y errores inline.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">07 · Pagos</p>
+              <span class="font-mono text-[8px] text-muted-2">CRÍTICO</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Wompi: tarjeta, PSE, Nequi, Daviplata, efectivo, QR y BNPL. Webhooks idempotentes y reembolsos.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">08 · Pedidos</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Máquina de estados, historial, emails transaccionales, factura DIAN y notas crédito.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">09 · Logística</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Guías, tracking público, recogida en tienda y conciliación de contraentrega.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">10 · Admin</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Catálogo, precios, stock, pedidos, cupones, reseñas, usuarios/roles y auditoría de cada acción.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">11 · SEO y medición</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Sitemap, robots, canonical, JSON-LD, GA4 + GTM con Consent Mode v2 y eventos de embudo.</p>
+          </div>
+          <div class="card">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">12 · Legal y confianza</p>
+              <span class="font-mono text-[8px] text-muted-2">CORE</span>
+            </div>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Ley 1581, Ley 1480, retracto, cookies granulares, términos y política de datos.</p>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-3 gap-2.5">
+          <div class="rounded-lg border border-line bg-sand px-3 py-2">
+            <p class="micro">Fuera del MVP</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-[#39414F]">Marketplace, multi-moneda, app nativa, ML, chat propio, lealtad por puntos.</p>
+          </div>
+          <div class="rounded-lg border border-line bg-sand px-3 py-2">
+            <p class="micro">Fase 2</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-[#39414F]">Addi/Sistecrédito directo, referidos, reseñas con foto, bundles, WhatsApp automation, CMS.</p>
+          </div>
+          <div class="rounded-lg border border-line bg-sand px-3 py-2">
+            <p class="micro">Criterio de aceptación</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-[#39414F]">20 escenarios E2E en verde, axe sin errores críticos y presupuesto de rendimiento en CI.</p>
+          </div>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>05 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 06 · UI/UX
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">05 — Experiencia de compra</p>
+            <h2 class="page-title">Móvil primero,<br />no móvil “adaptado”.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">06 / 12</span>
+        </div>
+
+        <div class="mt-5 grid grid-cols-3 gap-2.5">
+          <div class="card py-3">
+            <p class="micro text-blue-deep">01</p>
+            <p class="mt-1 h3">Una acción por pantalla</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">Un CTA dominante; el resto, visualmente subordinado.</p>
+          </div>
+          <div class="card py-3">
+            <p class="micro text-blue-deep">02</p>
+            <p class="mt-1 h3">Descubrimiento por necesidad</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">“Caída”, “frizz”, “rizos”, “piel sensible” como entradas.</p>
+          </div>
+          <div class="card py-3">
+            <p class="micro text-blue-deep">03</p>
+            <p class="mt-1 h3">Transparencia radical</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">Stock, ETA, envío y retracto antes de pagar.</p>
+          </div>
+          <div class="card py-3">
+            <p class="micro text-blue-deep">04</p>
+            <p class="mt-1 h3">Velocidad como diseño</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">Sin carruseles pesados ni modales innecesarios.</p>
+          </div>
+          <div class="card py-3">
+            <p class="micro text-blue-deep">05</p>
+            <p class="mt-1 h3">Accesibilidad por defecto</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">AA, foco visible, targets ≥ 44 px, reduced-motion.</p>
+          </div>
+          <div class="card py-3">
+            <p class="micro text-blue-deep">06</p>
+            <p class="mt-1 h3">Diseño editorial</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">Fraunces + Inter, paleta cálida y jerarquía clara.</p>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <div class="flex items-center justify-between">
+            <p class="micro">13 pantallas especificadas</p>
+            <p class="font-mono text-[8px] text-muted-2">Wireframes incluidos en el Design Doc</p>
+          </div>
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            <span class="pill">Home</span>
+            <span class="pill">PLP</span>
+            <span class="pill">PDP</span>
+            <span class="pill">Buscador</span>
+            <span class="pill">Bolsa</span>
+            <span class="pill">Checkout</span>
+            <span class="pill">Confirmación</span>
+            <span class="pill">Cuenta</span>
+            <span class="pill">Mis pedidos</span>
+            <span class="pill">Seguimiento</span>
+            <span class="pill">Wishlist</span>
+            <span class="pill">Contenido</span>
+            <span class="pill">Legales</span>
+          </div>
+        </div>
+
+        <div class="mt-5 grid grid-cols-[1.45fr_1fr] gap-6">
+          <div>
+            <p class="micro">Mejoras concretas frente a la referencia</p>
+            <table class="table-dd mt-2">
+              <thead>
+                <tr><th>Referencia</th><th>Nuestra propuesta</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Dos CTAs sin jerarquía</td><td>Un CTA primario + buy-box sticky en móvil</td></tr>
+                <tr><td>Sin reseñas</td><td>Reseñas verificadas y rating en la card</td></tr>
+                <tr><td>Sin venta cruzada</td><td>Relacionados por necesidad (bundle en F2)</td></tr>
+                <tr><td>Búsqueda básica</td><td>Autocompletado, sinónimos y typos</td></tr>
+                <tr><td>Filtros por marca</td><td>Facetas por necesidad, tono, precio, rating y stock</td></tr>
+                <tr><td>Sin quick-add</td><td>Quick-add con selector de variante</td></tr>
+                <tr><td>Sin stock/ETA</td><td>Disponibilidad real y entrega estimada por ciudad</td></tr>
+                <tr><td>URLs con query params</td><td>URLs limpias, canonical y sitemap</td></tr>
+                <tr><td>Consentimiento débil</td><td>Consentimiento granular con registro de versión</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <p class="micro">Sistema de diseño</p>
+            <div class="mt-2 grid grid-cols-5 gap-1.5">
+              <div class="h-9 rounded-md border border-line" style="background:#1C1418"></div>
+              <div class="h-9 rounded-md border border-line" style="background:#7A1F3D"></div>
+              <div class="h-9 rounded-md border border-line" style="background:#B8895A"></div>
+              <div class="h-9 rounded-md border border-line" style="background:#FDFBF9"></div>
+              <div class="h-9 rounded-md border border-line" style="background:#E8E1DD"></div>
+            </div>
+            <div class="mt-1 flex justify-between font-mono text-[6.5px] uppercase tracking-[0.08em] text-muted-2">
+              <span>Ink</span><span>Primary</span><span>Accent</span><span>Bg</span><span>Border</span>
+            </div>
+
+            <div class="mt-3 rounded-lg border border-line px-3 py-2.5">
+              <p class="text-[19px] font-semibold leading-none tracking-[-0.02em] text-ink" style="font-family: Fraunces, 'Times New Roman', serif">Fraunces</p>
+              <p class="mt-1 font-mono text-[7.5px] uppercase tracking-[0.12em] text-muted-2">Titulares editoriales · 600</p>
+              <p class="mt-2 text-[11px] leading-snug text-[#39414F]">Inter para UI y cuerpo. JetBrains Mono para datos, etiquetas y códigos.</p>
+            </div>
+
+            <div class="mt-2.5 rounded-lg border border-line bg-sand px-3 py-2.5">
+              <p class="micro text-blue-deep">Motion CSS-first</p>
+              <p class="mt-1 text-[9.5px] leading-[1.4] text-[#39414F]">120 / 200 / 320 ms · cubic-bezier(0.2, 0, 0, 1) · <span class="font-mono">prefers-reduced-motion</span> respetado.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 flex items-center gap-2 rounded-lg border-l-2 border-blue-deep bg-sand px-4 py-2.5">
+          <p class="text-[10px] leading-[1.45] text-[#39414F]">
+            <strong>Presupuesto de rendimiento:</strong> LCP &lt; 2,5 s · INP &lt; 200 ms · CLS &lt; 0,1 · JS de PDP ≤ 170 KB (gzip), verificado en CI en cada release.
+          </p>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>06 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 07 · PAGOS
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">06 — Pagos y checkout</p>
+            <h2 class="page-title">Cobrar bien en Colombia<br />no es un detalle.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">07 / 12</span>
+        </div>
+
+        <div class="mt-5 grid grid-cols-[1.4fr_1fr] gap-4">
+          <div class="card-dark">
+            <p class="font-mono text-[8px] uppercase tracking-[0.16em] text-cyan">Recomendación principal</p>
+            <p class="mt-1.5 font-display text-[22px] font-semibold leading-none tracking-[-0.03em] text-white">Wompi · Bancolombia</p>
+            <p class="mt-2 text-[10.5px] leading-[1.5] text-white/65">
+              Una sola integración para tarjeta, PSE, Nequi, Daviplata, Botón Bancolombia, efectivo, QR y
+              BNPL nativo (SU+Pay 1–12 cuotas). ePayco queda como plan B detrás de un adaptador.
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="kpi">
+              <p class="kpi-value">2,65%</p>
+              <p class="kpi-label">+ COP 700 + IVA por transacción</p>
+            </div>
+            <div class="kpi">
+              <p class="kpi-value">3,59%</p>
+              <p class="kpi-label">Costo efectivo en ticket de COP 190.000</p>
+            </div>
+            <div class="kpi">
+              <p class="kpi-value">SAQ-A</p>
+              <p class="kpi-label">Alcance PCI · checkout hospedado</p>
+            </div>
+            <div class="kpi">
+              <p class="kpi-value">0</p>
+              <p class="kpi-label">Datos de tarjeta en nuestro DOM</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <div class="flex items-center justify-between">
+            <p class="micro">Comparativa de pasarelas · tarifas publicadas oct-2026</p>
+            <p class="font-mono text-[7.5px] text-muted-2">Verificar vigente antes de firmar</p>
+          </div>
+          <table class="table-dd mt-2">
+            <thead>
+              <tr>
+                <th>Proveedor</th>
+                <th>Tarifa publicada</th>
+                <th>Costo real en COP 190.000*</th>
+                <th>% efectivo</th>
+                <th>BNPL nativo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-medium text-ink">Wompi</td>
+                <td>2,65% + COP 700 + IVA</td>
+                <td class="num">COP 6.825</td>
+                <td class="num">3,59%</td>
+                <td>Sí (SU+Pay)</td>
+              </tr>
+              <tr>
+                <td class="font-medium text-ink">ePayco</td>
+                <td>2,64% + COP 690 + IVA</td>
+                <td class="num">COP 6.790</td>
+                <td class="num">3,57%</td>
+                <td>No</td>
+              </tr>
+              <tr>
+                <td class="font-medium text-ink">Bold</td>
+                <td>2,99% + COP 900 + IVA</td>
+                <td class="num">COP 7.831</td>
+                <td class="num">4,12%</td>
+                <td>No</td>
+              </tr>
+              <tr>
+                <td class="font-medium text-ink">Mercado Pago</td>
+                <td>3,29% + COP 800 + IVA</td>
+                <td class="num">COP 8.391</td>
+                <td class="num">4,42%</td>
+                <td>No</td>
+              </tr>
+              <tr>
+                <td class="font-medium text-ink">PayU</td>
+                <td>3,29% + COP 300 + IVA</td>
+                <td class="num">COP 7.796</td>
+                <td class="num">4,10%</td>
+                <td>No publicado</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="mt-1.5 text-[8.5px] leading-[1.4] text-muted-2">
+            * Fórmula: (tarifa% × COP 190.000 + cargo fijo) × 1,19. Tarifas de lista antes de retenciones; existen tarifas negociadas por volumen.
+          </p>
+        </div>
+
+        <div class="mt-5 grid grid-cols-2 gap-6">
+          <div>
+            <p class="micro">Flujo de pago</p>
+            <ol class="mt-2 space-y-1.5">
+              <li class="flex gap-2 text-[10px] leading-[1.4] text-[#39414F]"><span class="font-mono text-[8px] text-blue-deep">01</span> Se crea la orden con reserva de stock de 30 min y snapshots de precio.</li>
+              <li class="flex gap-2 text-[10px] leading-[1.4] text-[#39414F]"><span class="font-mono text-[8px] text-blue-deep">02</span> Se redirige al checkout hospedado del proveedor (SAQ-A).</li>
+              <li class="flex gap-2 text-[10px] leading-[1.4] text-[#39414F]"><span class="font-mono text-[8px] text-blue-deep">03</span> El webhook firmado confirma el pago; nunca la redirección del navegador.</li>
+              <li class="flex gap-2 text-[10px] leading-[1.4] text-[#39414F]"><span class="font-mono text-[8px] text-blue-deep">04</span> Se descuenta inventario, se emite factura DIAN y se encola email/WhatsApp.</li>
+              <li class="flex gap-2 text-[10px] leading-[1.4] text-[#39414F]"><span class="font-mono text-[8px] text-blue-deep">05</span> Se genera guía y se publica el tracking.</li>
+            </ol>
+          </div>
+          <div>
+            <p class="micro">Controles no negociables</p>
+            <ul class="mt-2 space-y-1.5">
+              <li class="check">Webhooks con HMAC, anti-replay y validación de monto/moneda</li>
+              <li class="check">Idempotencia: <span class="font-mono text-[9px]">unique(provider, event_id)</span> y outbox transaccional</li>
+              <li class="check">Reconciliación automática cada 10 min y cierre diario</li>
+              <li class="check">Reembolsos con nota crédito DIAN y reposición de stock</li>
+              <li class="check">Contraentrega con monto máximo, zonas, OTP y scoring</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <p class="micro">Métodos habilitados en el MVP</p>
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            <span class="pill">Tarjeta crédito/débito</span>
+            <span class="pill">PSE</span>
+            <span class="pill">Nequi</span>
+            <span class="pill">Daviplata</span>
+            <span class="pill">Botón Bancolombia</span>
+            <span class="pill">Efectivo / corresponsal</span>
+            <span class="pill">QR</span>
+            <span class="pill">BNPL Wompi</span>
+            <span class="pill">Contraentrega</span>
+          </div>
+        </div>
+
+        <div class="mt-3 rounded-lg border border-line bg-sand px-4 py-2.5">
+          <p class="text-[9.5px] leading-[1.45] text-[#39414F]">
+            <strong>Nota comercial:</strong> las comisiones de pasarela y BNPL las cobra el proveedor directamente.
+            No son ingreso de Digitaldevs ni están incluidas en la inversión del proyecto.
+          </p>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>07 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 08 · MODELO DE DATOS
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">07 — Modelo de datos</p>
+            <h2 class="page-title">46 modelos para no perder<br />un solo pedido.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">08 / 12</span>
+        </div>
+
+        <p class="page-lead">
+          PostgreSQL + Prisma. Dinero en COP entero, snapshots inmutables en el pedido y concurrencia de stock
+          resuelta en la base de datos. El schema se validó con <span class="font-mono text-[10px]">prisma validate</span>.
+        </p>
+
+        <div class="mt-5 grid grid-cols-3 gap-2.5">
+          <div class="card py-3">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">Identidad y acceso</p>
+              <span class="num text-muted-2">8</span>
+            </div>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">users · sessions · roles · permissions · addresses · consents</p>
+          </div>
+          <div class="card py-3">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">Catálogo</p>
+              <span class="num text-muted-2">11</span>
+            </div>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">brands · categories · products · variants · attributes · media</p>
+          </div>
+          <div class="card py-3">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">Inventario</p>
+              <span class="num text-muted-2">4</span>
+            </div>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">warehouses · inventory · movements · reservations</p>
+          </div>
+          <div class="card py-3">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">Venta</p>
+              <span class="num text-muted-2">9</span>
+            </div>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">carts · orders · items · status history · coupons · promotions · wishlist</p>
+          </div>
+          <div class="card py-3">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">Pagos y facturación</p>
+              <span class="num text-muted-2">4</span>
+            </div>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">payments · transactions · invoices · idempotency keys</p>
+          </div>
+          <div class="card py-3">
+            <div class="flex items-baseline justify-between">
+              <p class="h3">Operación y confianza</p>
+              <span class="num text-muted-2">10</span>
+            </div>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">shipments · reviews · newsletter · audit · integrations · webhooks · outbox</p>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <p class="micro">Decisiones de modelado que evitan los bugs caros</p>
+          <table class="table-dd mt-2">
+            <thead>
+              <tr><th>Decisión</th><th>Regla</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="font-medium text-ink">Dinero</td><td><span class="font-mono text-[9px]">Int</span> en COP entero; porcentajes en basis points. Nunca <span class="font-mono text-[9px]">Float</span>.</td></tr>
+              <tr><td class="font-medium text-ink">Precio del pedido</td><td>Snapshot inmutable en <span class="font-mono text-[9px]">order_items</span>: el catálogo cambia, el pedido no.</td></tr>
+              <tr><td class="font-medium text-ink">Inventario</td><td>Multi-bodega, reserva con TTL 30 min y update condicional atómico + <span class="font-mono text-[9px]">CHECK (reserved &lt;= on_hand)</span>.</td></tr>
+              <tr><td class="font-medium text-ink">Idempotencia</td><td><span class="font-mono text-[9px]">idempotency_keys</span> + <span class="font-mono text-[9px]">unique(provider, event_id)</span> + outbox.</td></tr>
+              <tr><td class="font-medium text-ink">PII</td><td>AES-256-GCM en teléfono y documento + índice ciego para búsqueda.</td></tr>
+              <tr><td class="font-medium text-ink">DIAN</td><td>Factura + nota crédito/débito, resolución y rango de numeración.</td></tr>
+              <tr><td class="font-medium text-ink">Auditoría</td><td>Toda acción admin escribe <span class="font-mono text-[9px]">audit_logs</span> con before/after.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-5">
+          <p class="micro">Ciclo de vida del pedido</p>
+          <div class="mt-2 flex items-center gap-1.5">
+            <span class="flex-1 rounded-md border border-line bg-sand px-2 py-1.5 text-center font-mono text-[7.5px] uppercase tracking-[0.08em] text-[#39414F]">Carrito</span>
+            <span class="text-muted-2">→</span>
+            <span class="flex-1 rounded-md border border-line bg-sand px-2 py-1.5 text-center font-mono text-[7.5px] uppercase tracking-[0.08em] text-[#39414F]">Orden</span>
+            <span class="text-muted-2">→</span>
+            <span class="flex-1 rounded-md border border-line bg-sand px-2 py-1.5 text-center font-mono text-[7.5px] uppercase tracking-[0.08em] text-[#39414F]">Pago</span>
+            <span class="text-muted-2">→</span>
+            <span class="flex-1 rounded-md border border-line bg-sand px-2 py-1.5 text-center font-mono text-[7.5px] uppercase tracking-[0.08em] text-[#39414F]">Factura</span>
+            <span class="text-muted-2">→</span>
+            <span class="flex-1 rounded-md border border-line bg-sand px-2 py-1.5 text-center font-mono text-[7.5px] uppercase tracking-[0.08em] text-[#39414F]">Guía</span>
+            <span class="text-muted-2">→</span>
+            <span class="flex-1 rounded-md border border-ink bg-ink px-2 py-1.5 text-center font-mono text-[7.5px] uppercase tracking-[0.08em] text-cyan">Entrega</span>
+          </div>
+          <p class="mt-1.5 text-[9px] leading-[1.4] text-muted">
+            Estados terminales: entregado, reembolsado y cancelado. Un pedido pagado nunca vuelve a “pendiente”.
+          </p>
+        </div>
+
+        <div class="mt-4 grid grid-cols-3 gap-2.5">
+          <div class="card py-3">
+            <p class="h3">Integridad</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">
+              Transacciones ACID, llaves foráneas explícitas y constraints de negocio en la base, no solo en la app.
+            </p>
+          </div>
+          <div class="card py-3">
+            <p class="h3">Rendimiento</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">
+              Índices compuestos para catálogo y pedidos; paginación por cursor; <span class="font-mono text-[8.5px]">EXPLAIN</span> revisado en cada query crítica.
+            </p>
+          </div>
+          <div class="card py-3">
+            <p class="h3">Retención y borrado</p>
+            <p class="mt-1 text-[9.5px] leading-[1.4] text-muted">
+              Facturas retenidas por obligación legal; datos de marketing eliminables con registro de la solicitud.
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>08 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 09 · PLAN DE EJECUCIÓN
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">08 — Plan de ejecución</p>
+            <h2 class="page-title">17 semanas, nueve sprints,<br />cero sorpresas.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">09 / 12</span>
+        </div>
+
+        <p class="page-lead">
+          Cada dos semanas hay una demo desplegada en staging. El cliente ve avance real, no reportes.
+          La ruta crítica es catálogo → PLP/PDP → checkout → pagos → DIAN → UAT.
+        </p>
+
+        <div class="mt-5">
+          <div class="flex items-center justify-between">
+            <p class="micro">Cronograma</p>
+            <p class="font-mono text-[7.5px] text-muted-2">Semanas 1–17 · equipo dedicado</p>
+          </div>
+
+          <div class="mt-2 rounded-lg border border-line px-3 py-2.5">
+            <div class="mb-1 flex items-center gap-3">
+              <span class="w-[104px]"></span>
+              <div class="grid flex-1 font-mono text-[6.5px] text-muted-2" style="grid-template-columns: repeat(17, 1fr)">
+                <span class="text-center" style="grid-column: 1">1</span>
+                <span class="text-center" style="grid-column: 3">3</span>
+                <span class="text-center" style="grid-column: 5">5</span>
+                <span class="text-center" style="grid-column: 7">7</span>
+                <span class="text-center" style="grid-column: 9">9</span>
+                <span class="text-center" style="grid-column: 11">11</span>
+                <span class="text-center" style="grid-column: 13">13</span>
+                <span class="text-center" style="grid-column: 15">15</span>
+                <span class="text-center" style="grid-column: 17">17</span>
+              </div>
+            </div>
+
+            <div class="space-y-[5px]">
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S0 · Discovery</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-cyan" style="left: 0%; width: 5.88%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S1 · Fundaciones</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-ink" style="left: 5.88%; width: 11.76%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S2 · Catálogo</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-ink" style="left: 17.64%; width: 11.76%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S3 · PDP / búsqueda</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-ink" style="left: 29.41%; width: 11.76%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S4 · Bolsa / checkout</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-ink" style="left: 41.17%; width: 11.76%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S5 · Pagos</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-cyan" style="left: 52.94%; width: 11.76%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S6 · Pedidos / DIAN</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-ink" style="left: 64.70%; width: 11.76%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S7 · Marketing</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-ink" style="left: 76.47%; width: 11.76%"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[104px] font-mono text-[7.5px] uppercase tracking-[0.06em] text-muted">S8 · Go-live</span>
+                <div class="relative h-[12px] flex-1 rounded-[2px] bg-sand-2">
+                  <div class="absolute inset-y-0 rounded-[2px] bg-cyan" style="left: 88.23%; width: 11.77%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-2 flex items-center gap-4 border-t border-line pt-1.5">
+              <span class="flex items-center gap-1.5 font-mono text-[6.5px] uppercase tracking-[0.08em] text-muted-2"><span class="h-2 w-3 rounded-[1px] bg-ink"></span> Construcción</span>
+              <span class="flex items-center gap-1.5 font-mono text-[6.5px] uppercase tracking-[0.08em] text-muted-2"><span class="h-2 w-3 rounded-[1px] bg-cyan"></span> Hito / entrega</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 grid grid-cols-2 gap-5">
+          <div>
+            <p class="micro">Hitos y dependencias</p>
+            <table class="table-dd mt-2">
+              <thead>
+                <tr><th>Hito</th><th>Semana</th><th>Depende de</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Design Doc aprobado</td><td class="num">1</td><td>Cliente + revisores</td></tr>
+                <tr><td>Catálogo cargado ≥ 80%</td><td class="num">7</td><td>Contenido del cliente</td></tr>
+                <tr><td>Pago real en staging</td><td class="num">11</td><td>Onboarding Wompi</td></tr>
+                <tr><td>Factura DIAN emitida</td><td class="num">13</td><td>Proveedor habilitado</td></tr>
+                <tr><td>UAT firmado</td><td class="num">17</td><td>Negocio</td></tr>
+                <tr><td>Go-live canary</td><td class="num">17</td><td>Hitos 1–5</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <p class="micro">Equipo asignado</p>
+            <table class="table-dd mt-2">
+              <thead>
+                <tr><th>Rol</th><th>FTE</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Tech Lead / Arquitecto</td><td class="num">0,4</td></tr>
+                <tr><td>Backend Engineer</td><td class="num">1,0</td></tr>
+                <tr><td>Frontend Engineer</td><td class="num">1,0</td></tr>
+                <tr><td>Fullstack / Integraciones</td><td class="num">0,6</td></tr>
+                <tr><td>Diseñador UX/UI</td><td class="num">0,6 → 0,2</td></tr>
+                <tr><td>QA / Automation</td><td class="num">0,5</td></tr>
+                <tr><td>DevOps / SRE</td><td class="num">0,3</td></tr>
+                <tr><td>Producto / Comandante</td><td class="num">0,3</td></tr>
+                <tr class="font-medium"><td>Total pico</td><td class="num">4,7</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-3 gap-2.5">
+          <div class="kpi">
+            <p class="kpi-value">13 sem</p>
+            <p class="kpi-label">Optimista · sin cambios de alcance</p>
+          </div>
+          <div class="kpi border-ink bg-ink">
+            <p class="kpi-value text-white">17 sem</p>
+            <p class="kpi-label text-white/50">Realista · 1–2 sem de holgura</p>
+          </div>
+          <div class="kpi">
+            <p class="kpi-value">23 sem</p>
+            <p class="kpi-label">Pesimista · demoras externas</p>
+          </div>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>09 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 10 · INVERSIÓN
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">09 — Inversión</p>
+            <h2 class="page-title">Precio cerrado,<br />alcance cerrado.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">10 / 12</span>
+        </div>
+
+        <div class="mt-5 grid grid-cols-3 gap-2.5">
+          <div class="card-dark flex flex-col">
+            <div class="flex items-center justify-between">
+              <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-cyan">MVP · recomendado</p>
+              <span class="rounded-full bg-orange px-2 py-0.5 font-mono text-[6.5px] font-medium uppercase tracking-[0.1em] text-white">17 sem</span>
+            </div>
+            <p class="mt-3 font-display text-[26px] font-semibold leading-none tracking-[-0.03em] text-white">COP 159 M</p>
+            <p class="mt-1 font-mono text-[7.5px] uppercase tracking-[0.1em] text-white/40">≈ USD 47.900 · TRM 3.317</p>
+            <ul class="mt-3 space-y-1.5 text-[9.5px] leading-[1.4] text-white/65">
+              <li class="flex gap-1.5"><span class="text-cyan">+</span> Storefront, checkout y admin</li>
+              <li class="flex gap-1.5"><span class="text-cyan">+</span> Pagos, DIAN y logística</li>
+              <li class="flex gap-1.5"><span class="text-cyan">+</span> SEO, analítica y legales</li>
+              <li class="flex gap-1.5"><span class="text-cyan">+</span> 60 días de garantía</li>
+            </ul>
+          </div>
+
+          <div class="card flex flex-col">
+            <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Fase 2</p>
+            <p class="mt-3 font-display text-[26px] font-semibold leading-none tracking-[-0.03em] text-ink">COP 64 M</p>
+            <p class="mt-1 font-mono text-[7.5px] uppercase tracking-[0.1em] text-muted-2">+6–8 semanas</p>
+            <ul class="mt-3 space-y-1.5 text-[9.5px] leading-[1.4] text-[#39414F]">
+              <li class="flex gap-1.5"><span class="text-blue-deep">+</span> Addi / Sistecrédito directo</li>
+              <li class="flex gap-1.5"><span class="text-blue-deep">+</span> Referidos y reseñas con foto</li>
+              <li class="flex gap-1.5"><span class="text-blue-deep">+</span> Bundles y WhatsApp automation</li>
+              <li class="flex gap-1.5"><span class="text-blue-deep">+</span> CMS, blog y A/B testing</li>
+            </ul>
+          </div>
+
+          <div class="card flex flex-col">
+            <p class="font-mono text-[7.5px] uppercase tracking-[0.14em] text-muted">Fase 3</p>
+            <p class="mt-3 font-display text-[26px] font-semibold leading-none tracking-[-0.03em] text-ink">COP 80 M</p>
+            <p class="mt-1 font-mono text-[7.5px] uppercase tracking-[0.1em] text-muted-2">Desde · 8–12 semanas</p>
+            <ul class="mt-3 space-y-1.5 text-[9.5px] leading-[1.4] text-[#39414F]">
+              <li class="flex gap-1.5"><span class="text-blue-deep">+</span> PWA y push web</li>
+              <li class="flex gap-1.5"><span class="text-blue-deep">+</span> Personalización y recomendaciones</li>
+              <li class="flex gap-1.5"><span class="text-blue-deep">+</span> Suscripciones y lealtad</li>
+              <li class="flex gap-1.5"><span class="text-blue-deep">+</span> App nativa si los datos la justifican</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-5 grid grid-cols-[1.15fr_1fr] gap-6">
+          <div>
+            <p class="micro">Forma de pago del MVP</p>
+            <table class="table-dd mt-2">
+              <thead>
+                <tr><th>Hito</th><th>%</th><th>Valor COP</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Firma del contrato</td><td class="num">30%</td><td class="num">47.700.000</td></tr>
+                <tr><td>Fin Sprint 2 · catálogo y PLP</td><td class="num">25%</td><td class="num">39.750.000</td></tr>
+                <tr><td>Fin Sprint 5 · pagos end-to-end</td><td class="num">25%</td><td class="num">39.750.000</td></tr>
+                <tr><td>Aceptación UAT</td><td class="num">15%</td><td class="num">23.850.000</td></tr>
+                <tr><td>Go-live</td><td class="num">5%</td><td class="num">7.950.000</td></tr>
+                <tr class="font-medium"><td>Total</td><td class="num">100%</td><td class="num">159.000.000</td></tr>
+              </tbody>
+            </table>
+
+            <p class="micro mt-4">Costos recurrentes (no incluidos)</p>
+            <table class="table-dd mt-2">
+              <thead>
+                <tr><th>Concepto</th><th>Estimado</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Infraestructura (Vercel, DB, Redis, Meili, R2, email)</td><td class="num whitespace-nowrap">COP 830.000–1.560.000/mes</td></tr>
+                <tr><td>Facturación electrónica DIAN</td><td class="num whitespace-nowrap">COP 133.000–332.000/mes</td></tr>
+                <tr><td>WhatsApp Cloud API</td><td class="num whitespace-nowrap">COP 66.000–199.000/mes</td></tr>
+                <tr><td>Soporte y evolución (40 h/mes)</td><td class="num whitespace-nowrap">COP 5.500.000/mes</td></tr>
+                <tr><td>Hora adicional</td><td class="num whitespace-nowrap">COP 150.000/h</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex flex-col gap-2.5">
+            <div class="card-sand">
+              <p class="micro text-blue-deep">Incluye</p>
+              <ul class="mt-1.5 space-y-1">
+                <li class="check">Diseño UX/UI y design system</li>
+                <li class="check">Desarrollo, pruebas y despliegue</li>
+                <li class="check">Integración Wompi + plan B ePayco</li>
+                <li class="check">DIAN vía proveedor tecnológico</li>
+                <li class="check">Capacitación al equipo del cliente</li>
+                <li class="check">60 días de garantía post go-live</li>
+              </ul>
+            </div>
+            <div class="rounded-lg border border-line px-3 py-2.5">
+              <p class="micro">No incluye</p>
+              <ul class="mt-1.5 space-y-1">
+                <li class="check">Comisiones de pasarela y BNPL</li>
+                <li class="check">Infraestructura y licencias de terceros</li>
+                <li class="check">Producción de fotografía y contenido</li>
+                <li class="check">Contratos con DIAN y transportadoras</li>
+                <li class="check">Pauta publicitaria</li>
+              </ul>
+            </div>
+            <div class="rounded-lg border border-line px-3 py-2.5">
+              <p class="micro">Condiciones</p>
+              <p class="mt-1 text-[9px] leading-[1.45] text-[#39414F]">
+                Precios en COP. IVA no incluido (19% si aplica). TRM de referencia: COP 3.317/USD
+                (16 nov 2026). Vigencia 30 días. Cambios de alcance por <em>change request</em> aprobado.
+                Facturación mensual contra hitos.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>10 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 11 · SUPUESTOS, RIESGOS Y GARANTÍA
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">10 — Supuestos, riesgos y garantía</p>
+            <h2 class="page-title">Lo que necesitamos de ti<br />para cumplir la fecha.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">11 / 12</span>
+        </div>
+
+        <div class="mt-5 grid grid-cols-2 gap-5">
+          <div>
+            <p class="micro">Supuestos del proyecto</p>
+            <ul class="mt-2 space-y-1.5">
+              <li class="check">Catálogo propio y autorización de venta online de las marcas.</li>
+              <li class="check">300–800 SKUs al lanzamiento, con fotos y fichas del cliente.</li>
+              <li class="check">1–3 bodegas/tiendas con inventario propio.</li>
+              <li class="check">Sin ERP/POS integrado en el MVP (o reemplazable).</li>
+              <li class="check">Contratos de Wompi, DIAN y transportadora iniciados en S0.</li>
+              <li class="check">BNPL directo (Addi/Sistecrédito) en Fase 2.</li>
+              <li class="check">Facturación DIAN vía proveedor tecnológico habilitado.</li>
+              <li class="check">Contenido y fotografía entregados entre S2 y S4.</li>
+            </ul>
+          </div>
+
+          <div>
+            <p class="micro">Riesgos y mitigación</p>
+            <table class="table-dd mt-2">
+              <thead>
+                <tr><th>Riesgo</th><th>Mitigación</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>DIAN no habilitada</td><td>Contratar en S0 + contingencia manual</td></tr>
+                <tr><td>Contenido incompleto</td><td>CSV + placeholders; lanzar por tandas</td></tr>
+                <tr><td>Sobreventa de stock</td><td>Reserva TTL + update condicional + CHECK</td></tr>
+                <tr><td>Webhooks duplicados</td><td>Idempotencia + reconciliación</td></tr>
+                <tr><td>CWV en rojo</td><td>Pipeline AVIF/WebP + presupuesto en CI</td></tr>
+                <tr><td>Fraude en contraentrega</td><td>Límites, OTP, blocklist y scoring</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <p class="micro">Garantía y soporte</p>
+          <div class="mt-2 grid grid-cols-3 gap-2.5">
+            <div class="card py-3">
+              <p class="kpi-value">60 días</p>
+              <p class="kpi-label">Garantía sobre defectos funcionales post go-live</p>
+            </div>
+            <div class="card py-3">
+              <p class="kpi-value">SLA 4 h</p>
+              <p class="kpi-label">Respuesta a incidentes P1 en horario hábil</p>
+            </div>
+            <div class="card py-3">
+              <p class="kpi-value">99,9%</p>
+              <p class="kpi-label">Disponibilidad objetivo mensual</p>
+            </div>
+          </div>
+
+          <table class="table-dd mt-2.5">
+            <thead>
+              <tr><th>Severidad</th><th>Ejemplo</th><th>Respuesta</th><th>Resolución objetivo</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="font-medium text-ink">P1 · Crítico</td><td>Sitio caído o pagos fallando para todos</td><td class="num">4 h</td><td class="num">8 h</td></tr>
+              <tr><td class="font-medium text-ink">P2 · Alto</td><td>Checkout degradado o facturación detenida</td><td class="num">8 h</td><td class="num">3 días hábiles</td></tr>
+              <tr><td class="font-medium text-ink">P3 · Normal</td><td>Consulta, ajuste menor o mejora</td><td class="num">2 días</td><td class="num">Siguiente release</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-5 grid grid-cols-2 gap-5">
+          <div class="rounded-lg border border-line px-4 py-3">
+            <p class="micro">Propiedad intelectual</p>
+            <p class="mt-1 text-[9.5px] leading-[1.5] text-[#39414F]">
+              El código y los activos del proyecto son del cliente al completar el pago total. Digitaldevs
+              conserva el derecho de mostrar el proyecto en su portafolio, salvo acuerdo de confidencialidad.
+            </p>
+          </div>
+          <div class="rounded-lg border border-line px-4 py-3">
+            <p class="micro">Datos personales</p>
+            <p class="mt-1 text-[9.5px] leading-[1.5] text-[#39414F]">
+              Tratamiento conforme a la Ley 1581 de 2012. Consentimiento granular, registro de versión y
+              derecho de supresión con retención legal de facturas.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-4 rounded-lg border-l-2 border-blue-deep bg-sand px-4 py-2.5">
+          <p class="text-[9.5px] leading-[1.45] text-[#39414F]">
+            <strong>Condición de fecha:</strong> el cronograma asume contenido y contratos disponibles según el plan.
+            Un retraso de dos semanas en catálogo o en la habilitación DIAN mueve el lanzamiento dos semanas.
+          </p>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>11 / 12</span>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         PÁGINA 12 · ACEPTACIÓN
+    ============================================================= -->
+    <section class="sheet">
+      <header class="sheet-head">
+        <div class="brand">
+          <img src="./assets/logo-isotipo.png" alt="Digitaldevs" class="brand-mark" />
+          <span class="brand-word">Digitaldevs</span>
+        </div>
+        <div class="text-right">
+          <p class="micro">Propuesta e-commerce · DD-2026-0117</p>
+          <p class="mt-0.5 font-mono text-[8.5px] text-muted-2">Noviembre 2026 · v1.1</p>
+        </div>
+      </header>
+
+      <main class="mt-7 flex-1">
+        <div class="flex items-end justify-between border-b border-ink/15 pb-3">
+          <div>
+            <p class="eyebrow text-blue-deep">11 — Aceptación</p>
+            <h2 class="page-title">Siguiente paso:<br />arrancar el Sprint 0.</h2>
+          </div>
+          <span class="font-mono text-[9px] text-muted-2">12 / 12</span>
+        </div>
+
+        <div class="mt-6 grid grid-cols-2 gap-2.5">
+          <div class="card">
+            <p class="font-mono text-[8px] uppercase tracking-[0.14em] text-blue-deep">01</p>
+            <p class="mt-1 h3">Aprobar la propuesta</p>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Firma del contrato y pago del anticipo del 30%.</p>
+          </div>
+          <div class="card">
+            <p class="font-mono text-[8px] uppercase tracking-[0.14em] text-blue-deep">02</p>
+            <p class="mt-1 h3">Kickoff y accesos</p>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Sesión de discovery, accesos a dominios, cuentas y catálogo.</p>
+          </div>
+          <div class="card">
+            <p class="font-mono text-[8px] uppercase tracking-[0.14em] text-blue-deep">03</p>
+            <p class="mt-1 h3">Sprint 0 en una semana</p>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Prototipo navegable, backlog estimado y sandbox de pagos.</p>
+          </div>
+          <div class="card">
+            <p class="font-mono text-[8px] uppercase tracking-[0.14em] text-blue-deep">04</p>
+            <p class="mt-1 h3">Primera demo en semana 3</p>
+            <p class="mt-1 text-[10px] leading-[1.45] text-muted">Home desplegada en staging con Lighthouse &gt; 90.</p>
+          </div>
+        </div>
+
+        <div class="mt-7 grid grid-cols-2 gap-10">
+          <div>
+            <p class="micro">Por Digitaldevs</p>
+            <div class="sign-line">
+              <p class="text-[10px] font-medium text-ink">Nombre y firma</p>
+              <p class="mt-0.5 font-mono text-[8px] text-muted">Tech Lead · Digitaldevs</p>
+            </div>
+            <div class="mt-5 space-y-1 font-mono text-[8.5px] text-muted">
+              <p>Fecha: ____ / ____ / 2026</p>
+            </div>
+          </div>
+          <div>
+            <p class="micro">Por Adriana Tienda</p>
+            <div class="sign-line">
+              <p class="text-[10px] font-medium text-ink">Nombre y firma</p>
+              <p class="mt-0.5 font-mono text-[8px] text-muted">Representante legal</p>
+            </div>
+            <div class="mt-5 space-y-1 font-mono text-[8.5px] text-muted">
+              <p>Fecha: ____ / ____ / 2026</p>
+              <p>NIT: ______________________</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-dark mt-8 flex items-center justify-between">
+          <div>
+            <p class="font-mono text-[8px] uppercase tracking-[0.16em] text-cyan">Contacto comercial</p>
+            <p class="mt-1 font-display text-[16px] font-semibold text-white">Digitaldevs</p>
+            <p class="mt-1 text-[10px] text-white/55">Estudio de software · Colombia</p>
+          </div>
+          <div class="text-right">
+            <p class="font-mono text-[9px] text-white/70">hola@digitaldevs.co</p>
+            <p class="mt-1 font-mono text-[8px] uppercase tracking-[0.12em] text-white/35">DD-2026-0117 · v1.1</p>
+          </div>
+        </div>
+
+        <p class="mt-6 max-w-[150mm] font-display text-[13px] font-medium leading-[1.45] tracking-[-0.01em] text-ink">
+          “No construimos una tienda bonita. Construimos el sistema que hace que la tienda venda,
+          facture y entregue sin que tengas que pensarlo.”
+        </p>
+
+        <div class="mt-5 grid grid-cols-3 gap-2.5">
+          <div class="rounded-lg border border-line bg-sand px-3 py-2.5">
+            <p class="kpi-value">COP 159 M</p>
+            <p class="kpi-label">Inversión MVP · IVA no incluido</p>
+          </div>
+          <div class="rounded-lg border border-line bg-sand px-3 py-2.5">
+            <p class="kpi-value">17 semanas</p>
+            <p class="kpi-label">Hasta el go-live en producción</p>
+          </div>
+          <div class="rounded-lg border border-line bg-sand px-3 py-2.5">
+            <p class="kpi-value">30%</p>
+            <p class="kpi-label">Anticipo para iniciar el Sprint 0</p>
+          </div>
+        </div>
+
+        <div class="mt-5 flex items-center gap-3">
+          <div class="h-px flex-1 bg-line"></div>
+          <p class="font-mono text-[7.5px] uppercase tracking-[0.18em] text-muted-2">Documento confidencial · Digitaldevs 2026</p>
+          <div class="h-px flex-1 bg-line"></div>
+        </div>
+      </main>
+
+      <footer class="sheet-foot">
+        <span>Digitaldevs · Confidencial</span>
+        <span>Adriana Tienda</span>
+        <span>12 / 12</span>
+      </footer>
+    </section>
+  </body>
+</html>

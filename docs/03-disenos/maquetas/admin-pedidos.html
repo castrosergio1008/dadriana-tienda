@@ -1,0 +1,543 @@
+<!-- APEX FORGE · MAQUETA DE DISEÑO · NO ES CÓDIGO DE PRODUCCIÓN -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Panel interno de operación: pedidos, estados de pago, facturación y logística.">
+  <title>Pedidos · Panel de operación | Adriana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #FDFBF9; color: #1C1418; }
+    .font-display { font-family: 'Fraunces', Georgia, serif; }
+    :focus-visible { outline: 2px solid #1E644C; outline-offset: 2px; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#1E644C] focus:shadow-lg">Saltar al contenido principal</a>
+
+  <!-- Barra de anuncio -->
+  <div class="bg-[#1E644C] px-4 py-2 text-center text-[11px] font-medium tracking-wide text-white sm:text-xs">
+    Envío gratis desde $ 150.000 <span class="mx-2 text-[#B8895A]">·</span> Recoge gratis en tienda <span class="mx-2 text-[#B8895A]">·</span> <span class="sm:hidden">IVA incluido</span><span class="hidden sm:inline">Retracto en 5 días hábiles · IVA incluido</span>
+  </div>
+
+  <!-- Header + mega-menú (CSS-only, sin JavaScript) -->
+  <header class="sticky top-0 z-40 border-b border-[#E8E1DD] bg-white/95 backdrop-blur">
+    <div class="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center gap-4 lg:h-[72px] lg:gap-8">
+
+        <button type="button" aria-label="Abrir menú de navegación" class="rounded-md p-2 text-[#1C1418] hover:bg-[#F4EAE0] lg:hidden">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="h-6 w-6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+
+        <a href="index.html" class="flex shrink-0 items-center gap-2" aria-label="Adriana — ir al inicio">
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E644C] font-display text-lg font-semibold text-white">A</span>
+          <span class="leading-none">
+            <span class="block font-display text-xl font-semibold tracking-tight text-[#1E644C]">Adriana</span>
+            <span class="mt-0.5 block text-[9px] font-medium uppercase tracking-[0.22em] text-[#7E5A34]">Belleza & cuidado</span>
+          </span>
+        </a>
+
+        <nav aria-label="Navegación principal" class="hidden items-center gap-6 lg:flex">
+          <div class="relative group">
+            <a href="catalogo.html" class="flex items-center gap-1 py-6 text-sm font-medium text-[#1C1418] hover:text-[#1E644C]">
+              Categorías
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="h-4 w-4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </a>
+            <div class="invisible absolute left-0 top-full w-[640px] rounded-2xl border border-[#E8E1DD] bg-white p-6 opacity-0 shadow-xl transition-opacity duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+              <div class="grid grid-cols-3 gap-6">
+                <div>
+                  <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-[#7E5A34]">Por categoría</p>
+                  <ul class="space-y-2 text-sm text-[#6B5F63]">
+                    <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Facial</a></li>
+                    <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Cabello</a></li>
+                    <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Cuerpo</a></li>
+                    <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Maquillaje</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-[#7E5A34]">Compra por necesidad</p>
+                  <ul class="space-y-2 text-sm text-[#6B5F63]">
+                    <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Sequedad</a></li>
+                    <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Frizz y encrespamiento</a></li>
+                    <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Piel sensible</a></li>
+                    <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Protección solar</a></li>
+                  </ul>
+                </div>
+                <div class="rounded-xl bg-[#F7EAE7] p-4">
+                  <p class="font-display text-lg font-semibold text-[#1C1418]">Tu ritual empieza aquí</p>
+                  <p class="mt-1 text-xs leading-relaxed text-[#6B5F63]">Descubre la rutina que tu piel necesita en menos de 3 clics.</p>
+                  <a href="catalogo.html" class="mt-3 inline-flex text-xs font-semibold text-[#1E644C] hover:underline">Ver todo el catálogo →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href="catalogo.html" class="py-6 text-sm font-medium text-[#1C1418] hover:text-[#1E644C]">Marcas</a>
+          <a href="catalogo.html" class="py-6 text-sm font-medium text-[#1C1418] hover:text-[#1E644C]">Ofertas</a>
+          <a href="index.html#tiendas" class="py-6 text-sm font-medium text-[#1C1418] hover:text-[#1E644C]">Nuestras tiendas</a>
+        </nav>
+
+        <form role="search" class="ml-auto hidden w-64 xl:block" aria-label="Buscar productos">
+          <label for="buscar-header" class="sr-only">Buscar productos</label>
+          <div class="relative">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6B5F63]" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="buscar-header" type="search" placeholder="Buscar productos…" class="h-10 w-full rounded-full border border-[#D6CCC6] bg-[#FDFBF9] pl-9 pr-3 text-sm placeholder:text-[#6B5F63] focus:border-[#1E644C] focus:bg-white focus:outline-none">
+          </div>
+        </form>
+
+        <div class="ml-auto flex items-center gap-1 sm:gap-2 xl:ml-0">
+          <a href="cuenta.html" aria-label="Mi cuenta" class="hidden rounded-full p-2 text-[#1C1418] hover:bg-[#F4EAE0] sm:inline-flex">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="h-5 w-5" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a href="cuenta.html" aria-label="Favoritos, 4 guardados" class="hidden rounded-full p-2 text-[#1C1418] hover:bg-[#F4EAE0] sm:inline-flex">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="h-5 w-5" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </a>
+          <a href="carrito.html" aria-label="Bolsa de compras, 2 productos" class="relative inline-flex items-center gap-2 rounded-full border border-[#D6CCC6] px-3 py-2 text-sm font-semibold text-[#1E644C] hover:border-[#1E644C] hover:bg-[#E8F1EC]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="h-5 w-5" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="hidden sm:inline">Bolsa</span>
+            <span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1E644C] px-1 text-[11px] font-bold text-white">2</span>
+          </a>
+        </div>
+      </div>
+
+      <form role="search" class="border-t border-[#E8E1DD] py-2 xl:hidden" aria-label="Buscar productos">
+        <label for="buscar-movil" class="sr-only">Buscar productos</label>
+        <div class="relative">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6B5F63]" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="buscar-movil" type="search" placeholder="Buscar por producto, marca o necesidad…" class="h-10 w-full rounded-full border border-[#D6CCC6] bg-[#FDFBF9] pl-9 pr-3 text-sm placeholder:text-[#6B5F63] focus:border-[#1E644C] focus:bg-white focus:outline-none">
+        </div>
+      </form>
+    </div>
+  </header>
+
+
+<main id="contenido" class="bg-[#FDFBF9]">
+
+    <!-- Mobile operations bar -->
+    <div class="border-b border-[#E8E1DD] bg-white lg:hidden">
+      <details class="mx-auto max-w-[1280px]">
+        <summary class="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 [&::-webkit-details-marker]:hidden sm:px-6">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5 text-[#1E644C]" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <span class="font-display text-lg font-semibold text-[#1C1418]">Panel · Pedidos</span>
+          <span class="ml-auto rounded-full bg-[#F7EAE7] px-2 py-1 text-[10px] font-bold text-[#8A3B4E]">2 alertas</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4 text-[#6B5F63]" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </summary>
+        <nav aria-label="Navegación del panel de operación" class="border-t border-[#E8E1DD] bg-white px-4 py-3 sm:px-6">
+          <a href="admin-pedidos.html" aria-current="page" class="flex min-h-10 items-center gap-3 rounded-lg bg-[#E8F1EC] px-3 text-sm font-semibold text-[#1E644C]">Pedidos</a>
+          <a href="admin-productos.html" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63]">Productos e inventario</a>
+          <a href="#revision" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63]">Pagos en revisión</a>
+          <a href="cuenta.html" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63]">Mi cuenta</a>
+          <a href="index.html" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63]">Volver a la tienda</a>
+        </nav>
+      </details>
+    </div>
+
+    <div class="mx-auto flex max-w-[1600px]">
+
+      <!-- Tablet icon rail -->
+      <aside class="hidden w-[72px] shrink-0 flex-col border-r border-[#E8E1DD] bg-white md:flex lg:hidden" aria-label="Navegación del panel de operación">
+        <div class="flex h-16 items-center justify-center border-b border-[#E8E1DD]">
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E644C] font-display text-lg font-semibold text-white">A</span>
+        </div>
+        <nav class="flex flex-col gap-1 p-2">
+          <a href="admin-pedidos.html" aria-current="page" class="flex flex-col items-center gap-1 rounded-lg bg-[#E8F1EC] px-1 py-2 text-[10px] font-semibold text-[#1E644C]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>
+            Pedidos
+          </a>
+          <a href="admin-productos.html" class="flex flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10px] font-semibold text-[#6B5F63]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="m3 7 9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></svg>
+            Productos
+          </a>
+          <a href="admin-productos.html#inventario" class="flex flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10px] font-semibold text-[#6B5F63]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="M3 9h18v11H3zM3 9l3-5h12l3 5M9 13h6"/></svg>
+            Inventario
+          </a>
+          <a href="#revision" class="relative flex flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10px] font-semibold text-[#6B5F63]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8M10 20h4"/></svg>
+            Alertas
+            <span class="absolute right-3 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#8A3B4E] px-1 text-[9px] font-bold text-white">2</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Desktop sidebar -->
+      <aside class="hidden w-[240px] shrink-0 flex-col border-r border-[#E8E1DD] bg-white lg:flex" aria-label="Navegación del panel de operación">
+        <div class="flex h-[72px] items-center gap-2 border-b border-[#E8E1DD] px-5">
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E644C] font-display text-lg font-semibold text-white">A</span>
+          <div>
+            <p class="font-display text-lg font-semibold leading-none text-[#1E644C]">Adriana</p>
+            <p class="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E5A34]">Panel de operación</p>
+          </div>
+        </div>
+        <nav class="flex-1 p-3">
+          <p class="px-3 pb-2 pt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6B5F63]">Gestión</p>
+          <a href="admin-pedidos.html" aria-current="page" class="flex min-h-10 items-center gap-3 rounded-lg bg-[#E8F1EC] px-3 text-sm font-semibold text-[#1E644C]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>
+            Pedidos
+            <span class="ml-auto rounded-full bg-[#1E644C] px-2 py-0.5 text-[10px] font-bold text-white">9</span>
+          </a>
+          <a href="admin-productos.html" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63] hover:bg-[#FDFBF9]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="m3 7 9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></svg>
+            Productos
+          </a>
+          <a href="admin-productos.html#inventario" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63] hover:bg-[#FDFBF9]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="M3 9h18v11H3zM3 9l3-5h12l3 5M9 13h6"/></svg>
+            Inventario
+          </a>
+          <a href="#revision" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63] hover:bg-[#FDFBF9]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8M10 20h4"/></svg>
+            Alertas
+            <span class="ml-auto rounded-full bg-[#F7EAE7] px-2 py-0.5 text-[10px] font-bold text-[#8A3B4E]">2</span>
+          </a>
+          <p class="px-3 pb-2 pt-6 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6B5F63]">Cuenta</p>
+          <a href="cuenta.html" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63] hover:bg-[#FDFBF9]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            Mi cuenta
+          </a>
+          <a href="index.html" class="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-[#6B5F63] hover:bg-[#FDFBF9]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true"><path d="M10 5 3 12l7 7M3 12h18"/></svg>
+            Volver a la tienda
+          </a>
+        </nav>
+        <div class="border-t border-[#E8E1DD] p-4">
+          <p class="text-xs font-semibold text-[#1C1418]">María Rodríguez</p>
+          <p class="mt-0.5 text-[11px] text-[#6B5F63]">Operación · Bogotá</p>
+        </div>
+      </aside>
+
+      <div class="min-w-0 flex-1">
+
+        <!-- Topbar -->
+        <div class="hidden items-center gap-3 border-b border-[#E8E1DD] bg-white px-6 py-3 md:flex lg:px-8">
+          <label for="admin-buscar-pedidos" class="sr-only">Buscar pedidos</label>
+          <div class="relative w-full max-w-sm">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6B5F63]" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="admin-buscar-pedidos" type="search" placeholder="Buscar pedido, cliente o guía…" class="h-10 w-full rounded-full border border-[#D6CCC6] bg-[#FDFBF9] pl-9 pr-3 text-xs focus:border-[#1E644C] focus:bg-white focus:outline-none">
+          </div>
+          <div class="ml-auto flex items-center gap-3">
+            <span class="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E1DD] text-[#6B5F63]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8M10 20h4"/></svg>
+              <span class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#8A3B4E] px-1 text-[9px] font-bold text-white">2</span>
+              <span class="sr-only">2 alertas pendientes</span>
+            </span>
+            <span class="hidden text-xs font-semibold text-[#6B5F63] xl:inline">Sede Bogotá — Zona Rosa</span>
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#E8F1EC] text-xs font-bold text-[#1E644C]" aria-hidden="true">MR</span>
+          </div>
+        </div>
+
+        <div class="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7E5A34]">Operación · 23 de noviembre de 2026</p>
+            <h1 class="mt-1 font-display text-3xl font-semibold tracking-tight text-[#1C1418] sm:text-4xl">Pedidos</h1>
+            <p class="mt-2 max-w-2xl text-sm text-[#6B5F63]">Verifica el pago y la factura antes de despachar. Los datos de clientes son visibles solo para el rol de operación.</p>
+          </div>
+
+          <!-- Daily metrics -->
+          <section aria-label="Indicadores del día" class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <article class="rounded-xl border border-[#E8E1DD] bg-white p-4">
+              <p class="text-xs text-[#6B5F63]">Pedidos hoy</p>
+              <p class="mt-2 font-display text-2xl font-semibold text-[#1C1418]">28</p>
+              <p class="mt-1 text-[11px] font-semibold text-[#1E644C]">+12 % frente a ayer</p>
+            </article>
+            <article class="rounded-xl border border-[#E8E1DD] bg-white p-4">
+              <p class="text-xs text-[#6B5F63]">Por despachar</p>
+              <p class="mt-2 font-display text-2xl font-semibold text-[#1C1418]">9</p>
+              <p class="mt-1 text-[11px] font-semibold text-[#8A3B4E]">2 requieren revisión</p>
+            </article>
+            <article class="rounded-xl border border-[#E8E1DD] bg-white p-4">
+              <p class="text-xs text-[#6B5F63]">Pago verificado</p>
+              <p class="mt-2 font-display text-2xl font-semibold text-[#1C1418]">26 <span class="text-sm font-normal text-[#6B5F63]">de 28</span></p>
+              <p class="mt-1 text-[11px] text-[#6B5F63]">Wompi, PSE y Nequi</p>
+            </article>
+            <article class="rounded-xl border border-[#E8E1DD] bg-white p-4">
+              <p class="text-xs text-[#6B5F63]">Facturación del día</p>
+              <p class="mt-2 font-display text-2xl font-semibold text-[#1C1418]">$ 2.480.600</p>
+              <p class="mt-1 text-[11px] font-semibold text-[#1E644C]">+8 % frente a ayer</p>
+            </article>
+          </section>
+
+          <a href="#revision" class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-[#E4C9C0] bg-[#F7EAE7] px-4 py-3 text-xs text-[#6B5F63] hover:border-[#8A3B4E]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#8A3B4E" stroke-width="1.8" class="h-4 w-4 shrink-0" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 9v5M12 17h.01"/></svg>
+            <strong class="text-[#8A3B4E]">2 pedidos requieren revisión de pago.</strong>
+            <span>Ir a la lista de verificación antes de empacar.</span>
+          </a>
+
+          <!-- Filters -->
+          <section aria-label="Filtros de pedidos" class="mt-5 rounded-2xl border border-[#E8E1DD] bg-white p-4">
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
+              <div class="sm:col-span-2">
+                <label for="filtro-pedido-buscar" class="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-[#6B5F63]">Buscar</label>
+                <input id="filtro-pedido-buscar" type="search" placeholder="Número, cliente o guía…" class="h-10 w-full rounded-lg border border-[#D6CCC6] px-3 text-xs focus:border-[#1E644C] focus:outline-none">
+              </div>
+              <div>
+                <label for="filtro-pedido-estado" class="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-[#6B5F63]">Estado</label>
+                <select id="filtro-pedido-estado" class="h-10 w-full rounded-lg border border-[#D6CCC6] bg-white px-2 text-xs focus:border-[#1E644C] focus:outline-none"><option>Todos</option><option>Por empacar</option><option>En preparación</option><option>En ruta</option><option>Listo para recoger</option><option>Entregado</option><option>Detenido</option></select>
+              </div>
+              <div>
+                <label for="filtro-pedido-fecha" class="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-[#6B5F63]">Fecha</label>
+                <select id="filtro-pedido-fecha" class="h-10 w-full rounded-lg border border-[#D6CCC6] bg-white px-2 text-xs focus:border-[#1E644C] focus:outline-none"><option>Hoy</option><option>Últimos 7 días</option><option>Últimos 30 días</option></select>
+              </div>
+              <div>
+                <label for="filtro-pedido-sede" class="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-[#6B5F63]">Sede o entrega</label>
+                <select id="filtro-pedido-sede" class="h-10 w-full rounded-lg border border-[#D6CCC6] bg-white px-2 text-xs focus:border-[#1E644C] focus:outline-none"><option>Todas</option><option>Bogotá — Zona Rosa</option><option>Medellín — El Poblado</option><option>Domicilio</option></select>
+              </div>
+              <div>
+                <label for="filtro-pedido-pago" class="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-[#6B5F63]">Pago</label>
+                <select id="filtro-pedido-pago" class="h-10 w-full rounded-lg border border-[#D6CCC6] bg-white px-2 text-xs focus:border-[#1E644C] focus:outline-none"><option>Todos</option><option>Aprobado</option><option>En verificación</option><option>Rechazado</option></select>
+              </div>
+              <div class="flex items-end gap-2">
+                <button type="button" class="h-10 flex-1 rounded-lg bg-[#1E644C] px-3 text-xs font-semibold text-white hover:bg-[#154E3B]">Aplicar</button>
+                <button type="button" class="h-10 rounded-lg border border-[#D6CCC6] px-3 text-xs font-semibold text-[#1E644C] hover:bg-[#FDFBF9]">Exportar</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Payment review queue -->
+          <section id="revision" aria-labelledby="revision-titulo" class="mt-5 rounded-2xl border border-[#E8E1DD] bg-white p-5">
+            <h2 id="revision-titulo" class="font-display text-lg font-semibold text-[#1C1418]">Pagos en revisión</h2>
+            <p class="mt-1 text-xs text-[#6B5F63]">Confirma el pago y la factura antes de liberar el pedido para empaque.</p>
+            <ul class="mt-4 grid gap-3 md:grid-cols-2">
+              <li class="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#FDFBF9] p-3">
+                <div><p class="text-xs font-bold text-[#1C1418]">AT-2026-000121 · $ 119.900</p><p class="mt-0.5 text-[11px] text-[#6B5F63]">Valentina Ríos · PSE en verificación · Sin factura</p></div>
+                <a href="seguimiento-pedido.html" class="min-h-9 rounded-lg bg-[#1E644C] px-3 py-2 text-[11px] font-semibold text-white">Revisar</a>
+              </li>
+              <li class="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#FDFBF9] p-3">
+                <div><p class="text-xs font-bold text-[#1C1418]">AT-2026-000119 · $ 54.900</p><p class="mt-0.5 text-[11px] text-[#6B5F63]">María Fernanda Ruiz · Pago rechazado · Sin factura</p></div>
+                <a href="seguimiento-pedido.html" class="min-h-9 rounded-lg bg-[#1E644C] px-3 py-2 text-[11px] font-semibold text-white">Revisar</a>
+              </li>
+            </ul>
+          </section>
+
+          <!-- Desktop table -->
+          <section id="pedidos" aria-labelledby="pedidos-titulo" class="mt-6">
+            <h2 id="pedidos-titulo" class="mb-3 font-display text-xl font-semibold text-[#1C1418]">Pedidos recientes</h2>
+            <div role="region" aria-label="Listado de pedidos, desplazable horizontalmente" tabindex="0" class="overflow-x-auto rounded-2xl border border-[#E8E1DD] bg-white focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E644C]">
+              <table class="w-full min-w-[1040px] border-collapse text-left text-xs">
+                <caption class="sr-only">Pedidos recientes con cliente, total, estado de pago, factura y entrega</caption>
+                <thead class="bg-[#FDFBF9] text-[10px] uppercase tracking-wide text-[#6B5F63]">
+                  <tr>
+                    <th scope="col" class="px-4 py-3 font-semibold">Pedido</th>
+                    <th scope="col" class="px-4 py-3 font-semibold">Cliente</th>
+                    <th scope="col" class="px-4 py-3 font-semibold">Total</th>
+                    <th scope="col" class="px-4 py-3 font-semibold">Pago</th>
+                    <th scope="col" class="px-4 py-3 font-semibold">Factura</th>
+                    <th scope="col" class="px-4 py-3 font-semibold">Entrega</th>
+                    <th scope="col" class="px-4 py-3 font-semibold">Estado</th>
+                    <th scope="col" class="px-4 py-3 font-semibold">Acción</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#E8E1DD]">
+                  <tr>
+                    <td class="px-4 py-3"><p class="font-bold text-[#1C1418]">AT-2026-000123</p><p class="mt-0.5 text-[#6B5F63]">23 nov · 10:24</p></td>
+                    <td class="px-4 py-3"><span class="flex items-center gap-2"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#E8F1EC] text-[10px] font-bold text-[#1E644C]">CR</span><span class="text-[#1C1418]">Camila Restrepo</span></span></td>
+                    <td class="whitespace-nowrap px-4 py-3 font-semibold text-[#1C1418]">$ 188.820</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#E8F1EC] px-2 py-1 text-[10px] font-bold text-[#1E644C]">Aprobado</span></td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Facturado</td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Domicilio</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#E8F1EC] px-2 py-1 text-[10px] font-bold text-[#1E644C]">En ruta</span></td>
+                    <td class="px-4 py-3"><a href="seguimiento-pedido.html" class="font-semibold text-[#1E644C] underline underline-offset-2">Ver detalle</a></td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3"><p class="font-bold text-[#1C1418]">AT-2026-000122</p><p class="mt-0.5 text-[#6B5F63]">23 nov · 09:12</p></td>
+                    <td class="px-4 py-3"><span class="flex items-center gap-2"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#F7EAE7] text-[10px] font-bold text-[#8A3B4E]">JM</span><span class="text-[#1C1418]">Juan David Molano</span></span></td>
+                    <td class="whitespace-nowrap px-4 py-3 font-semibold text-[#1C1418]">$ 74.900</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#E8F1EC] px-2 py-1 text-[10px] font-bold text-[#1E644C]">Aprobado</span></td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Facturado</td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Recogida Zona Rosa</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#FBF0DE] px-2 py-1 text-[10px] font-bold text-[#7E5A34]">Listo para recoger</span></td>
+                    <td class="px-4 py-3"><a href="seguimiento-pedido.html" class="font-semibold text-[#1E644C] underline underline-offset-2">Ver detalle</a></td>
+                  </tr>
+                  <tr class="bg-[#FFFCF8]">
+                    <td class="px-4 py-3"><p class="font-bold text-[#1C1418]">AT-2026-000121</p><p class="mt-0.5 text-[#6B5F63]">22 nov · 18:40</p></td>
+                    <td class="px-4 py-3"><span class="flex items-center gap-2"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#E8F1EC] text-[10px] font-bold text-[#1E644C]">VR</span><span class="text-[#1C1418]">Valentina Ríos</span></span></td>
+                    <td class="whitespace-nowrap px-4 py-3 font-semibold text-[#1C1418]">$ 119.900</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#FBF0DE] px-2 py-1 text-[10px] font-bold text-[#7E5A34]">En verificación</span></td>
+                    <td class="px-4 py-3 text-[#8A3B4E]">Sin factura</td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Domicilio</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#F1ECE9] px-2 py-1 text-[10px] font-bold text-[#6B5F63]">Por empacar</span></td>
+                    <td class="px-4 py-3"><a href="#revision" class="font-semibold text-[#8A3B4E] underline underline-offset-2">Revisar pago</a></td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3"><p class="font-bold text-[#1C1418]">AT-2026-000120</p><p class="mt-0.5 text-[#6B5F63]">22 nov · 15:05</p></td>
+                    <td class="px-4 py-3"><span class="flex items-center gap-2"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#F7EAE7] text-[10px] font-bold text-[#8A3B4E]">AL</span><span class="text-[#1C1418]">Andrés López</span></span></td>
+                    <td class="whitespace-nowrap px-4 py-3 font-semibold text-[#1C1418]">$ 209.800</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#E8F1EC] px-2 py-1 text-[10px] font-bold text-[#1E644C]">Aprobado</span></td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Facturado</td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Domicilio</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#FBF0DE] px-2 py-1 text-[10px] font-bold text-[#7E5A34]">En preparación</span></td>
+                    <td class="px-4 py-3"><a href="seguimiento-pedido.html" class="font-semibold text-[#1E644C] underline underline-offset-2">Ver detalle</a></td>
+                  </tr>
+                  <tr class="bg-[#FFFCF8]">
+                    <td class="px-4 py-3"><p class="font-bold text-[#1C1418]">AT-2026-000119</p><p class="mt-0.5 text-[#6B5F63]">21 nov · 12:31</p></td>
+                    <td class="px-4 py-3"><span class="flex items-center gap-2"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#E8F1EC] text-[10px] font-bold text-[#1E644C]">MR</span><span class="text-[#1C1418]">María Fernanda Ruiz</span></span></td>
+                    <td class="whitespace-nowrap px-4 py-3 font-semibold text-[#1C1418]">$ 54.900</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#F7EAE7] px-2 py-1 text-[10px] font-bold text-[#8A3B4E]">Rechazado</span></td>
+                    <td class="px-4 py-3 text-[#8A3B4E]">Sin factura</td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Recogida El Poblado</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#F7EAE7] px-2 py-1 text-[10px] font-bold text-[#8A3B4E]">Detenido</span></td>
+                    <td class="px-4 py-3"><a href="#revision" class="font-semibold text-[#8A3B4E] underline underline-offset-2">Revisar pago</a></td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3"><p class="font-bold text-[#1C1418]">AT-2026-000118</p><p class="mt-0.5 text-[#6B5F63]">21 nov · 08:58</p></td>
+                    <td class="px-4 py-3"><span class="flex items-center gap-2"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#F7EAE7] text-[10px] font-bold text-[#8A3B4E]">SP</span><span class="text-[#1C1418]">Santiago Pérez</span></span></td>
+                    <td class="whitespace-nowrap px-4 py-3 font-semibold text-[#1C1418]">$ 99.900</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#E8F1EC] px-2 py-1 text-[10px] font-bold text-[#1E644C]">Aprobado</span></td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Facturado</td>
+                    <td class="px-4 py-3 text-[#6B5F63]">Domicilio</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-[#F1ECE9] px-2 py-1 text-[10px] font-bold text-[#6B5F63]">Entregado</span></td>
+                    <td class="px-4 py-3"><a href="pedido-confirmado.html" class="font-semibold text-[#1E644C] underline underline-offset-2">Ver detalle</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Mobile cards: table becomes stacked cards -->
+          <section aria-labelledby="pedidos-movil-titulo" class="mt-5 space-y-3 md:hidden">
+            <h2 id="pedidos-movil-titulo" class="font-display text-lg font-semibold text-[#1C1418]">Pedidos recientes</h2>
+            <article class="rounded-xl border border-[#E8E1DD] bg-white p-4">
+              <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-[#1C1418]">AT-2026-000123</p><p class="mt-0.5 text-[11px] text-[#6B5F63]">23 nov · 10:24</p></div><span class="rounded-full bg-[#E8F1EC] px-2 py-1 text-[10px] font-bold text-[#1E644C]">En ruta</span></div>
+              <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs"><dt class="text-[#6B5F63]">Cliente</dt><dd class="text-right font-semibold text-[#1C1418]">Camila Restrepo</dd><dt class="text-[#6B5F63]">Total</dt><dd class="text-right font-semibold text-[#1C1418]">$ 188.820</dd><dt class="text-[#6B5F63]">Pago y factura</dt><dd class="text-right font-semibold text-[#1E644C]">Aprobado · Facturado</dd><dt class="text-[#6B5F63]">Entrega</dt><dd class="text-right font-semibold text-[#1C1418]">Domicilio</dd></dl>
+              <a href="seguimiento-pedido.html" class="mt-3 inline-flex min-h-9 items-center text-xs font-semibold text-[#1E644C] underline underline-offset-4">Ver detalle</a>
+            </article>
+            <article class="rounded-xl border border-[#E8E1DD] bg-white p-4">
+              <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-[#1C1418]">AT-2026-000122</p><p class="mt-0.5 text-[11px] text-[#6B5F63]">23 nov · 09:12</p></div><span class="rounded-full bg-[#FBF0DE] px-2 py-1 text-[10px] font-bold text-[#7E5A34]">Listo para recoger</span></div>
+              <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs"><dt class="text-[#6B5F63]">Cliente</dt><dd class="text-right font-semibold text-[#1C1418]">Juan David Molano</dd><dt class="text-[#6B5F63]">Total</dt><dd class="text-right font-semibold text-[#1C1418]">$ 74.900</dd><dt class="text-[#6B5F63]">Pago y factura</dt><dd class="text-right font-semibold text-[#1E644C]">Aprobado · Facturado</dd><dt class="text-[#6B5F63]">Entrega</dt><dd class="text-right font-semibold text-[#1C1418]">Zona Rosa</dd></dl>
+              <a href="seguimiento-pedido.html" class="mt-3 inline-flex min-h-9 items-center text-xs font-semibold text-[#1E644C] underline underline-offset-4">Ver detalle</a>
+            </article>
+            <article class="rounded-xl border border-[#E4C9C0] bg-[#FFFCF8] p-4">
+              <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-[#1C1418]">AT-2026-000121</p><p class="mt-0.5 text-[11px] text-[#6B5F63]">22 nov · 18:40</p></div><span class="rounded-full bg-[#F1ECE9] px-2 py-1 text-[10px] font-bold text-[#6B5F63]">Por empacar</span></div>
+              <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs"><dt class="text-[#6B5F63]">Cliente</dt><dd class="text-right font-semibold text-[#1C1418]">Valentina Ríos</dd><dt class="text-[#6B5F63]">Total</dt><dd class="text-right font-semibold text-[#1C1418]">$ 119.900</dd><dt class="text-[#6B5F63]">Pago y factura</dt><dd class="text-right font-semibold text-[#8A3B4E]">En verificación · Sin factura</dd><dt class="text-[#6B5F63]">Entrega</dt><dd class="text-right font-semibold text-[#1C1418]">Domicilio</dd></dl>
+              <a href="#revision" class="mt-3 inline-flex min-h-9 items-center text-xs font-semibold text-[#8A3B4E] underline underline-offset-4">Revisar pago</a>
+            </article>
+            <article class="rounded-xl border border-[#E8E1DD] bg-white p-4">
+              <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-[#1C1418]">AT-2026-000120</p><p class="mt-0.5 text-[11px] text-[#6B5F63]">22 nov · 15:05</p></div><span class="rounded-full bg-[#FBF0DE] px-2 py-1 text-[10px] font-bold text-[#7E5A34]">En preparación</span></div>
+              <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs"><dt class="text-[#6B5F63]">Cliente</dt><dd class="text-right font-semibold text-[#1C1418]">Andrés López</dd><dt class="text-[#6B5F63]">Total</dt><dd class="text-right font-semibold text-[#1C1418]">$ 209.800</dd><dt class="text-[#6B5F63]">Pago y factura</dt><dd class="text-right font-semibold text-[#1E644C]">Aprobado · Facturado</dd><dt class="text-[#6B5F63]">Entrega</dt><dd class="text-right font-semibold text-[#1C1418]">Domicilio</dd></dl>
+              <a href="seguimiento-pedido.html" class="mt-3 inline-flex min-h-9 items-center text-xs font-semibold text-[#1E644C] underline underline-offset-4">Ver detalle</a>
+            </article>
+            <article class="rounded-xl border border-[#E4C9C0] bg-[#FFFCF8] p-4">
+              <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-[#1C1418]">AT-2026-000119</p><p class="mt-0.5 text-[11px] text-[#6B5F63]">21 nov · 12:31</p></div><span class="rounded-full bg-[#F7EAE7] px-2 py-1 text-[10px] font-bold text-[#8A3B4E]">Detenido</span></div>
+              <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs"><dt class="text-[#6B5F63]">Cliente</dt><dd class="text-right font-semibold text-[#1C1418]">María Fernanda Ruiz</dd><dt class="text-[#6B5F63]">Total</dt><dd class="text-right font-semibold text-[#1C1418]">$ 54.900</dd><dt class="text-[#6B5F63]">Pago y factura</dt><dd class="text-right font-semibold text-[#8A3B4E]">Rechazado · Sin factura</dd><dt class="text-[#6B5F63]">Entrega</dt><dd class="text-right font-semibold text-[#1C1418]">El Poblado</dd></dl>
+              <a href="#revision" class="mt-3 inline-flex min-h-9 items-center text-xs font-semibold text-[#8A3B4E] underline underline-offset-4">Revisar pago</a>
+            </article>
+            <article class="rounded-xl border border-[#E8E1DD] bg-white p-4">
+              <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-[#1C1418]">AT-2026-000118</p><p class="mt-0.5 text-[11px] text-[#6B5F63]">21 nov · 08:58</p></div><span class="rounded-full bg-[#F1ECE9] px-2 py-1 text-[10px] font-bold text-[#6B5F63]">Entregado</span></div>
+              <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs"><dt class="text-[#6B5F63]">Cliente</dt><dd class="text-right font-semibold text-[#1C1418]">Santiago Pérez</dd><dt class="text-[#6B5F63]">Total</dt><dd class="text-right font-semibold text-[#1C1418]">$ 99.900</dd><dt class="text-[#6B5F63]">Pago y factura</dt><dd class="text-right font-semibold text-[#1E644C]">Aprobado · Facturado</dd><dt class="text-[#6B5F63]">Entrega</dt><dd class="text-right font-semibold text-[#1C1418]">Domicilio</dd></dl>
+              <a href="pedido-confirmado.html" class="mt-3 inline-flex min-h-9 items-center text-xs font-semibold text-[#1E644C] underline underline-offset-4">Ver detalle</a>
+            </article>
+          </section>
+
+          <nav aria-label="Paginación de pedidos" class="mt-6 flex flex-wrap items-center justify-between gap-3">
+            <p class="text-xs text-[#6B5F63]">Mostrando 6 de 28 pedidos</p>
+            <div class="flex items-center gap-1">
+              <span aria-disabled="true" class="rounded-lg border border-[#E8E1DD] px-3 py-2 text-xs font-semibold text-[#6B5F63]">Anterior</span>
+              <span aria-current="page" class="rounded-lg bg-[#1E644C] px-3 py-2 text-xs font-bold text-white">1</span>
+              <a href="#pedidos" class="rounded-lg border border-[#E8E1DD] px-3 py-2 text-xs font-semibold text-[#1E644C]">2</a>
+              <a href="#pedidos" class="rounded-lg border border-[#E8E1DD] px-3 py-2 text-xs font-semibold text-[#1E644C]">3</a>
+              <a href="#pedidos" class="rounded-lg border border-[#E8E1DD] px-3 py-2 text-xs font-semibold text-[#1E644C]">4</a>
+              <a href="#pedidos" class="rounded-lg border border-[#E8E1DD] px-3 py-2 text-xs font-semibold text-[#1E644C]">Siguiente</a>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- Footer -->
+  <footer class="bg-white">
+    <div class="mx-auto max-w-[1280px] px-4 py-12 sm:px-6 lg:px-8">
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
+        <div class="lg:col-span-1">
+          <div class="flex items-center gap-2">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E644C] font-display text-lg font-semibold text-white">A</span>
+            <span class="font-display text-xl font-semibold text-[#1E644C]">Adriana</span>
+          </div>
+          <p class="mt-3 font-display text-base italic text-[#7E5A34]">Tu ritual de belleza, cerca de ti.</p>
+          <p class="mt-4 text-sm text-[#6B5F63]">Bogotá · Medellín<br>Envíos a todo Colombia</p>
+          <div class="mt-4 flex gap-2">
+            <a href="#instagram" aria-label="Instagram de Adriana" class="rounded-full border border-[#E8E1DD] p-2 text-[#1E644C] hover:bg-[#E8F1EC]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+            <a href="#whatsapp" aria-label="WhatsApp de Adriana" class="rounded-full border border-[#E8E1DD] p-2 text-[#1E644C] hover:bg-[#E8F1EC]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.7 7L3 21l2.5-5.3A8 8 0 1 1 20 11.5Z"/><path d="M9 9c0 3 1.5 5 5 5l1.5-2-2-1-1 1c-1.5-.7-2.2-1.5-3-3l1-1-1-2H9Z"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-sm font-semibold text-[#1C1418]">Compra</h2>
+          <ul class="mt-3 space-y-2 text-sm text-[#6B5F63]">
+            <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Facial</a></li>
+            <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Cabello</a></li>
+            <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Cuerpo</a></li>
+            <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Marcas</a></li>
+            <li><a href="catalogo.html" class="hover:text-[#1E644C] hover:underline">Ofertas</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="text-sm font-semibold text-[#1C1418]">Ayuda</h2>
+          <ul class="mt-3 space-y-2 text-sm text-[#6B5F63]">
+            <li><a href="seguimiento-pedido.html" class="hover:text-[#1E644C] hover:underline">Seguir mi pedido</a></li>
+            <li><a href="#envios" class="hover:text-[#1E644C] hover:underline">Envíos y entregas</a></li>
+            <li><a href="#devoluciones" class="hover:text-[#1E644C] hover:underline">Cambios y retracto</a></li>
+            <li><a href="#faq" class="hover:text-[#1E644C] hover:underline">Preguntas frecuentes</a></li>
+            <li><a href="#contacto" class="hover:text-[#1E644C] hover:underline">Contáctanos</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="text-sm font-semibold text-[#1C1418]">Nosotras</h2>
+          <ul class="mt-3 space-y-2 text-sm text-[#6B5F63]">
+            <li><a href="index.html#tiendas" class="hover:text-[#1E644C] hover:underline">Nuestras tiendas</a></li>
+            <li><a href="#quienes" class="hover:text-[#1E644C] hover:underline">Quiénes somos</a></li>
+            <li><a href="cuenta.html" class="hover:text-[#1E644C] hover:underline">Mi cuenta</a></li>
+            <li><a href="admin-pedidos.html" class="hover:text-[#1E644C] hover:underline">Panel de operación</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="text-sm font-semibold text-[#1C1418]">Legal</h2>
+          <ul class="mt-3 space-y-2 text-sm text-[#6B5F63]">
+            <li><a href="index.html#politica-datos" class="hover:text-[#1E644C] hover:underline">Política de datos</a></li>
+            <li><a href="#terminos" class="hover:text-[#1E644C] hover:underline">Términos y condiciones</a></li>
+            <li><a href="#libro-reclamaciones" class="hover:text-[#1E644C] hover:underline">Libro de reclamaciones</a></li>
+            <li><a href="#cookies" class="hover:text-[#1E644C] hover:underline">Preferencias de cookies</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Static reference information: shared anchor targets for all mockups -->
+      <details class="mt-8 border-t border-[#E8E1DD] pt-6">
+        <summary class="cursor-pointer text-sm font-semibold text-[#1E644C]">Información de la tienda</summary>
+        <div class="mt-4 grid gap-4 text-xs leading-relaxed text-[#6B5F63] sm:grid-cols-2 lg:grid-cols-3">
+          <div id="envios"><p class="font-semibold text-[#1C1418]">Envíos y entregas</p><p class="mt-1">Despachamos a todo Colombia. Envío gratis desde $ 150.000 y recogida gratis en Bogotá — Zona Rosa y Medellín — El Poblado.</p></div>
+          <div id="devoluciones"><p class="font-semibold text-[#1C1418]">Cambios y retracto</p><p class="mt-1">Tienes 5 días hábiles desde la entrega para ejercer el retracto, conforme a la Ley 1480 de 2011.</p></div>
+          <div id="faq"><p class="font-semibold text-[#1C1418]">Preguntas frecuentes</p><p class="mt-1">Consulta horarios de tienda, medios de pago y tiempos de despacho antes de escribirnos.</p></div>
+          <div id="contacto"><p class="font-semibold text-[#1C1418]">Contáctanos</p><p class="mt-1">Escríbenos a hola@ejemplo.com o al número +57 300 123 4567. Respondemos en menos de 2 horas hábiles.</p></div>
+          <div id="quienes"><p class="font-semibold text-[#1C1418]">Quiénes somos</p><p class="mt-1">Adriana es una tienda colombiana de belleza con atención cercana y rituales para cada tipo de piel.</p></div>
+          <div id="terminos"><p class="font-semibold text-[#1C1418]">Términos y condiciones</p><p class="mt-1">Las compras se rigen por nuestros términos de venta. Todos los precios están en COP con IVA incluido.</p></div>
+          <div id="libro-reclamaciones"><p class="font-semibold text-[#1C1418]">Libro de reclamaciones</p><p class="mt-1">Puedes radicar una queja o reclamo en cualquiera de nuestras dos tiendas físicas.</p></div>
+          <div id="cookies"><p class="font-semibold text-[#1C1418]">Preferencias de cookies</p><p class="mt-1">Esta maqueta no instala cookies. En la versión definitiva podrás aceptar o rechazar las opcionales.</p></div>
+          <div id="politica-datos"><p class="font-semibold text-[#1C1418]">Política de datos</p><p class="mt-1">Tratamos tus datos conforme a la Ley 1581 de 2012. Puedes solicitar acceso, corrección o eliminación.</p></div>
+          <div id="instagram"><p class="font-semibold text-[#1C1418]">Instagram</p><p class="mt-1">Síguenos como @adrianatienda para ver novedades y consejos de cuidado.</p></div>
+          <div id="whatsapp"><p class="font-semibold text-[#1C1418]">WhatsApp</p><p class="mt-1">Escríbenos al +57 300 123 4567 para consultar disponibilidad y despachos.</p></div>
+        </div>
+      </details>
+    </div>
+    <div class="bg-[#1E644C] py-5 text-white">
+      <div class="mx-auto flex max-w-[1280px] flex-col gap-4 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <p class="text-xs text-white/85">© 2026 Adriana Tienda · Todos los derechos reservados · Precios en COP con IVA incluido</p>
+        <div class="flex flex-wrap items-center gap-2" aria-label="Medios de pago aceptados">
+          <span class="rounded border border-white/30 px-2 py-1 text-[10px] font-semibold tracking-wide">VISA</span>
+          <span class="rounded border border-white/30 px-2 py-1 text-[10px] font-semibold tracking-wide">MASTERCARD</span>
+          <span class="rounded border border-white/30 px-2 py-1 text-[10px] font-semibold tracking-wide">PSE</span>
+          <span class="rounded border border-white/30 px-2 py-1 text-[10px] font-semibold tracking-wide">NEQUI</span>
+          <span class="rounded border border-white/30 px-2 py-1 text-[10px] font-semibold tracking-wide">DAVIPLATA</span>
+          <span class="rounded border border-white/30 px-2 py-1 text-[10px] font-semibold tracking-wide">WOMPI</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
