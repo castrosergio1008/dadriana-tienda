@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Single source of truth for optional Home content (WhatsApp, socials,
+/// stores and curated selections). Values are validated in the RSC loader.
+model AppConfig {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("app_config")
+}

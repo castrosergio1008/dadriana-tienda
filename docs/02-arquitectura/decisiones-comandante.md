@@ -103,12 +103,40 @@
 
 ---
 
+## 4c. Arbitraje del Home — CSP interino (26-nov-2026)
+
+| ID | Decisión |
+|---|---|
+| C-HOME-01 | **CSP interino del Home para F4.** Se mantiene únicamente `Content-Security-Policy-Report-Only` (nunca `enforce`) con `base-uri 'none'`, `form-action 'self'` y `upgrade-insecure-requests`. **No se publica `report-uri`**: DD-HOME-02 prohíbe Route Handlers en el Home y no existe endpoint de reporte; el `enforce` queda **bloqueado** hasta que un DD nuevo defina un endpoint sin PII, se acumulen 7 días de evidencia y firmen `forge-sentinel` + `forge-infra` con E2E en verde. `style-src 'unsafe-inline'` queda como excepción temporal documentada hasta migrar a nonce/hashes. Esto matiza transitoriamente la línea `design-doc-home.md:407` sin modificar el documento aprobado; A2/`noindex` y el OK de Sentinel siguen vigentes para cualquier publicación. Veredicto de `forge-sentinel`: **OK interino para F4, NO para release**. |
+| C-HOME-02 | **Logo del cliente en Home (26-nov-2026).** Se reemplaza en header, footer y favicon desde `logo_dadriana.png` (raíz, conservado sin modificar): `public/brand/logo.png` 96×96 RGBA (14.987 B) y `app/icon.png` 64×64 RGBA (7.889 B), ambos < 40 KB. Presentación directa, sin el círculo crema: se retira el `span` con `bg-surface` en `BrandMark()` y en el footer; se mantienen el enlace `/`, los alt, el foco global y la imagen OG `/brand/og-image.png` intactos. CSP/A2 (C-HOME-01), F5 y `noindex` no se tocan. Sin commit, push ni deploy. |
+
+Nota C-HOME-02: hash SHA-256 previo de `public/brand/logo.png` = `b70861c4979f98172bdbe6fc6acd999538c8e0040ac7a38b1dd7c7038997462b`; hash actual = `72cea2ec1d5858c1ca527135176752f993823bead7a00003b52ab18cc74de441`. No se guarda backup binario. Riesgo reportado sin inventar un fondo nuevo: al quitarse el círculo, el verde del logo sobre `#1B5D4A` tiene contraste mediano 1,1:1 (17,4 % de píxeles opacos ≥ 3:1) y sobre `#123F33` 1,55:1 (23,8 %).
+
+---
+
+## 4d. Arbitraje del Home — DD-HOME-23 (27-nov-2026)
+
+| ID | Decisión |
+|---|---|
+| C-HOME-03 | **D-23-08 — Región de viewport, no compensación estática.** El patrón literal de `§4.3` (`.home-stage` flex con `min-height:100svh` y `main` conteniendo también las secciones) no produce una altura definida para el hero: `flex:1` resuelve contra la altura del contenido (~2900 px) y el slide queda en `70svh`. La alternativa de `--stage-chrome-h` deja huecos de 64–66 px en 600–1023 px porque la altura real del header cambia en esos anchos. Se introduce `.home-stage__viewport` con `display:flex; flex-direction:column; min-height:100svh`, que contiene **solo** el chrome y el hero; las secciones quedan en `<main>` hermano. Así el hero crece con `flex:1` hasta exactamente el borde inferior del viewport en cualquier ancho, sin medir el header en runtime, sin `--stage-chrome-h` y sin CLS. Es una enmienda deliberada al DD aprobado: la fuente de verdad pasa a ser esta decisión + el DD-23 §4.3 leído con este modelo. |
+| C-HOME-04 | **Matriz de geometría ampliada.** HOME-E2E-34 cubre `[375, 600, 767, 768, 820, 900, 1023, 1024, 1440]`, verifica `display:flex`, `flex-direction:column`, `min-height:100svh` del viewport, `flex-grow >= 1` del hero, cero solape, que el hero termine en el viewport (±1 px) y cero overflow en los 3 slides. La rama táctil se comprueba también en 767 px. `retries: 0` se mantiene. |
+| C-HOME-05 | **Retirada completa del chrome de DD-HOME-22.** Además de quitar `overlay`, se eliminan las reglas no-op `:hover`, `:focus-within`, `@media (hover:none)` sobre `.home-stage__chrome` y el velo superior. El fondo del header es blanco por una sola regla base; el autoplay lo pausa únicamente el slide (D-23-06). |
+| C-HOME-06 | **Skip link sigue alcanzando el H1 y el CTA.** Con el hero fuera de `<main>`, el target `#main` se coloca en la región del hero (`tabIndex={-1}`) y el landmark pasa a `id="contenido"`. HOME-E2E-01 verifica que "Saltar al contenido" enfoca `#main`; así el usuario de teclado no salta por encima del H1 y el CTA aprobado. HOME-E2E-40 queda etiquetado también `@smoke` tras estabilizar (67/67 en dos corridas, `retries: 0`). |
+
+## 4e. Arbitraje del Home — DD-HOME-24 (27-nov-2026)
+
+| ID | Decisión |
+|---|---|
+| C-HOME-07 | **DD-HOME-24 APROBADO.** El cliente pidió «quita la capa de la imagen, que la imagen se vea clara, no tan gigante» y eligió texto/controles **debajo de la foto**. Se elimina `.hero__scrim` del DOM y del CSS (fin del velo verde), se sustituye `object-cover` por `object-contain` en un marco cuadrado de `min(100%, 48svh, 28rem)` (≤ 448 px, sin recorte y sin CLS) y el `HeroCopy` pasa a variante `on-light` sobre fondo blanco. Header, autoplay, assets, Poppins y skip link intactos. El reloj determinista de HOME-E2E-40 se mantiene en 5 s (no 6 s) para preservar la corrección del `pauseAt`. |
+
+---
+
 ## 5. Estado de firmas
 
 | Rol | Estado | Condición |
 |---|---|---|
-| `forge-reviewer` | REQUEST CHANGES → se solicitará re-review | B1–B3 corregidos y C-01…C-12 propagados |
-| `forge-sentinel` | Pendiente | Debe emitir visto bueno explícito sobre C-01, C-02, C-04 y C-05 (datos, PII y auth) |
-| `forge-qualis` | Pendiente | Firma al cerrar C-03 y C-11 en pruebas y plan de sprints |
-| `forge-infra` | Pendiente | Firma al cerrar C-09 |
-| `apex-forge` (Comandante) | ✅ **Approved** (24 nov 2026) | LGTM final 21/21 + firmas de diseño recibidas. Firma de go-live pendiente del Día D con evidencia en staging |
+| `forge-reviewer` | ✅ **LGTM DD-HOME-23 y DD-HOME-24** (27 nov 2026) | DD-23: bloqueantes B1/B2 cerrados por C-HOME-03/C-HOME-05; 9 anchos verificados. DD-24: 8 checks sin bloqueantes, cero velo y autoplay intacto |
+| `forge-sentinel` | ✅ OK reutilizado para DD-HOME-24 | El cambio es presentacional: no toca datos, PII, auth, privilegios ni secretos. Sigue pending el visto bueno explícito histórico sobre C-01, C-02, C-04 y C-05 |
+| `forge-qualis` | ✅ **GO DD-HOME-24** (27 nov 2026) | Cobertura HOME-E2E-34/-35/-36/-40 y -41…-44 verificada; build/bundle y rollback documentados. Deploy NO autorizado; QR-22-01 abierta |
+| `forge-infra` | ✅ Build y CI locales verdes (27 nov 2026) | `npm run build` OK y `check:bundle` PASS. Firma de go-live pendiente: QR-22-01 (ID del deployment anterior + acta del drill) y autorización explícita |
+| `apex-forge` (Comandante) | ✅ **Approved DD-HOME-24** (27 nov 2026) | C-HOME-07. Firma de go-live pendiente del Día D; no hay commit, push ni deploy autorizado |

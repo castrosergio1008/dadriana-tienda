@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* Only app code defines utility classes: docs and fixtures must not leak
+   legacy font declarations into the served bundle. */
+@source "./";
+@source "../components";
+@source "../lib";
+@source not "../docs";
+@source not "../tests";
+@source not "../test-results";
+@source not "../imagencorporarativa.md";
+
+/* Approved brand tokens. Components must never use raw color values. */
+@theme {
+  --color-primary: #1B5D4A;
+  --color-primary-hover: #22755C;
+  --color-ink: #123F33;
+  --color-accent: #C6A050;
+  --color-accent-soft: #E6CC87;
+  --color-accent-dark: #B38F44;
+  --color-surface: #F7F5EE;
+  --color-surface-alt: #EEF4F1;
+  --color-white: #FFFFFF;
+  --radius-card: 16px;
+  --radius-pill: 999px;
+  --radius-small: 8px;
+  --shadow-soft: 0 8px 24px rgba(18, 63, 51, 0.08);
+  --content-max: 1200px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  h1 {
+    line-height: 1.1;
+  }
+
+  h3 {
+    font-family: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  /* Green surfaces use the approved champagne focus token. */
+  [data-surface='dark'] :focus-visible {
+    outline-color: var(--color-accent-soft);
+  }
+
+  /* Cream controls inside dark headers keep the ink focus token (WCAG 2.2 SC 1.4.11). */
+  [data-surface='dark'] [data-surface='light'] :focus-visible {
+    outline-color: var(--color-ink);
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+}
+
+/* DD-HOME-24: the header and the slide are compact blocks in normal flow.
+   The square frame reserves its own height before the image loads, so the
+   stage no longer fills the viewport or needs any overlay. */
+.home-stage__viewport {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.home-stage__chrome {
+  flex: none;
+  background-color: var(--color-white);
+}
+
+section.hero {
+  flex: none;
+  min-height: 0;
+  position: relative;
+  background-color: var(--color-white);
+}
+
+.hero__frame {
+  position: relative;
+  width: min(100%, 48svh, 28rem);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+  background-color: var(--color-surface);
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+}

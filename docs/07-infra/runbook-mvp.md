@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| **Versión** | `mvp-runbook/v1` — 25 de noviembre de 2026 |
+| **Versión** | `mvp-runbook/v1.1` — 26 de noviembre de 2026 |
 | **Dueño** | `forge-infra` (operación) con `forge-qualis` (fiabilidad) |
 | **Aprobadores** | `forge-infra` + `forge-sentinel` + `forge-reviewer` + `apex-forge` |
 | **Fuente de verdad** | [Design Doc MVP §10](../02-arquitectura/design-doc-mvp.md) y [ADR-MVP-005](../02-arquitectura/adr-mvp/ADR-MVP-005.md) |
@@ -16,10 +16,10 @@
 
 | Área | Dueño | Responsabilidad en el runbook |
 |---|---|---|
-| Repositorio y required checks | `forge-infra` + `forge-reviewer` | `main` protegido, PR + 1 LGTM, CODEOWNERS, sin autoaprobación |
+| Repositorio y required checks | `forge-infra` + `forge-reviewer` | `main` protegido, PR + 1 LGTM, sin autoaprobación; el gate humano se configura en Branch Protection de GitHub (**no hay CODEOWNERS en el repo**) |
 | Configuración de Vercel | `forge-infra` | Framework Preset, Root Directory, Production Branch, Previews, Deployment Protection, `vercel.json` |
 | Base de datos y backup | `forge-infra` (con titularidad confirmada por el cliente, Q-MVP-03) | Proveedor, PITR, ensayo de restore en Preview |
-| Seguridad y cabeceras | `forge-sentinel` | CSP `report-only` → `enforce`, HMAC pepper, `.gitignore`, protección y `noindex` |
+| Seguridad y cabeceras | `forge-sentinel` | CSP en `report-only` (promoción a `enforce` solo con el gate de §3.3), HMAC pepper, `.gitignore`, protección y `noindex` |
 | Calidad y release | `forge-qualis` | 28 E2E ×3, cuarentena de flaky, acta de rollback, SLO y postmortem |
 | Go / No-Go | `apex-forge` (Comandante) | Aprobación final; sin acta cronometrada no hay Go-Live |
 | Moderación de reseñas | Operación del cliente (Q-MVP-02) | Baja/rectificación por `wa.me`, borrado por menor, plazos 10/15 días hábiles |
@@ -47,8 +47,8 @@ La configuración vive en `vercel.json`, `next.config.*` y en este runbook. Los 
 | Entorno | Datos | Protección | Cabeceras | `DATABASE_URL` |
 |---|---|---|---|---|
 | Development | Ficticios, locales | Local | `report-only` | Local; nunca productiva |
-| Preview (PR) | Ficticios, sembrados y aislados | Vercel Authentication/SSO, **sin contraseñas compartidas** | `X-Robots-Tag: noindex`, `report-only` → `enforce` | **SÍ existe**, separada de Production |
-| Production pre-go-live | Sin contenido indexable | **Deployment Protection ON** | `X-Robots-Tag: noindex`, `report-only` → `enforce` | **NO CREAR TODAVÍA** |
+| Preview (PR) | Ficticios, sembrados y aislados | Vercel Authentication/SSO, **sin contraseñas compartidas** | `X-Robots-Tag: noindex`, CSP en `report-only` (**sin `enforce`**) | **SÍ existe**, separada de Production |
+| Production pre-go-live | Sin contenido indexable | **Deployment Protection ON** | `X-Robots-Tag: noindex`, CSP en `report-only` (**sin `enforce`**) | **NO CREAR TODAVÍA** |
 | Production post-go-live | Reales autorizados (Q-MVP-08) | Retirada solo tras A2 | `enforce`, sin `noindex` | Creada con el checklist §4 |
 
 **Inventario cerrado de variables (A1 + excepción autorizada por el Comandante, DD-MVP-21):**
@@ -82,8 +82,8 @@ Registro obligatorio (una fila por rotación):
 
 ### 3.1 Pull Request → Preview
 
-1. El PR pasa los required checks: `lint`, `typecheck`, `unit`, `integration` (PostgreSQL efímera con fixtures sintéticas), `build`, `gitleaks`, `bundle budget` y smoke E2E marcados ●.
-2. `main` exige PR + 1 LGTM de `forge-reviewer`; si el PR toca datos, secretos o cabeceras, además OK de `forge-sentinel`. **El autor no puede aprobarse a sí mismo.**
+1. El PR pasa los required checks (nombres de **job** de GitHub Actions, no de step): `secrets (gitleaks)`, `detect`, `lint`, `typecheck`, `unit`, `integration` (PostgreSQL efímera con fixtures sintéticas), `build`, `bundle budget`, `audit`, `e2e (Playwright + axe)`. El job `e2e (Playwright + axe)` incluye el smoke ●, la suite completa de release ×3, la suite dinámica con fixtures (`npm run test:e2e:dynamic`) y axe; exigir ese único job cubre las cuatro verificaciones.
+2. `main` exige PR + 1 LGTM de `forge-reviewer`; si el PR toca datos, secretos o cabeceras, además OK de `forge-sentinel`. **El autor no puede aprobarse a sí mismo.** Este gate humano se configura en **Branch Protection de GitHub**; no hay `CODEOWNERS` en el repositorio, por lo que **no es verificable desde el repo**: `forge-infra` debe comprobarlo en la consola y anotarlo en el acta (no se inventan owners ni equipos).
 3. Vercel crea el Preview desde la integración Git. Verificar: protección SSO activa, `noindex`, `DATABASE_URL` de Preview (ficticia) y cabeceras con `curl -I`.
 4. Ejecutar en Preview los 28 E2E ×1, axe 0 críticas/serias, TTFB p75 < 800 ms, p95 de búsqueda < 300 ms con catálogo fixture y proxy de laboratorio (TBT/Lighthouse + trazas de carrusel, filtros y formulario).
 5. Nunca usar credenciales productivas en Preview.
@@ -98,16 +98,19 @@ Registro obligatorio (una fila por rotación):
 ### 3.3 Configuración de cabeceras (verificación)
 
 ```bash
+# Solicitud anónima: sin cookies ni cabeceras de autenticación. Ver §3.5 (acta A2).
 curl -I https://dadriana-tienda.vercel.app
 ```
 
-Comprobar: ausencia de `X-Powered-By`; `Referrer-Policy: strict-origin-when-cross-origin`; `X-Frame-Options: DENY`; `X-Content-Type-Options: nosniff`; `Permissions-Policy: camera=(), microphone=(), geolocation=()`; HSTS; `Content-Security-Policy-Report-Only` con `report-uri` **sin PII**; `X-Robots-Tag: noindex` mientras A2 esté vigente. Repetir `curl -I` en el host temporal y en el dominio definitivo cuando se resuelva Q-MVP-04.
+Comprobar: ausencia de `X-Powered-By`; `Referrer-Policy: strict-origin-when-cross-origin`; `X-Frame-Options: DENY`; `X-Content-Type-Options: nosniff`; `Permissions-Policy: camera=(), microphone=(), geolocation=()`; HSTS; `Content-Security-Policy-Report-Only` **sin `report-uri` mientras no exista endpoint de reportes** (si se configura, debe ser **sin PII**: ni correo, IP, tokens ni parámetros de reseña); `X-Robots-Tag: noindex` mientras A2 esté vigente. Repetir `curl -I` en el host temporal y en el dominio definitivo cuando se resuelva Q-MVP-04.
 
-**Promoción de CSP a `enforce`:** solo tras ≥ 7 días de reportes sin violaciones reales, E2E completo en verde bajo `report-only` y LGTM de `forge-sentinel` + `forge-infra`. Tras el cambio, repetir MVP-E2E-25; si falla, volver a `report-only` y abrir issue.
+La política en `report-only` **ya incluye** `base-uri 'none'`, `form-action 'self'` y `upgrade-insecure-requests`: confírmense en la cabecera y cualquier ausencia se trata como deriva a corregir en `next.config.*` antes de firmar el acta. `style-src 'unsafe-inline'` queda como **excepción temporal documentada** hasta sustituirla por nonces o hashes; no es una autorización permanente ni se hereda a la presentación estática.
+
+**Promoción de CSP a `enforce`: NO se promueve** hasta que concurran las tres condiciones, registradas en el acta: (1) endpoint de reporte **sin PII** desplegado y funcionando; (2) **≥ 7 días de evidencia** de reportes sin violaciones reales, con el E2E completo en verde bajo `report-only`; (3) OK explícito de `forge-sentinel` **y** `forge-infra`. Si falta alguna, la cabecera sigue siendo `Content-Security-Policy-Report-Only`. Tras el cambio, repetir MVP-E2E-25; si falla, volver a `report-only` y abrir issue.
 
 ### 3.4 Despliegue temporal de la presentación (`DD-MVP-23` / `ADR-MVP-006`)
 
-Alcance: **solo** `presentacion/mvp/index.html` (HTML autocontenido, CSS inline, sin JavaScript, sin formularios y sin recursos externos). Es visible por URL, **no indexable**. No es la aplicación ni un go-live del MVP; A2/`DD-MVP-18` sigue vigente para la app.
+Alcance: **solo** `presentacion/mvp/index.html` (HTML autocontenido, CSS inline, sin JavaScript, sin formularios y sin recursos externos). Es visible por URL, **no indexable**. No es la aplicación ni un go-live del MVP; A2/`DD-MVP-18` sigue vigente para la app. **Recordatorio de release:** `DD-MVP-23` cubre únicamente ese HTML estático; `vercel.json` **no debe desplegar la app** (sin build de Next.js, sin `package.json`, sin `DATABASE_URL` y sin variables de entorno). Si el despliegue contiene código de la app, se restaura la protección *antes* de continuar.
 
 **Publicación**
 
@@ -146,6 +149,44 @@ Si falta una cabecera, aparece un 5xx o aparece cualquier dato real, **no se com
 
 **Acción de reversión:** retirar el `vercel.json` temporal **y, de forma manual en la consola**, volver a poner Vercel Authentication en **All Deployments** (o el valor anterior anotado), con Password Protection OFF y sin Shareable Links; los Previews no se modifican. Después ejecutar `MVP-E2E-23` (sin autenticar ⇒ 401 + `X-Robots-Tag: noindex`), repetir `curl -I` y registrar hora y responsable en el acta. Borrar el archivo **no** basta para proteger: la consola es la fuente de verdad de Deployment Protection. No hay base de datos que revertir: no se creó `DATABASE_URL` ni se ejecutaron migraciones.
 
+### 3.5 Checklist A2 / DD-MVP-18 para release (antes de cualquier Go-Live)
+
+A2/`DD-MVP-18` mantiene la **aplicación** protegida y no indexable hasta cerrar Q-MVP-03/04/08 y crear la `DATABASE_URL` de Production (§4). Verificar con peticiones **anónimas**, sin cookies ni token de Vercel:
+
+```bash
+PREVIEW_URL="URL_DEL_PREVIEW_DE_VERCEL"   # reemplazar por la URL del PR/deployment a verificar
+PROD_URL=https://dadriana-tienda.vercel.app
+
+curl -sSI "$PREVIEW_URL"   # esperado: 401 + X-Robots-Tag: noindex
+curl -sSI "$PROD_URL"      # esperado: 401 + X-Robots-Tag: noindex (pre-go-live)
+```
+
+| # | Comprobación | Esperado |
+|---|---|---|
+| 1 | `curl -I` anónimo a Preview | **401 + `X-Robots-Tag: noindex`** |
+| 2 | `curl -I` anónimo a Production pre-go-live | **401 + `X-Robots-Tag: noindex`** |
+| 3 | Sin bypass | Vercel Authentication activa; sin Shareable Links, contraseñas compartidas ni Trusted IPs abiertas |
+| 4 | Publicación temporal | `DD-MVP-23` cubre **solo** `presentacion/mvp/index.html`; `vercel.json` **no despliega la app** |
+| 5 | Gate humano | 1 LGTM de `forge-reviewer` + OK de `forge-sentinel` para datos/secretos/cabeceras, comprobados en **Branch Protection de GitHub** (no hay CODEOWNERS en el repo: no es verificable desde el código; no se inventan owners) |
+| 6 | Acta A2 firmada | Adjunta al release; **sin acta no hay Go-Live** |
+
+Un `200`, un `noindex` ausente o una respuesta sin `401` es **No-Go**: restaurar Deployment Protection en la consola (fuente de verdad), repetir `MVP-E2E-23` y los `curl -I`. La protección y el `noindex` solo se retiran en el paso 10 de §4, con esta acta ya cerrada.
+
+```text
+ACTA A2 / DD-MVP-18 — MVP D'Adriana Tienda
+Fecha y hora:
+URL Preview verificada:
+  curl -I anónimo → código HTTP: ____ ; X-Robots-Tag: ____
+URL Production pre-go-live verificada:
+  curl -I anónimo → código HTTP: ____ ; X-Robots-Tag: ____
+MVP-E2E-23 (401 + noindex sin autenticar): [ ] OK  [ ] Falló (detalle):
+vercel.json solo publica la presentación estática: [ ] Sí  [ ] No (detalle):
+Gate Branch Protection (1 LGTM forge-reviewer + OK forge-sentinel): [ ] Verificado  [ ] Pendiente
+CSP en report-only (sin enforce): [ ] Sí  [ ] No (detalle):
+Responsable:
+Firma forge-infra / forge-qualis / forge-sentinel:
+```
+
 ---
 
 ## 4. Checklist para abrir Production (10 pasos)
@@ -160,8 +201,8 @@ Ejecutar **en orden**. Hasta terminar el paso 10, Production sigue protegida y c
 6. Migraciones probadas en BD efímera y en Preview con datos ficticios; reversión ensayada (`expand → contract`).
 7. Política de privacidad, consentimiento versionado y procedimiento de baja/rectificación por `wa.me` revisados por `forge-sentinel` (RF-MVP-046, A3).
 8. Cerrar Q-MVP-02 por escrito: moderador designado (persona y criterios) y procedimiento de borrado por menor documentado (A5, excepción al consentimiento), con verificación de baja por correo HMAC (A3).
-9. OK explícito registrado de `forge-infra` y `forge-sentinel`; gitleaks limpio y `.gitignore` con `!.env.example`.
-10. Crear `DATABASE_URL` en Vercel Production como secreta; ejecutar smoke de 7 superficies; **solo entonces** retirar Deployment Protection y `noindex`, y habilitar el formulario público. Registrar hora y firmas.
+9. OK explícito registrado de `forge-infra` y `forge-sentinel` (gate humano verificado en Branch Protection de GitHub, no en el repo); gitleaks limpio y `.gitignore` con `!.env.example`.
+10. Cerrar el acta A2/`DD-MVP-18` de §3.5 (401 + `noindex` anónimos en Preview y Production pre-go-live). Crear `DATABASE_URL` en Vercel Production como secreta; ejecutar smoke de 7 superficies; **solo entonces** retirar Deployment Protection y `noindex`, y habilitar el formulario público. Registrar hora y firmas.
 
 ---
 
@@ -177,7 +218,7 @@ Ejecutar siempre después de un despliegue en `main` y después de cualquier rol
 | 4 | **`wa.me`** | Destino `https://wa.me/57…` con `rel="noopener noreferrer"`; sin PII; inyección por query/hash/referrer/reseña ignorada |
 | 5 | **Reseñas** | Ninguna pendiente/rechazada visible; HTML `no-store, private`; enlace neutral de baja/corrección presente |
 | 6 | **Tiendas** | Activas/inactivas desde `app_config`; número por tienda correcto; redes con allowlist de hostname exacto |
-| 7 | **Cabeceras** | `curl -I`: sin `X-Powered-By`, CSP según fase, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS y `noindex` si aplica |
+| 7 | **Cabeceras** | `curl -I`: sin `X-Powered-By`; CSP en `report-only` pre-go-live (`base-uri 'none'`, `form-action 'self'`, `upgrade-insecure-requests`), `enforce` solo tras §3.3; `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS y `noindex` si aplica |
 
 Complemento por release: sonda E2E sintética sin PII (MVP-E2E-27), 28 E2E ×3 con cuarentena de flaky, y verificación de los 8 bloqueantes `SEC-MVP`.
 
