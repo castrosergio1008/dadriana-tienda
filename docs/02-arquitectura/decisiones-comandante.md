@@ -129,14 +129,20 @@ Nota C-HOME-02: hash SHA-256 previo de `public/brand/logo.png` = `b70861c4979f98
 |---|---|
 | C-HOME-07 | **DD-HOME-24 APROBADO.** El cliente pidió «quita la capa de la imagen, que la imagen se vea clara, no tan gigante» y eligió texto/controles **debajo de la foto**. Se elimina `.hero__scrim` del DOM y del CSS (fin del velo verde), se sustituye `object-cover` por `object-contain` en un marco cuadrado de `min(100%, 48svh, 28rem)` (≤ 448 px, sin recorte y sin CLS) y el `HeroCopy` pasa a variante `on-light` sobre fondo blanco. Header, autoplay, assets, Poppins y skip link intactos. El reloj determinista de HOME-E2E-40 se mantiene en 5 s (no 6 s) para preservar la corrección del `pauseAt`. |
 
+## 4f. Publicación de la app en el alias de producción (27-nov-2026)
+
+| ID | Decisión |
+|---|---|
+| C-HOME-08 | **Retirar el `vercel.json` temporal y publicar la app en `https://dadriana-tienda.vercel.app`.** El log del deployment de `f7a0610` mostró `Build Completed [99ms]` y `no files were prepared`: Vercel copió `presentacion/mvp/` porque `vercel.json:3-6` fijaba `framework:null`, `buildCommand:""` y `outputDirectory`. Infra y Sentinel aprobaron el borrado: basta con eliminar el archivo, Vercel detecta Next.js por `package.json`/lockfile y aplica el CSP **report-only** de `next.config.ts:33-38` (C-HOME-01, sin `report-uri`). El cliente pidió explícitamente que la página sea visible y autorizó commit + push; el Comandante arbitra que esa autorización **supera la excepción temporal de «solo HTML estático»** de `runbook-mvp.md:113-117`. El ID del deployment anterior queda registrado como **`CLqk5ZKNjuDNVGdMyp9FqTjH6QuW`** (commit `a7e035b`); el drill cronometrado y el acta A2 siguen pendientes, pero no bloquean esta publicación autorizada. Rollback: revertir el commit que retira `vercel.json` y reasignar el alias al ID registrado; no hay BD ni migraciones que revertir. Production ya respondía 200 anónimo, Previews siguen con SSO y `noindex` intacto. |
+
 ---
 
 ## 5. Estado de firmas
 
 | Rol | Estado | Condición |
 |---|---|---|
-| `forge-reviewer` | ✅ **LGTM DD-HOME-23 y DD-HOME-24** (27 nov 2026) | DD-23: bloqueantes B1/B2 cerrados por C-HOME-03/C-HOME-05; 9 anchos verificados. DD-24: 8 checks sin bloqueantes, cero velo y autoplay intacto |
-| `forge-sentinel` | ✅ OK reutilizado para DD-HOME-24 | El cambio es presentacional: no toca datos, PII, auth, privilegios ni secretos. Sigue pending el visto bueno explícito histórico sobre C-01, C-02, C-04 y C-05 |
-| `forge-qualis` | ✅ **GO DD-HOME-24** (27 nov 2026) | Cobertura HOME-E2E-34/-35/-36/-40 y -41…-44 verificada; build/bundle y rollback documentados. Deploy NO autorizado; QR-22-01 abierta |
-| `forge-infra` | ✅ Build y CI locales verdes (27 nov 2026) | `npm run build` OK y `check:bundle` PASS. Firma de go-live pendiente: QR-22-01 (ID del deployment anterior + acta del drill) y autorización explícita |
-| `apex-forge` (Comandante) | ✅ **Approved DD-HOME-24** (27 nov 2026) | C-HOME-07. Firma de go-live pendiente del Día D; no hay commit, push ni deploy autorizado |
+| `forge-reviewer` | ✅ **LGTM DD-HOME-23 y DD-HOME-24** (27 nov 2026) | DD-23: bloqueantes B1/B2 cerrados por C-HOME-03/C-HOME-05; 9 anchos verificados. DD-24: 8 checks sin bloqueantes, cero velo y autoplay intacto. El borrado de `vercel.json` sigue siendo cambio de configuración: requiere LGTM adicional si se reabre el PR |
+| `forge-sentinel` | ✅ OK para DD-HOME-24 y para retirar `vercel.json` (27 nov 2026) | Sin PII/secretos; CSP report-only sin `report-uri` (C-HOME-01). Condición: verificar cabeceras en `/`, `/piel` y 404; el acta A2 queda pendiente |
+| `forge-qualis` | ✅ **GO DD-HOME-24** (27 nov 2026) | Cobertura HOME-E2E-34/-35/-36/-40 y -41…-44 verificada; build/bundle y rollback documentados. Publicación C-HOME-08 requiere monitoreo inicial |
+| `forge-infra` | ✅ Aprobado retirar `vercel.json` (27 nov 2026) | Vercel detecta Next.js sin archivo; `prisma generate` funciona sin `DATABASE_URL`; build/bundle locales verdes. ID anterior registrado en QR-22-01 |
+| `apex-forge` (Comandante) | ✅ **Approved DD-HOME-24 + C-HOME-08** (27 nov 2026) | El cliente autorizó explícitamente commit, push y visibilidad pública. Falta el acta del drill para la go-live formal |

@@ -233,6 +233,7 @@ Complemento por release: sonda E2E sintética sin PII (MVP-E2E-27), 28 E2E ×3 c
 3. Si el problema es una reseña indebida, marcarla `rejected` o borrarla desde la consola SSO+MFA; si es menor, aplicar borrado de reseña, correo HMAC y metadatos (A5).
 4. **Smoke post-rollback de 7 superficies** (§5).
 5. **Acta cronometrada** (plantilla abajo). **Sin acta no hay Go-Live.**
+6. **QR-22-01 (27-nov-2026):** deployment anterior registrado = `CLqk5ZKNjuDNVGdMyp9FqTjH6QuW` (commit `a7e035b`, presentación estática). Publicación de la app autorizada por C-HOME-08; falta el drill cronometrado y el acta A2.
 
 ```text
 ACTA DE ROLLBACK — MVP D'Adriana Tienda
