@@ -22,7 +22,6 @@ const AUTOPLAY_MS = 5000;
  */
 export function HomeStage({ chrome, heroCopy, slides, children }: HomeStageProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [explicitPaused, setExplicitPaused] = useState(false);
   const [hoverPaused, setHoverPaused] = useState(false);
   const [focusPaused, setFocusPaused] = useState(false);
   // `null` until the media query has been read: deterministic SSR/first paint
@@ -49,7 +48,7 @@ export function HomeStage({ chrome, heroCopy, slides, children }: HomeStageProps
     reduce !== null &&
     shouldAutoplay({
       reduce,
-      explicitPaused,
+      explicitPaused: false,
       hoverPaused,
       focusPaused,
     });
@@ -69,35 +68,18 @@ export function HomeStage({ chrome, heroCopy, slides, children }: HomeStageProps
   const pauseOnPointerEnter = () => setHoverPaused(true);
   const resumeOnPointerLeave = () => setHoverPaused(false);
 
-  // DD-HOME-22.5: the pause toggle is exempt from focusPaused so that
-  // "Reanudar presentación" resumes even while the button keeps focus.
-  const isPlaybackToggle = (target: EventTarget | null): boolean =>
-    target instanceof HTMLElement && target.matches('[data-playback-toggle]');
-
-  const pauseOnFocus = (event: FocusEvent<HTMLElement>): void => {
-    setFocusPaused(!isPlaybackToggle(event.target));
+  const pauseOnFocus = (_event: FocusEvent<HTMLElement>): void => {
+    setFocusPaused(true);
   };
 
   const resumeOnBlur = (event: FocusEvent<HTMLElement>): void => {
     const next = event.relatedTarget;
-    // Moving into the toggle from any other control clears the pause flag.
-    if (isPlaybackToggle(next)) {
-      setFocusPaused(false);
-      return;
-    }
     // focusout with relatedTarget: only clear the flag when focus really left
     // this region, not when it moved to another control inside it.
     if (next instanceof Node && event.currentTarget.contains(next)) {
       return;
     }
     setFocusPaused(false);
-  };
-
-  // Dots point at an already-valid index; arrows move by one with wrap-around.
-  // Clicking the active dot keeps focusPaused true, so the 5s counter is
-  // intentionally not restarted (approved DD-HOME-22 behaviour).
-  const goTo = (index: number): void => {
-    setActiveIndex(index);
   };
 
   const step = (offset: number): void => {
@@ -119,77 +101,55 @@ export function HomeStage({ chrome, heroCopy, slides, children }: HomeStageProps
           onFocus={pauseOnFocus}
           onBlur={resumeOnBlur}
         >
-          <div className="mx-auto w-full max-w-[var(--content-max)] px-5 py-8 md:px-6 md:py-10 lg:px-8">
-            <div className="hero__media">
-              <div className="hero__frame">
-                {slides.map((slide, index) => (
-                  <div
-                    key={slide.id}
-                    className={`absolute inset-0 ${index === activeIndex ? 'opacity-100' : 'opacity-0'}`}
-                    aria-hidden={index === activeIndex ? undefined : true}
-                  >
-                    <Image
-                      src={slide.src}
-                      alt={slide.alt}
-                      fill
-                      sizes="(min-width: 640px) 448px, calc(100vw - 40px)"
-                      priority={index === 0}
-                      loading={index === 0 ? undefined : 'lazy'}
-                      decoding="async"
-                      className="object-contain"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="hero__copy mx-auto mt-8 max-w-2xl text-center">{heroCopy}</div>
-
-            {/* Controls sit directly on the white hero surface, below the copy. */}
-            <div className="hero__controls mx-auto mt-6 flex w-fit flex-wrap items-center justify-center gap-3">
-              <button
-                type="button"
-                aria-label="Diapositiva anterior"
-                onClick={() => step(-1)}
-                className="rounded-pill bg-surface px-4 py-2 text-ink"
-              >
-                <span aria-hidden="true">‹</span>
-              </button>
-
+          {/* Full-width hero frame: aspect ratio matches the 3000x1100 source
+              bitmaps so the image fills the slider without gaps or letterboxing. */}
+          <div className="hero__media relative">
+            <div className="hero__frame">
               {slides.map((slide, index) => (
-                <button
+                <div
                   key={slide.id}
-                  type="button"
-                  aria-label={`Ir a la diapositiva ${index + 1} de ${slides.length}`}
-                  aria-current={index === activeIndex ? 'true' : undefined}
-                  onClick={() => goTo(index)}
-                  className={`rounded-pill px-4 py-2 ${
-                    index === activeIndex ? 'bg-primary text-white' : 'bg-surface text-ink'
-                  }`}
+                  className={`absolute inset-0 ${index === activeIndex ? 'opacity-100' : 'opacity-0'}`}
+                  aria-hidden={index === activeIndex ? undefined : true}
                 >
-                  {index + 1}
-                </button>
+                  <Image
+                    src={slide.src}
+                    alt={slide.alt}
+                    fill
+                    sizes="100vw"
+                    priority={index === 0}
+                    loading={index === 0 ? undefined : 'lazy'}
+                    decoding="async"
+                    className="object-cover"
+                  />
+                </div>
               ))}
-
-              <button
-                type="button"
-                aria-label="Diapositiva siguiente"
-                onClick={() => step(1)}
-                className="rounded-pill bg-surface px-4 py-2 text-ink"
-              >
-                <span aria-hidden="true">›</span>
-              </button>
-
-              <button
-                type="button"
-                data-playback-toggle
-                aria-pressed={explicitPaused}
-                onClick={() => setExplicitPaused((paused) => !paused)}
-                className="rounded-pill bg-surface px-4 py-2 text-ink"
-              >
-                {explicitPaused ? 'Reanudar presentación' : 'Pausar presentación'}
-              </button>
             </div>
+
+            <button
+              type="button"
+              aria-label="Diapositiva anterior"
+              onClick={() => step(-1)}
+              className="hero__arrow hero__arrow--prev absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-ink shadow-soft backdrop-blur-sm transition hover:bg-white focus-visible:bg-white md:left-5"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              aria-label="Diapositiva siguiente"
+              onClick={() => step(1)}
+              className="hero__arrow hero__arrow--next absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-ink shadow-soft backdrop-blur-sm transition hover:bg-white focus-visible:bg-white md:right-5"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="mx-auto w-full max-w-[var(--content-max)] px-5 py-8 md:px-6 md:py-10 lg:px-8">
+            <div className="hero__copy mx-auto mt-8 max-w-2xl text-center">{heroCopy}</div>
           </div>
         </section>
       </div>

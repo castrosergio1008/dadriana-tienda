@@ -10,6 +10,9 @@ const localBaseURL = 'http://127.0.0.1:3000';
 
 export default defineConfig({
   testDir: './tests/e2e',
+  // QA-EXC-28-01: warm the next/image variants once before parallel workers
+  // start, so a 3 MB source cannot delay `load` past the per-test timeout.
+  globalSetup: './tests/global-setup.ts',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   // The full suite already runs three times on release (design-doc-home.md

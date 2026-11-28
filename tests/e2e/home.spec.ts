@@ -21,6 +21,59 @@ const axeSource = readFileSync(
   'utf8',
 );
 
+type AxeViolation = { id: string; impact?: string; nodes: number };
+
+async function runAxeAudit(page: Page): Promise<{ violations: AxeViolation[]; targeted: string[] }> {
+  return page.evaluate(async () => {
+    if (!window.axe) throw new Error('axe-core was not injected');
+    const result = await window.axe.run(document, {
+      runOnly: {
+        type: 'tag',
+        values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'],
+      },
+    });
+    const targetedResult = await window.axe.run(document, {
+      runOnly: {
+        type: 'rule',
+        values: ['aria-hidden-focus', 'button-name', 'aria-allowed-attr'],
+      },
+    });
+    return {
+      violations: result.violations.map((violation) => ({
+        id: violation.id,
+        impact: violation.impact,
+        nodes: violation.nodes.length,
+      })),
+      targeted: targetedResult.violations.map((violation) => violation.id),
+    };
+  });
+}
+
+function expectCleanAxe(
+  audit: { violations: AxeViolation[]; targeted: string[] },
+  state: 'closed' | 'open',
+  width: number,
+): void {
+  const advisory = audit.violations.filter(
+    (violation) => violation.impact !== 'critical' && violation.impact !== 'serious',
+  );
+  if (advisory.length > 0) {
+    console.warn(`[axe:${width}px:${state}] non-blocking findings: ${JSON.stringify(advisory)}`);
+  }
+  expect(
+    audit.violations.filter(
+      (violation) => violation.impact === 'critical' || violation.impact === 'serious',
+    ),
+    `${width}px ${state}`,
+  ).toEqual([]);
+  expect(audit.targeted, `${width}px ${state} targeted rules`).toEqual([]);
+}
+
+async function openHeaderSearch(page: Page): Promise<void> {
+  await expect(page.locator('form[role="search"]')).toHaveAttribute('data-search-ready', 'true');
+  await page.getByRole('button', { name: 'Buscar', exact: true }).click();
+}
+
 const stubs = [
   { path: '/piel', heading: 'Piel', empty: 'Catálogo pendiente de publicar.' },
   { path: '/cabello', heading: 'Cabello', empty: 'Catálogo pendiente de publicar.' },
@@ -62,14 +115,14 @@ test.describe('Home smoke (DB-free)', () => {
     expect(await page.locator('h2').count()).toBeGreaterThan(0);
   });
 
-  test('HOME-E2E-29: hero below the header keeps one H1, one CTA and three local slides @smoke', async ({
+  test('hero below the header keeps one H1, one CTA and four local slides @smoke', async ({
     page,
   }) => {
     const hero = page.locator('section[aria-labelledby="hero-title"]');
     await expect(hero).toHaveCount(1);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(hero.getByRole('link')).toHaveCount(1);
-    await expect(hero.locator('img')).toHaveCount(3);
+    await expect(hero.locator('img')).toHaveCount(4);
 
     const sources = await hero.locator('img').evaluateAll((elements) =>
       elements.map((element) => element.getAttribute('src') ?? ''),
@@ -77,7 +130,7 @@ test.describe('Home smoke (DB-free)', () => {
     for (const source of sources) {
       const url = new URL(source, 'http://localhost');
       expect(url.pathname).toBe('/_next/image');
-      expect(url.searchParams.get('url')).toMatch(/^\/slides\/hero-0[123]/);
+      expect(url.searchParams.get('url')).toMatch(/^\/slides\/hero-[1-4]\.jpg$/);
     }
 
     await expect(
@@ -146,53 +199,14 @@ test.describe('Home smoke (DB-free)', () => {
 
       test('has no critical or serious axe 2.2 AA violations @a11y', async ({ page }) => {
         await page.addScriptTag({ content: axeSource });
-        const violations = await page.evaluate(async () => {
-          if (!window.axe) throw new Error('axe-core was not injected');
-          const result = await window.axe.run(document, {
-            runOnly: {
-              type: 'tag',
-              values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'],
-            },
-          });
-          return result.violations.map((violation) => ({
-            id: violation.id,
-            impact: violation.impact,
-            nodes: violation.nodes.length,
-          }));
-        });
 
         // Moderate/minor findings are recorded as non-blocking warnings;
         // only critical/serious violations fail the release gate.
-        const advisory = violations.filter(
-          (violation) =>
-            violation.impact !== 'critical' && violation.impact !== 'serious',
-        );
-        if (advisory.length > 0) {
-          console.warn(
-            `[axe:${width}px] non-blocking findings: ${JSON.stringify(advisory)}`,
-          );
-        }
+        expectCleanAxe(await runAxeAudit(page), 'closed', width);
 
-        expect(
-          violations.filter(
-            (violation) =>
-              violation.impact === 'critical' || violation.impact === 'serious',
-          ),
-        ).toEqual([]);
-
-        // DD-HOME-22 §7.2: the slide controls must also pass the three rules
-        // that classic WCAG tags do not force deterministically.
-        const targeted = await page.evaluate(async () => {
-          if (!window.axe) throw new Error('axe-core was not injected');
-          const result = await window.axe.run(document, {
-            runOnly: {
-              type: 'rule',
-              values: ['aria-hidden-focus', 'button-name', 'aria-allowed-attr'],
-            },
-          });
-          return result.violations.map((violation) => violation.id);
-        });
-        expect(targeted).toEqual([]);
+        // DD-HOME-25 §7.2: run the same audit with the search panel revealed.
+        await openHeaderSearch(page);
+        expectCleanAxe(await runAxeAudit(page), 'open', width);
       });
     });
   }
@@ -297,11 +311,18 @@ test.describe('Home smoke — focus tokens on light controls', () => {
     await page.goto('/');
 
     const summary = page.locator('nav[aria-label="Principal"] details summary');
-    const searchbox = page.getByRole('searchbox', { name: 'Buscar en la tienda' });
+    const magnifier = page.getByRole('button', { name: 'Buscar', exact: true });
+    const searchbox = page.getByRole('searchbox', { name: '¿Qué estás buscando?' });
 
-    // The summary precedes the form in the DOM, so Tab lands on the search input.
+    // The summary precedes the form in the DOM, so Tab lands on the magnifier.
     await summary.focus();
     await page.keyboard.press('Tab');
+    await expect(magnifier).toBeFocused();
+    await expect(magnifier).toHaveCSS('outline-color', 'rgb(18, 63, 51)');
+    await expect(magnifier).toHaveCSS('outline-width', '2px');
+
+    // DD-HOME-25 §7.2: revealing the field must keep the same ink ring.
+    await magnifier.click();
     await expect(searchbox).toBeFocused();
     await expect(searchbox).toHaveCSS('outline-color', 'rgb(18, 63, 51)');
     await expect(searchbox).toHaveCSS('outline-width', '2px');
@@ -333,7 +354,13 @@ test.describe('Home smoke — focus tokens on light controls', () => {
     await expect(summary).toHaveCSS('outline-color', 'rgb(18, 63, 51)');
 
     await page.keyboard.press('Tab');
-    const searchbox = page.getByRole('searchbox', { name: 'Buscar en la tienda' });
+    const magnifier = page.getByRole('button', { name: 'Buscar', exact: true });
+    await expect(magnifier).toBeFocused();
+    await expect(magnifier).toHaveCSS('outline-color', 'rgb(18, 63, 51)');
+
+    // DD-HOME-25 §7.2: the revealed field is the searchbox under test.
+    await magnifier.click();
+    const searchbox = page.getByRole('searchbox', { name: '¿Qué estás buscando?' });
     await expect(searchbox).toBeFocused();
     await expect(searchbox).toHaveCSS('outline-color', 'rgb(18, 63, 51)');
 
@@ -388,6 +415,9 @@ test.describe('Home smoke — focus tokens on light controls', () => {
     // :focus-visible paints the real ring instead of a programmatic guess.
     await summary.click();
     await expect(page.locator('nav[aria-label="Principal"] details')).toHaveAttribute('open', '');
+    // Clicking the menu is an outside click, so the panel closes; reveal it
+    // again to include the input and submit in the chrome focus sweep.
+    await magnifier.click();
     const chromeControls = page.locator('header a, header summary, header input, header button, footer a');
     const ink = 'rgb(18, 63, 51)';
     const champagne = 'rgb(230, 204, 135)';
@@ -511,8 +541,9 @@ test.describe('Home smoke — focus indicator contrast', () => {
       await page.goto('/');
 
       const summary = page.locator('nav[aria-label="Principal"] details summary');
-      const searchbox = page.getByRole('searchbox', { name: 'Buscar en la tienda' });
-      const searchButton = page.getByRole('button', { name: 'Buscar' });
+      const magnifier = page.getByRole('button', { name: 'Buscar', exact: true });
+      const searchbox = page.getByRole('searchbox', { name: '¿Qué estás buscando?' });
+      const submit = page.getByRole('button', { name: 'Enviar búsqueda', exact: true });
 
       const samples: FocusSample[] = [];
       if (await summary.isVisible()) {
@@ -523,8 +554,13 @@ test.describe('Home smoke — focus indicator contrast', () => {
         const desktopLink = page.locator('nav[aria-label="Principal"] ul a').first();
         samples.push(await sampleFocusRing(page, desktopLink, 'desktop nav link'));
       }
-      samples.push(await sampleFocusRing(page, searchbox, 'search input'));
-      samples.push(await sampleFocusRing(page, searchButton, 'Buscar button'));
+      samples.push(await sampleFocusRing(page, magnifier, 'Buscar magnifier'));
+
+      // DD-HOME-25 §7.2: the input and its submit must also be measured, but
+      // only while the disclosure is open.
+      await magnifier.click();
+      samples.push(await sampleFocusRing(page, searchbox, 'search input (open)'));
+      samples.push(await sampleFocusRing(page, submit, 'Enviar búsqueda button'));
 
       if (width < 768) {
         await summary.click();
@@ -578,10 +614,13 @@ test.describe('Home smoke — structure, search and copy', () => {
     const form = page.getByRole('search');
     await expect(form).toHaveAttribute('method', 'get');
     await expect(form).toHaveAttribute('action', '/buscar');
-    await form.getByRole('searchbox', { name: 'Buscar en la tienda' }).fill('shampoo');
+    // DD-HOME-25 §7.2: the magnifier reveals the field; the panel's own
+    // submit still performs a native GET, never an XHR.
+    await form.getByRole('button', { name: 'Buscar', exact: true }).click();
+    await form.getByRole('searchbox', { name: '¿Qué estás buscando?' }).fill('shampoo');
     await Promise.all([
       page.waitForURL(/\/buscar\?q=shampoo$/),
-      form.getByRole('button', { name: 'Buscar' }).click(),
+      form.getByRole('button', { name: 'Enviar búsqueda', exact: true }).click(),
     ]);
 
     expect(new URL(page.url()).pathname).toBe('/buscar');
@@ -680,8 +719,11 @@ test.describe('Home smoke — DD-HOME-21 white chrome', () => {
           };
         });
         const tagline = footer.querySelector('p');
-        const submit = header.querySelector('button[type="submit"]');
+        // DD-HOME-25: the closed header exposes only the ink magnifier; the
+        // green submit button no longer exists in the chrome.
+        const submit = header.querySelector('button[aria-label="Buscar"]');
         const submitStyle = submit === null ? null : getComputedStyle(submit);
+        const submitRect = submit?.getBoundingClientRect();
 
         return {
           headerSurface: header.dataset.surface,
@@ -707,7 +749,12 @@ test.describe('Home smoke — DD-HOME-21 white chrome', () => {
           submit:
             submitStyle === null
               ? null
-              : { background: submitStyle.backgroundColor, color: submitStyle.color },
+              : {
+                  background: submitStyle.backgroundColor,
+                  color: submitStyle.color,
+                  width: submitRect?.width,
+                  height: submitRect?.height,
+                },
           overflow: document.documentElement.scrollWidth - window.innerWidth,
         };
       });
@@ -736,8 +783,10 @@ test.describe('Home smoke — DD-HOME-21 white chrome', () => {
         expect(heading.decorationColor).toBe('rgb(179, 143, 68)');
       }
       expect(chrome.submit).toEqual({
-        background: 'rgb(27, 93, 74)',
-        color: 'rgb(255, 255, 255)',
+        background: 'rgba(0, 0, 0, 0)',
+        color: 'rgb(18, 63, 51)',
+        width: 44,
+        height: 44,
       });
 
       const wrapper = page.locator('.home-stage__chrome');
@@ -763,6 +812,27 @@ test.describe('Home smoke — DD-HOME-21 white chrome', () => {
       expect(hoverDecoration.color).toBe('rgb(179, 143, 68)');
 
       if (width === 375) expect(chrome.overflow).toBeLessThanOrEqual(0);
+
+      // DD-HOME-25 §7.2: the panel's submit uses the same bare ink styling.
+      await openHeaderSearch(page);
+      const openSubmit = await page.evaluate(() => {
+        const submit = document.querySelector('header button[aria-label="Enviar búsqueda"]');
+        if (!(submit instanceof HTMLElement)) throw new Error('Search submit not found');
+        const style = getComputedStyle(submit);
+        const rect = submit.getBoundingClientRect();
+        return {
+          background: style.backgroundColor,
+          color: style.color,
+          width: rect.width,
+          height: rect.height,
+        };
+      });
+      expect(openSubmit).toEqual({
+        background: 'rgba(0, 0, 0, 0)',
+        color: 'rgb(18, 63, 51)',
+        width: 44,
+        height: 44,
+      });
     });
   }
 });
@@ -901,4 +971,271 @@ test.describe('Home smoke — DD-HOME-22 typography', () => {
       }
     }
   });
+});
+
+test.describe('Home smoke — DD-HOME-25 search disclosure', () => {
+  test('HOME-E2E-45: lupa replaces the green Buscar button and keeps a 44px target @smoke', async ({
+    page,
+  }) => {
+    for (const width of [375, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+      await expect(page.locator('form[role="search"]')).toHaveAttribute('data-search-ready', 'true');
+
+      const magnifier = page.getByRole('button', { name: 'Buscar', exact: true });
+      await expect(magnifier).toHaveCount(1);
+      await expect(page.locator('header button').filter({ hasText: 'Buscar' })).toHaveCount(0);
+
+      const target = await magnifier.boundingBox();
+      expect(target?.width, `${width}px target width`).toBeGreaterThanOrEqual(44);
+      expect(target?.height, `${width}px target height`).toBeGreaterThanOrEqual(44);
+
+      const glyph = magnifier.locator('svg');
+      await expect(glyph).toHaveAttribute('viewBox', '0 0 49.36 45.44');
+      await expect(glyph).toHaveAttribute('stroke', 'currentColor');
+      await expect(glyph).toHaveAttribute('fill', 'none');
+      const shape = await glyph.evaluate((svg) => ({
+        id: svg.getAttribute('id'),
+        nestedIds: svg.querySelectorAll('[id]').length,
+        styleTags: svg.querySelectorAll('style').length,
+        titles: svg.querySelectorAll('title').length,
+        stroke: getComputedStyle(svg).stroke,
+        width: svg.getBoundingClientRect().width,
+      }));
+      expect(shape.id, `${width}px no uuid id`).toBeNull();
+      expect(shape.nestedIds, `${width}px no nested ids`).toBe(0);
+      expect(shape.styleTags, `${width}px no injected style`).toBe(0);
+      expect(shape.titles, `${width}px no duplicate title`).toBe(0);
+      expect(shape.stroke, `${width}px ink stroke`).toBe('rgb(18, 63, 51)');
+      expect(shape.width, `${width}px glyph width`).toBeCloseTo(width < 768 ? 22 : 28, 0);
+
+      await expect(magnifier).toHaveAttribute('aria-expanded', 'false');
+      await expect(page.locator('#site-search-panel')).toBeHidden();
+    }
+  });
+
+  test('HOME-E2E-46: selecting the magnifier reveals the accessible field and moves focus @smoke', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto('/');
+    await expect(page.locator('form[role="search"]')).toHaveAttribute('data-search-ready', 'true');
+
+    const magnifier = page.getByRole('button', { name: 'Buscar', exact: true });
+    const panel = page.locator('#site-search-panel');
+    const searchbox = page.getByRole('searchbox', { name: '¿Qué estás buscando?' });
+    const submit = page.getByRole('button', { name: 'Enviar búsqueda', exact: true });
+
+    await expect(panel).toBeHidden();
+    // Hidden controls are absent from the accessibility tree until revealed.
+    await expect(page.locator('#site-search')).toHaveCount(1);
+    await magnifier.click();
+
+    await expect(magnifier).toHaveAttribute('aria-expanded', 'true');
+    await expect(panel).toBeVisible();
+    await expect(searchbox).toHaveAttribute('placeholder', '¿Qué estás buscando?');
+    await expect(searchbox).toHaveAttribute('type', 'search');
+    await expect(searchbox).toHaveAttribute('name', 'q');
+    await expect(searchbox).toBeFocused();
+
+    const label = page.locator('label[for="site-search"]');
+    await expect(label).toHaveClass(/sr-only/);
+    await expect(label).toHaveText('¿Qué estás buscando?');
+
+    const controls = await magnifier.getAttribute('aria-controls');
+    expect(controls).toBe('site-search-panel');
+    await expect(page.locator(`#${controls}`)).toHaveCount(1);
+    await expect(submit).toHaveCount(1);
+    await expect(page.getByRole('button', { name: 'Buscar', exact: true })).toHaveCount(1);
+
+    await magnifier.click();
+    await expect(magnifier).toHaveAttribute('aria-expanded', 'false');
+    await expect(panel).toBeHidden();
+  });
+
+  test('HOME-E2E-47: Escape and outside click close the panel without a focus trap @smoke', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await expect(page.locator('form[role="search"]')).toHaveAttribute('data-search-ready', 'true');
+
+    const magnifier = page.getByRole('button', { name: 'Buscar', exact: true });
+    const panel = page.locator('#site-search-panel');
+    const searchbox = page.getByRole('searchbox', { name: '¿Qué estás buscando?' });
+    const submit = page.getByRole('button', { name: 'Enviar búsqueda', exact: true });
+
+    await magnifier.click();
+    await searchbox.fill('shampoo');
+    await page.keyboard.press('Escape');
+    await expect(panel).toBeHidden();
+    await expect(magnifier).toHaveAttribute('aria-expanded', 'false');
+    await expect(magnifier).toBeFocused();
+
+    // F-25-10: closing and reopening keeps the typed term in the DOM.
+    await magnifier.click();
+    await expect(searchbox).toHaveValue('shampoo');
+    await page.locator('h1').click();
+    await expect(panel).toBeHidden();
+    expect(new URL(page.url()).pathname).toBe('/');
+
+    await magnifier.click();
+    await submit.focus();
+    await page.keyboard.press('Tab');
+    const stillInsideForm = await page.evaluate(() => {
+      const active = document.activeElement;
+      return active instanceof HTMLElement && active.closest('form[role="search"]') !== null;
+    });
+    expect(stillInsideForm, 'focus must leave the disclosure form').toBe(false);
+  });
+
+  test('HOME-E2E-48: reveal causes no CLS, overlap or overflow at 9 widths @smoke', async ({
+    page,
+  }) => {
+    for (const width of [375, 600, 767, 768, 820, 900, 1023, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+      await expect(page.locator('form[role="search"]')).toHaveAttribute('data-search-ready', 'true');
+
+      const measure = () =>
+        page.evaluate(() => {
+          const header = document.querySelector('header');
+          const hero = document.querySelector('section.hero');
+          const panel = document.querySelector('#site-search-panel');
+          if (
+            !(header instanceof HTMLElement) ||
+            !(hero instanceof HTMLElement) ||
+            !(panel instanceof HTMLElement)
+          ) {
+            throw new Error('Header, hero or search panel not found');
+          }
+          const summary = document.querySelector('nav[aria-label="Principal"] details summary');
+          const summaryRect =
+            summary instanceof HTMLElement && getComputedStyle(summary).display !== 'none'
+              ? summary.getBoundingClientRect()
+              : null;
+          const headerRect = header.getBoundingClientRect();
+          const panelRect = panel.getBoundingClientRect();
+          return {
+            headerHeight: headerRect.height,
+            headerBottom: headerRect.bottom,
+            heroTop: hero.getBoundingClientRect().top,
+            scrollWidth: document.documentElement.scrollWidth,
+            innerWidth: window.innerWidth,
+            panel: {
+              top: panelRect.top,
+              bottom: panelRect.bottom,
+              left: panelRect.left,
+              right: panelRect.right,
+              width: panelRect.width,
+            },
+            summary:
+              summaryRect === null
+                ? null
+                : {
+                    top: summaryRect.top,
+                    bottom: summaryRect.bottom,
+                    left: summaryRect.left,
+                    right: summaryRect.right,
+                  },
+          };
+        });
+
+      const before = await measure();
+      await page.getByRole('button', { name: 'Buscar', exact: true }).click();
+      const open = await measure();
+
+      expect(open.headerHeight, `${width}px header height`).toBe(before.headerHeight);
+      expect(open.heroTop, `${width}px hero top`).toBe(before.heroTop);
+      expect(open.scrollWidth, `${width}px scroll width`).toBe(before.scrollWidth);
+      expect(open.scrollWidth - open.innerWidth, `${width}px overflow`).toBeLessThanOrEqual(0);
+      expect(open.panel.top, `${width}px panel below header`).toBeGreaterThanOrEqual(
+        open.headerBottom,
+      );
+      expect(open.panel.left, `${width}px panel left`).toBeGreaterThanOrEqual(0);
+      expect(open.panel.right, `${width}px panel right`).toBeLessThanOrEqual(open.innerWidth);
+      expect(open.panel.width, `${width}px panel max width`).toBeLessThanOrEqual(280);
+      expect(open.panel.width, `${width}px panel viewport margin`).toBeLessThanOrEqual(
+        open.innerWidth - 40,
+      );
+
+      if (open.summary !== null) {
+        const overlaps =
+          open.panel.left < open.summary.right &&
+          open.panel.right > open.summary.left &&
+          open.panel.top < open.summary.bottom &&
+          open.panel.bottom > open.summary.top;
+        expect(overlaps, `${width}px panel must not cover the mobile menu`).toBe(false);
+      }
+
+      await page.keyboard.press('Escape');
+      const closed = await measure();
+      expect(closed.headerHeight, `${width}px header height after close`).toBe(before.headerHeight);
+      expect(closed.heroTop, `${width}px hero top after close`).toBe(before.heroTop);
+      expect(closed.scrollWidth, `${width}px scroll width after close`).toBe(before.scrollWidth);
+    }
+  });
+
+  test('HOME-E2E-49: GET search stays same-origin without XHR, Nihlo or external resources @smoke', async ({
+    page,
+  }) => {
+    const forbiddenHosts = [
+      'nihlo.com.co',
+      'cdn.shopify.com',
+      'fonts.googleapis.com',
+      'fonts.gstatic.com',
+    ];
+    const externalRequests: string[] = [];
+    const xhr: string[] = [];
+    page.on('request', (request) => {
+      const url = new URL(request.url());
+      if (
+        forbiddenHosts.some(
+          (host) => url.hostname === host || url.hostname.endsWith(`.${host}`),
+        )
+      ) {
+        externalRequests.push(`${request.method()} ${request.url()}`);
+      }
+      if (
+        (request.resourceType() === 'xhr' || request.resourceType() === 'fetch') &&
+        !url.pathname.startsWith('/_next/') &&
+        !url.searchParams.has('_rsc')
+      ) {
+        xhr.push(`${request.method()} ${request.url()}`);
+      }
+    });
+
+    const homeResponse = await page.goto('/');
+    const reportOnly = homeResponse?.headers()['content-security-policy-report-only'] ?? '';
+    expect(reportOnly).toContain("form-action 'self'");
+    expect(homeResponse?.headers()['content-security-policy']).toBeUndefined();
+
+    const html = (await page.content()).toLowerCase();
+    expect(html).not.toContain('nihlo.com.co');
+    expect(html).not.toContain('uuid-');
+
+    await openHeaderSearch(page);
+    await page.getByRole('searchbox', { name: '¿Qué estás buscando?' }).fill('shampoo');
+    await Promise.all([
+      page.waitForURL(/\/buscar\?q=shampoo$/),
+      page.getByRole('button', { name: 'Enviar búsqueda', exact: true }).click(),
+    ]);
+
+    expect(new URL(page.url()).pathname).toBe('/buscar');
+    expect(new URL(page.url()).searchParams.get('q')).toBe('shampoo');
+    expect(externalRequests, `forbidden requests: ${externalRequests.join(', ')}`).toEqual([]);
+    expect(xhr, `unexpected XHR/fetch: ${xhr.join(', ')}`).toEqual([]);
+  });
+
+  for (const width of [375, 768, 1440]) {
+    test(`HOME-E2E-50: axe 2.2 AA with the search panel open at ${width}px @a11y`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+      await page.addScriptTag({ content: axeSource });
+      await openHeaderSearch(page);
+      await expect(page.locator('#site-search-panel')).toBeVisible();
+      expectCleanAxe(await runAxeAudit(page), 'open', width);
+    });
+  }
 });

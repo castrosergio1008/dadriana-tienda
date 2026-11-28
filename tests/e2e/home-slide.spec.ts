@@ -7,7 +7,23 @@ const HERO = 'section[aria-labelledby="hero-title"]';
 const APPROVED_H1 = 'Belleza para tu piel y tu cabello';
 const PRIMARY_BORDER = 'rgb(27, 93, 74)';
 const INK: Rgb = [18, 63, 51];
-const SIZES = '(min-width: 640px) 448px, calc(100vw - 40px)';
+const SIZES = '100vw';
+
+// DD-HOME-27 v0.4 §14.4: full-width band whose height is a function of width,
+// not of the viewport height; the 768x600 case proves svh no longer matters.
+const BAND_CASES = [
+  { width: 320, height: 568, expectedWidth: 320, expectedHeight: 118 },
+  { width: 375, height: 812, expectedWidth: 375, expectedHeight: 139 },
+  { width: 600, height: 900, expectedWidth: 600, expectedHeight: 222 },
+  { width: 767, height: 900, expectedWidth: 767, expectedHeight: 283 },
+  { width: 768, height: 900, expectedWidth: 768, expectedHeight: 284 },
+  { width: 820, height: 900, expectedWidth: 820, expectedHeight: 303 },
+  { width: 900, height: 900, expectedWidth: 900, expectedHeight: 332 },
+  { width: 1023, height: 900, expectedWidth: 1023, expectedHeight: 378 },
+  { width: 1024, height: 900, expectedWidth: 1024, expectedHeight: 378 },
+  { width: 1440, height: 900, expectedWidth: 1440, expectedHeight: 532 },
+  { width: 768, height: 600, expectedWidth: 768, expectedHeight: 284 },
+] as const;
 
 type Rgb = readonly [number, number, number];
 type LcpSample = { element: string; source: string | null; startTime: number };
@@ -37,21 +53,28 @@ declare global {
   }
 }
 
+// DD-HOME-27 §13 / ADR-HOME-28-01 §13: client assets are copied byte-for-byte
+// into public/slides/; slide-04 now uses the final 2880x1100 JPEG.
 const approvedSlides = [
   {
-    source: 'Imagenes/475978267_941094554864692_7081155730124177924_n.jpg',
-    destination: 'public/slides/hero-01.jpg',
-    sha256: 'ee61df8813bd344bc25ccdb404f4f13823556395edee2583d30623517e70f1cc',
+    source: 'hero-1.jpg',
+    destination: 'public/slides/hero-1.jpg',
+    sha256: '59127cdadf561af0d9d4acdaa14e2601b471bb31b683aac538a9a0de89e15d45',
   },
   {
-    source: 'Imagenes/476352299_941094471531367_8294340225166205945_n.jpg',
-    destination: 'public/slides/hero-02.jpg',
-    sha256: '07d8ea3ba01d156cc67e9983468d8d90fe6e216e5d550ea4f297fd43815bd5b9',
+    source: 'hero-2.jpg',
+    destination: 'public/slides/hero-2.jpg',
+    sha256: '70b830e0c52e0e0b6712113ae79b9f34c6de01ce5317df7d5a9250387ca31836',
   },
   {
-    source: 'Imagenes/905462971_1477563607884448_2853981617253828113_n.jpeg',
-    destination: 'public/slides/hero-03-crema-hidratante.jpg',
-    sha256: 'dab0ad1827b379d985d3e0887149c621d4c78bf9e63ff5940b5fac381d0e1ed2',
+    source: 'hero-3.jpg',
+    destination: 'public/slides/hero-3.jpg',
+    sha256: 'c9c834c87e3037a638a2bc722b7c49d02cdacb8bba4942a02c4038e859886cbd',
+  },
+  {
+    source: 'hero-4.jpg',
+    destination: 'public/slides/hero-4.jpg',
+    sha256: 'd1931b2782e3e5546d8f273f38bc737b7d2cd7de811ae94c01b24a9063bcab48',
   },
 ] as const;
 
@@ -85,7 +108,7 @@ async function activeSlide(page: Page): Promise<number> {
   const dot = page.locator(`${HERO} button[aria-current="true"]`);
   await expect(dot).toHaveCount(1);
   const label = await dot.getAttribute('aria-label');
-  const match = label?.match(/^Ir a la diapositiva (\d) de 3$/);
+  const match = label?.match(/^Ir a la diapositiva (\d) de 4$/);
   if (!match) throw new Error(`Unexpected active dot label: ${label ?? 'null'}`);
   return Number(match[1]);
 }
@@ -247,34 +270,65 @@ async function sampleCompositedBackgrounds(
   );
 }
 
-// DD-HOME-24: the frame must stay square and deliver at least one source
-// pixel per device pixel for every slide, at both DPR 1 and DPR 2.
-async function assertSharpFrame(page: Page, expectedSide: number): Promise<void> {
-  await page.locator(`${HERO} img`).evaluateAll(async (elements) => {
-    await Promise.all(
-      elements.map(async (element) => {
-        if (element instanceof HTMLImageElement) await element.decode();
+// QA-EXC-28-01 / forge-qualis: decode() has no own deadline and inherits the
+// 60s test timeout. The budget lives in Node (not in the page clock, which some
+// tests pause) so an optimizer stall under a fully parallel suite fails with a
+// clear message instead of a mute timeout. Workers=1 needs ~1.5s; 30s leaves
+// headroom without weakening the geometry assertions below.
+async function waitForImagesLoaded(
+  page: Page,
+  selector: string,
+  timeoutMs = 30_000,
+): Promise<void> {
+  let timer: NodeJS.Timeout | undefined;
+  try {
+    await Promise.race([
+      page.locator(selector).evaluateAll(async (elements) => {
+        await Promise.all(
+          elements.map(async (element) => {
+            if (element instanceof HTMLImageElement) await element.decode();
+          }),
+        );
       }),
-    );
-  });
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(
+          () => reject(new Error(`slide images in ${selector} not decoded in ${timeoutMs}ms`)),
+          timeoutMs,
+        );
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
 
-  const frame = await page.evaluate(() => {
+// DD-HOME-27 C-2 / ADR-HOME-28-01 (source-capped): next/image uses
+// withoutEnlargement, so the requested `w` cannot add detail beyond the source:
+// 1018 px for PNGs 01-03 (0.71 source px per CSS px at 1440) and 2880 px for
+// the 2880x1100 JPEG (2.00). This guard verifies the band geometry and that every
+// slide loads; the effective density is measured separately in HOME-E2E-54.
+async function assertSharpBand(
+  page: Page,
+  { width, height }: { width: number; height: number },
+): Promise<void> {
+  await waitForImagesLoaded(page, `${HERO} img`);
+
+  const band = await page.evaluate(() => {
     const element = document.querySelector('.hero__frame');
     if (!(element instanceof HTMLElement)) throw new Error('hero frame not found');
     const rect = element.getBoundingClientRect();
     const images = Array.from(element.querySelectorAll('img'));
     return {
+      left: rect.left,
+      right: rect.right,
       width: rect.width,
       height: rect.height,
-      dpr: window.devicePixelRatio,
+      clientWidth: document.documentElement.clientWidth,
       images: images.map((image) => {
         if (!(image instanceof HTMLImageElement)) throw new Error('slide image not found');
-        const imageRect = image.getBoundingClientRect();
         return {
           fit: getComputedStyle(image).objectFit,
           naturalWidth: image.naturalWidth,
-          naturalHeight: image.naturalHeight,
-          displayWidth: imageRect.width,
           sourceWidth: Number(
             new URL(image.currentSrc, window.location.href).searchParams.get('w') ?? 0,
           ),
@@ -283,19 +337,18 @@ async function assertSharpFrame(page: Page, expectedSide: number): Promise<void>
     };
   });
 
-  expect(frame.images).toHaveLength(3);
-  expect(Math.abs(frame.width - expectedSide)).toBeLessThanOrEqual(1);
-  expect(Math.abs(frame.height - expectedSide)).toBeLessThanOrEqual(1);
-  expect(Math.abs(frame.width / frame.height - 1)).toBeLessThanOrEqual(0.01);
-  for (const image of frame.images) {
+  expect(band.images).toHaveLength(5);
+  for (const image of band.images) {
     expect(image.fit).toBe('contain');
-    expect(image.naturalWidth).toBe(image.naturalHeight);
     expect(image.naturalWidth).toBeGreaterThan(0);
     expect(image.sourceWidth).toBeGreaterThan(0);
-    // Chrome density-corrects naturalWidth for srcset `w` descriptors, so the
-    // requested `w` is the actual decoded source resolution to compare with DPR.
-    expect(image.sourceWidth).toBeGreaterThanOrEqual(Math.ceil(image.displayWidth * frame.dpr));
   }
+  // The frame ratio matches bitmaps 01-03; slide 04 letterboxes by design.
+  expect(Math.abs(band.width / band.height - 1018 / 376)).toBeLessThan(0.02);
+  expect(Math.abs(band.width - width)).toBeLessThanOrEqual(1);
+  expect(Math.abs(band.height - height)).toBeLessThanOrEqual(1);
+  expect(band.left).toBe(0);
+  expect(Math.abs(band.right - band.clientWidth)).toBeLessThanOrEqual(1);
 }
 
 test.describe('HOME-E2E-30 — deterministic 5s autoplay @smoke', () => {
@@ -310,7 +363,7 @@ test.describe('HOME-E2E-30 — deterministic 5s autoplay @smoke', () => {
     await page.clock.runFor(0);
     expect(await activeSlide(page)).toBe(1);
 
-    for (const expected of [2, 3, 1]) {
+    for (const expected of [2, 3, 4, 5, 1]) {
       await page.clock.runFor(4999);
       await page.clock.runFor(1);
       await page.clock.runFor(0);
@@ -493,7 +546,7 @@ test.describe('HOME-E2E-32 — reduced motion @smoke @a11y', () => {
     expect(styles.animation).toBe('none');
 
     await page.getByRole('button', { name: 'Diapositiva siguiente' }).click();
-    await expect(page.getByRole('button', { name: 'Ir a la diapositiva 2 de 3' })).toHaveAttribute(
+    await expect(page.getByRole('button', { name: 'Ir a la diapositiva 2 de 5' })).toHaveAttribute(
       'aria-current',
       'true',
     );
@@ -507,9 +560,11 @@ test('HOME-E2E-33: keyboard controls keep focus and expose exact names @a11y', a
   const names = [
     'Diapositiva anterior',
     'Diapositiva siguiente',
-    'Ir a la diapositiva 1 de 3',
-    'Ir a la diapositiva 2 de 3',
-    'Ir a la diapositiva 3 de 3',
+    'Ir a la diapositiva 1 de 5',
+    'Ir a la diapositiva 2 de 5',
+    'Ir a la diapositiva 3 de 5',
+    'Ir a la diapositiva 4 de 5',
+    'Ir a la diapositiva 5 de 5',
     'Pausar presentación',
   ];
   for (const name of names) {
@@ -525,9 +580,18 @@ test('HOME-E2E-33: keyboard controls keep focus and expose exact names @a11y', a
   await page.keyboard.press('Space');
   await expect(next).toBeFocused();
   expect(await activeSlide(page)).toBe(3);
+  await page.keyboard.press('Enter');
+  await expect(next).toBeFocused();
+  expect(await activeSlide(page)).toBe(4);
+  await page.keyboard.press('Enter');
+  await expect(next).toBeFocused();
+  expect(await activeSlide(page)).toBe(5);
+  await page.keyboard.press('Enter');
+  await expect(next).toBeFocused();
+  expect(await activeSlide(page)).toBe(1);
 
   const firstDot = page.getByRole('button', {
-    name: 'Ir a la diapositiva 1 de 3',
+    name: 'Ir a la diapositiva 1 de 5',
     exact: true,
   });
   await firstDot.focus();
@@ -536,23 +600,12 @@ test('HOME-E2E-33: keyboard controls keep focus and expose exact names @a11y', a
   expect(await activeSlide(page)).toBe(1);
 });
 
-test.describe('HOME-E2E-34 — light slide below a static header, compact block @smoke @a11y', () => {
-  // Breakpoint edges, widths in between, and a short-height case: the frame
-  // must shrink with both the container and 48svh, never fill the viewport.
-  const cases = [
-    { width: 375, height: 812, frameSide: 335 },
-    { width: 600, height: 900, frameSide: 432 },
-    { width: 767, height: 900, frameSide: 432 },
-    { width: 768, height: 900, frameSide: 432 },
-    { width: 820, height: 900, frameSide: 432 },
-    { width: 900, height: 900, frameSide: 432 },
-    { width: 1023, height: 900, frameSide: 432 },
-    { width: 1024, height: 900, frameSide: 432 },
-    { width: 1440, height: 900, frameSide: 432 },
-    { width: 768, height: 600, frameSide: 288 },
-  ];
-  for (const { width, height, frameSide } of cases) {
-    test(`${width}x${height}px: opaque white header above a compact slide, no overlap @smoke @a11y`, async ({
+test.describe('HOME-E2E-34 — light slide below a static header, natural-height block @smoke @a11y', () => {
+  // DD-HOME-27 v0.4 §14.4: band height is a function of width, not of svh.
+  // Breakpoint edges, widths in between, and a short-height case: the band
+  // spans the document content width with its bitmap-ratio reserved height.
+  for (const { width, height, expectedWidth, expectedHeight } of BAND_CASES) {
+    test(`${width}x${height}px: opaque white header above a natural-height slide, no overlap @smoke @a11y`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height });
@@ -606,15 +659,15 @@ test.describe('HOME-E2E-34 — light slide below a static header, compact block 
       expect(geometry.border).toBe(`2px solid ${PRIMARY_BORDER}`);
       expect(geometry.wrapperBorder).toBe('0px');
       expect(geometry.overlap).toBe(0);
-      // DD-HOME-24: the stage keeps its flex anchor but no viewport floor.
+      // DD-HOME-27: the stage keeps its flex anchor but no viewport floor.
       expect(geometry.viewportDisplay).toBe('flex');
       expect(geometry.viewportDirection).toBe('column');
       expect(geometry.viewportMinHeight).toBe(0);
       expect(geometry.heroFlexGrow).toBe(0);
-      // The compact slide starts right after the header; it no longer fills it.
+      // The natural-height slide starts right after the header; it no longer fills it.
       expect(Math.abs(geometry.heroTop - geometry.headerBottom)).toBeLessThanOrEqual(1);
-      expect(Math.abs(geometry.frameWidth - frameSide)).toBeLessThanOrEqual(1);
-      expect(Math.abs(geometry.frameHeight - frameSide)).toBeLessThanOrEqual(1);
+      expect(Math.abs(geometry.frameWidth - expectedWidth)).toBeLessThanOrEqual(1);
+      expect(Math.abs(geometry.frameHeight - expectedHeight)).toBeLessThanOrEqual(1);
 
       const expectNoOverflow = async () => {
         expect(
@@ -622,9 +675,9 @@ test.describe('HOME-E2E-34 — light slide below a static header, compact block 
         ).toBe(true);
       };
       await expectNoOverflow();
-      for (const slide of [2, 3, 1]) {
+      for (const slide of [2, 3, 4, 5, 1]) {
         await page
-          .getByRole('button', { name: `Ir a la diapositiva ${slide} de 3` })
+          .getByRole('button', { name: `Ir a la diapositiva ${slide} de 5` })
           .click();
         await expectNoOverflow();
       }
@@ -656,7 +709,7 @@ test.describe('HOME-E2E-35 — composited pixel sampling @a11y', () => {
   for (const width of [375, 768, 1440]) {
     const height = width === 375 ? 812 : 900;
 
-    test(`${width}px: copy and focus contrast on all three slides @a11y`, async ({
+    test(`${width}px: copy and focus contrast on all five slides @a11y`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height });
@@ -672,9 +725,9 @@ test.describe('HOME-E2E-35 — composited pixel sampling @a11y', () => {
         await expect(paragraph).toHaveCSS('color', 'rgb(18, 63, 51)');
       }
 
-      for (const slide of [1, 2, 3]) {
+      for (const slide of [1, 2, 3, 4, 5]) {
         await page
-          .getByRole('button', { name: `Ir a la diapositiva ${slide} de 3` })
+          .getByRole('button', { name: `Ir a la diapositiva ${slide} de 5` })
           .click();
         await page.locator(`${HERO} img`).nth(slide - 1).evaluate((element) => {
           if (!(element instanceof HTMLImageElement)) throw new Error('slide image not found');
@@ -747,7 +800,7 @@ test('HOME-E2E-36: optimized local slides, AVIF/WebP and CLS without fake clock 
   await page.waitForTimeout(1000);
 
   const images = page.locator(`${HERO} img`);
-  await expect(images).toHaveCount(3);
+  await expect(images).toHaveCount(5);
   const sources = await images.evaluateAll((elements) =>
     elements.map((element) => ({
       src: element.getAttribute('src') ?? '',
@@ -759,9 +812,9 @@ test('HOME-E2E-36: optimized local slides, AVIF/WebP and CLS without fake clock 
   for (const source of sources) {
     const parsed = new URL(source.src, 'http://localhost');
     expect(parsed.pathname).toBe('/_next/image');
-    expect(parsed.searchParams.get('url')).toMatch(/^\/slides\/hero-0[123]/);
+    expect(parsed.searchParams.get('url')).toMatch(/^\/slides\/(hero-[1-3]\.png|hero-[56]\.jpg)$/);
     expect(source.srcset).toContain('/_next/image?url=');
-    // DD-HOME-24: the declared width matches the compact square frame.
+    // DD-HOME-27: the band uses the document content width.
     expect(source.sizes).toBe(SIZES);
   }
   // Next.js 15 emits a <link rel="preload" as="image"> for priority images
@@ -775,16 +828,23 @@ test('HOME-E2E-36: optimized local slides, AVIF/WebP and CLS without fake clock 
   const decodedPreloads = preloads.map((value) => decodeURIComponent(value));
   const slidePreloads = decodedPreloads.filter((value) => value.includes('/slides/'));
   expect(slidePreloads).toHaveLength(1);
-  expect(slidePreloads[0]).toContain('hero-01.jpg');
-  expect(slidePreloads.some((value) => value.includes('hero-02.jpg'))).toBe(false);
-  expect(slidePreloads.some((value) => value.includes('hero-03'))).toBe(false);
+  expect(slidePreloads[0]).toContain('hero-1.png');
+  expect(slidePreloads.some((value) => value.includes('hero-2.png'))).toBe(false);
+  expect(slidePreloads.some((value) => value.includes('hero-3.png'))).toBe(false);
+  expect(slidePreloads.some((value) => value.includes('hero-5.jpg'))).toBe(false);
+  expect(slidePreloads.some((value) => value.includes('hero-6.jpg'))).toBe(false);
   expect(decodedPreloads.some((value) => value.includes('/brand/logo.png'))).toBe(true);
 
   expect(sources[0]?.loading).toBeNull();
-  expect(sources.slice(1).map((source) => source.loading)).toEqual(['lazy', 'lazy']);
+  expect(sources.slice(1).map((source) => source.loading)).toEqual([
+    'lazy',
+    'lazy',
+    'lazy',
+    'lazy',
+  ]);
 
   const optimized = await page.request.get(
-    '/_next/image?url=%2Fslides%2Fhero-01.jpg&w=640&q=75',
+    '/_next/image?url=%2Fslides%2Fhero-1.png&w=640&q=75',
     { headers: { Accept: 'image/avif,image/webp,image/*,*/*;q=0.8' } },
   );
   expect(optimized.ok()).toBe(true);
@@ -843,7 +903,7 @@ test('HOME-E2E-39: LCP candidate is slide 01 or the approved H1', async ({ page 
 
   const last = samples[samples.length - 1];
   expect(
-    last.element === 'H1' || (last.element === 'IMG' && /hero-01\.jpg/.test(last.source ?? '')),
+    last.element === 'H1' || (last.element === 'IMG' && /hero-1\.png/.test(last.source ?? '')),
     `unexpected LCP candidate: ${JSON.stringify(last)}`,
   ).toBe(true);
   await expect(page.locator('h1').first()).toHaveText(APPROVED_H1);
@@ -894,8 +954,8 @@ test.describe('HOME-E2E-41 — no velo over the photograph @smoke @a11y', () => 
       await page.goto('/');
       await waitForHydration(page);
 
-      for (const slide of [1, 2, 3]) {
-        await page.getByRole('button', { name: `Ir a la diapositiva ${slide} de 3` }).click();
+      for (const slide of [1, 2, 3, 4, 5]) {
+        await page.getByRole('button', { name: `Ir a la diapositiva ${slide} de 5` }).click();
         await expect(page.locator('.hero__scrim')).toHaveCount(0);
       }
 
@@ -935,43 +995,29 @@ test.describe('HOME-E2E-41 — no velo over the photograph @smoke @a11y', () => 
   }
 });
 
-test.describe('HOME-E2E-42 — complete and sharp photograph @smoke', () => {
-  const frameCases = [
-    { width: 375, height: 812, side: 335 },
-    { width: 600, height: 900, side: 432 },
-    { width: 767, height: 900, side: 432 },
-    { width: 768, height: 900, side: 432 },
-    { width: 820, height: 900, side: 432 },
-    { width: 900, height: 900, side: 432 },
-    { width: 1023, height: 900, side: 432 },
-    { width: 1024, height: 900, side: 432 },
-    { width: 1440, height: 900, side: 432 },
-    { width: 768, height: 600, side: 288 },
-  ];
-  for (const { width, height, side } of frameCases) {
-    test(`${width}x${height}px: contain, square frame and enough pixels @smoke`, async ({
-      page,
-    }) => {
+test.describe('HOME-E2E-42 — uncropped full-width band at DPR 1 @smoke', () => {
+  for (const { width, height, expectedWidth, expectedHeight } of BAND_CASES) {
+    test(`${width}x${height}px: contain band with reserved geometry @smoke`, async ({ page }) => {
       await page.setViewportSize({ width, height });
       await page.goto('/');
       await waitForHydration(page);
-      await assertSharpFrame(page, side);
+      await assertSharpBand(page, { width: expectedWidth, height: expectedHeight });
     });
   }
 });
 
-test.describe('HOME-E2E-42 — sharp photograph at DPR 2 @smoke', () => {
+test.describe('HOME-E2E-42 — uncropped full-width band at DPR 2 @smoke', () => {
   test.use({ deviceScaleFactor: 2 });
 
-  for (const { width, height, side } of [
-    { width: 375, height: 812, side: 335 },
-    { width: 1440, height: 900, side: 432 },
-  ]) {
-    test(`${width}x${height}px: source width covers two device pixels @smoke`, async ({ page }) => {
+  // DD-HOME-27 v0.4 §14.4: at 1440 DPR 2 the same 1018 px source is still
+  // 2.83x upscaled (0.71 source px per CSS px), accepted by C-HOME-27 and
+  // measured (not assumed) by HOME-E2E-54.
+  for (const { width, height, expectedWidth, expectedHeight } of BAND_CASES) {
+    test(`${width}x${height}px: contain band keeps its reserved geometry @smoke`, async ({ page }) => {
       await page.setViewportSize({ width, height });
       await page.goto('/');
       await waitForHydration(page);
-      await assertSharpFrame(page, side);
+      await assertSharpBand(page, { width: expectedWidth, height: expectedHeight });
     });
   }
 });
@@ -986,17 +1032,19 @@ test.describe('HOME-E2E-43 — copy and controls below the photograph @smoke @a1
       const names = [
         'Diapositiva anterior',
         'Diapositiva siguiente',
-        'Ir a la diapositiva 1 de 3',
-        'Ir a la diapositiva 2 de 3',
-        'Ir a la diapositiva 3 de 3',
+        'Ir a la diapositiva 1 de 5',
+        'Ir a la diapositiva 2 de 5',
+        'Ir a la diapositiva 3 de 5',
+        'Ir a la diapositiva 4 de 5',
+        'Ir a la diapositiva 5 de 5',
         'Pausar presentación',
       ];
       for (const name of names) {
         await expect(page.getByRole('button', { name, exact: true })).toHaveCount(1);
       }
 
-      for (const slide of [1, 2, 3]) {
-        await page.getByRole('button', { name: `Ir a la diapositiva ${slide} de 3` }).click();
+      for (const slide of [1, 2, 3, 4, 5]) {
+        await page.getByRole('button', { name: `Ir a la diapositiva ${slide} de 5` }).click();
         expect(await activeSlide(page)).toBe(slide);
         await expect(page.locator(`${HERO} button[aria-current="true"]`)).toHaveCount(1);
 
@@ -1016,6 +1064,8 @@ test.describe('HOME-E2E-43 — copy and controls below the photograph @smoke @a1
           const title = copy.querySelector('h1');
           if (!(title instanceof HTMLElement)) throw new Error('hero title not found');
           return {
+            // DD-HOME-27 v0.4: measured from the full-width band; the padded wrapper
+            // (py-8) plus the copy margin (mt-8) keeps the gap near 64 px.
             frameToCopy: copy.getBoundingClientRect().top - frame.getBoundingClientRect().bottom,
             copyToControls:
               controls.getBoundingClientRect().top - copy.getBoundingClientRect().bottom,
@@ -1070,15 +1120,15 @@ test('HOME-E2E-44: changing slides never moves the frame, copy or controls @smok
   await waitForHydration(page);
   // The first click parks the scroll position and stops autoplay via focus;
   // every later click therefore keeps the same viewport geometry.
-  await page.getByRole('button', { name: 'Ir a la diapositiva 1 de 3' }).click();
+  await page.getByRole('button', { name: 'Ir a la diapositiva 1 de 5' }).click();
   await page.evaluate(() => {
     window.__shiftByInput = 0;
     window.__layoutShift = 0;
   });
   const before = await readSlideMetrics(page);
 
-  for (const slide of [2, 3, 1]) {
-    await page.getByRole('button', { name: `Ir a la diapositiva ${slide} de 3` }).click();
+  for (const slide of [2, 3, 4, 5, 1]) {
+    await page.getByRole('button', { name: `Ir a la diapositiva ${slide} de 5` }).click();
     expect(await activeSlide(page)).toBe(slide);
     expectSameLayout(before, await readSlideMetrics(page));
   }
@@ -1089,4 +1139,198 @@ test('HOME-E2E-44: changing slides never moves the frame, copy or controls @smok
   }));
   expect(shifts.byInput).toBeLessThanOrEqual(0.02);
   expect(shifts.withoutInput).toBeLessThan(0.1);
+});
+
+test('HOME-E2E-54: served bitmap is source-capped, not the requested w @smoke', async ({ page }) => {
+  // DD-HOME-27 C-2 / ADR-HOME-28-01 + C-HOME-28i: next/image uses
+  // withoutEnlargement, so a `w=3840` request still serves the source bitmap:
+  // 1018 px for PNGs 01-03, 2880 px for slide 04 and 3000 px for slide 05.
+  // Decode a bare Image (no srcset density correction) to measure the real
+  // bitmap and record the effective density at 1440: 0.71, 2.00 and ≈2.08.
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await waitForHydration(page);
+
+  const frameWidth = await page.evaluate(() => {
+    const frame = document.querySelector('.hero__frame');
+    if (!(frame instanceof HTMLElement)) throw new Error('hero frame not found');
+    return frame.getBoundingClientRect().width;
+  });
+  expect(Math.abs(frameWidth - 1440)).toBeLessThanOrEqual(1);
+
+  for (let slide = 1; slide <= 5; slide += 1) {
+    const asset = slide === 4 ? 'hero-5.jpg' : slide === 5 ? 'hero-6.jpg' : `hero-${slide}.png`;
+    const sourceCap = slide === 4 ? 2880 : slide === 5 ? 3000 : 1018;
+    const expectedDensity = slide === 4 ? 2.0 : slide === 5 ? 3000 / 1440 : 0.71;
+    const bitmapWidth = await page.evaluate(async (name) => {
+      const image = new Image();
+      image.src = `/_next/image?url=${encodeURIComponent(`/slides/${name}`)}&w=3840&q=75`;
+      await image.decode();
+      return image.naturalWidth;
+    }, asset);
+
+    expect(bitmapWidth, `${asset} decoded bitmap`).toBeGreaterThan(0);
+    expect(bitmapWidth, `${asset} must not be upsampled`).toBeLessThanOrEqual(sourceCap);
+
+    const density = bitmapWidth / frameWidth;
+    test.info().annotations.push({
+      type: 'source-density',
+      description: `${asset}: ${bitmapWidth}px bitmap / ${frameWidth}px band = ${density.toFixed(3)} source px per CSS px`,
+    });
+    expect(density, `${asset} effective density at 1440`).toBeCloseTo(expectedDensity, 2);
+  }
+});
+
+test('HOME-E2E-56: slide 04 pillarboxes without crop and keeps a stable frame @smoke', async ({
+  page,
+}) => {
+  // ADR-HOME-28-01 §13: the final JPEG is 2880/1100 (≈2.618:1) inside the
+  // unchanged 1018/376 frame, so object-contain leaves
+  // (frameW - frameH * 2880/1100)/2 px left and right while the whole bitmap
+  // stays visible and the reserved height avoids CLS.
+  await page.addInitScript(() => {
+    window.__layoutShift = 0;
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        const shift = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number };
+        if (!shift.hadRecentInput) window.__layoutShift = (window.__layoutShift ?? 0) + shift.value;
+      }
+    }).observe({ type: 'layout-shift', buffered: true });
+  });
+  await installPausedClock(page);
+
+  for (const { width, height, bandHeight } of [
+    { width: 375, height: 812, bandHeight: 139 },
+    { width: 768, height: 900, bandHeight: 284 },
+    { width: 1440, height: 900, bandHeight: 532 },
+  ]) {
+    await page.setViewportSize({ width, height });
+    await page.goto('/');
+    await waitForHydration(page);
+    await page.evaluate(() => {
+      window.__layoutShift = 0;
+    });
+
+    await page.getByRole('button', { name: 'Ir a la diapositiva 4 de 5' }).click();
+    expect(await activeSlide(page)).toBe(4);
+    await waitForImagesLoaded(page, '.hero__frame img');
+
+    const letterbox = await page.evaluate(() => {
+      const frame = document.querySelector('.hero__frame');
+      if (!(frame instanceof HTMLElement)) throw new Error('hero frame not found');
+      const image = frame.querySelectorAll('img')[3];
+      if (!(image instanceof HTMLImageElement)) throw new Error('slide 04 image not found');
+      const frameRect = frame.getBoundingClientRect();
+      const imageRect = image.getBoundingClientRect();
+      const ratio = image.naturalWidth / image.naturalHeight;
+      // object-contain centers the scaled bitmap inside the full-frame element;
+      // object-position is asserted in the Node test below.
+      const objectPosition = getComputedStyle(image).objectPosition;
+      const contentWidth = Math.min(imageRect.width, imageRect.height * ratio);
+      const contentHeight = contentWidth / ratio;
+      return {
+        fit: getComputedStyle(image).objectFit,
+        objectPosition,
+        ratio,
+        frameWidth: frameRect.width,
+        frameHeight: frameRect.height,
+        imageWidth: imageRect.width,
+        imageHeight: imageRect.height,
+        contentWidth,
+        contentHeight,
+        gapLeft: (imageRect.width - contentWidth) / 2,
+        gapRight: (imageRect.width - contentWidth) / 2,
+      };
+    });
+
+    expect(letterbox.fit, `${width}px object-fit`).toBe('contain');
+    expect(letterbox.objectPosition, `${width}px object-position`).toBe('50% 50%');
+    // next/image rounds the optimized height (e.g. 640x242 at 375px), so the
+    // served ratio differs from the source by up to ~0.02; allow 1 decimal.
+    expect(letterbox.ratio, `${width}px bitmap ratio`).toBeCloseTo(2880 / 1100, 1);
+    expect(Math.abs(letterbox.frameHeight - bandHeight), `${width}px band height`).toBeLessThanOrEqual(
+      1,
+    );
+    expect(Math.abs(letterbox.imageWidth - letterbox.frameWidth), `${width}px image fill width`).toBeLessThanOrEqual(1);
+    expect(Math.abs(letterbox.imageHeight - letterbox.frameHeight), `${width}px image fill height`).toBeLessThanOrEqual(1);
+    // The whole bitmap is drawn: contain scales it to the frame height and no
+    // dimension exceeds the frame box, so no approved text or mark is cropped.
+    expect(
+      Math.abs(letterbox.contentHeight - letterbox.frameHeight),
+      `${width}px bitmap fully visible (height)`,
+    ).toBeLessThanOrEqual(1);
+    expect(letterbox.contentWidth, `${width}px bitmap fully visible (width)`).toBeLessThanOrEqual(
+      letterbox.frameWidth + 1,
+    );
+
+    const expectedGap = (letterbox.frameWidth - letterbox.frameHeight * (2880 / 1100)) / 2;
+    test.info().annotations.push({
+      type: 'pillarbox',
+      description: `${width}px: ${expectedGap.toFixed(1)}px left/right of slide 04 bitmap`,
+    });
+    for (const [side, gap] of [
+      ['left', letterbox.gapLeft],
+      ['right', letterbox.gapRight],
+    ] as const) {
+      // The served bitmap height is rounded to an integer by the optimizer,
+      // so its ratio (and the drawn gap) can differ ~2px from the source ratio.
+      expect(Math.abs(gap - expectedGap), `${width}px ${side} pillarbox`).toBeLessThanOrEqual(2);
+    }
+    expect(expectedGap, `${width}px pillarbox is visible`).toBeGreaterThan(0);
+
+    const slideFour = await readSlideMetrics(page);
+    await page.getByRole('button', { name: 'Ir a la diapositiva 1 de 5' }).click();
+    expect(await activeSlide(page)).toBe(1);
+    expectSameLayout(slideFour, await readSlideMetrics(page));
+
+    const cls = await page.evaluate(() => window.__layoutShift ?? 0);
+    expect(cls, `${width}px CLS`).toBeLessThan(0.1);
+  }
+});
+
+test('HOME-E2E-55: full-bleed band never relies on CSS 100vw @smoke', async ({ page }) => {
+  // DD-HOME-27 §4.2: the band is a normal block at the document content
+  // width, so it cannot overrun the classic scrollbar the way 100vw would.
+  for (const width of [320, 375, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/');
+    await waitForHydration(page);
+
+    const geometry = await page.evaluate(() => {
+      const frame = document.querySelector('.hero__frame');
+      if (!(frame instanceof HTMLElement)) throw new Error('hero frame not found');
+      const rect = frame.getBoundingClientRect();
+      return {
+        left: rect.left,
+        right: rect.right,
+        width: rect.width,
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        innerWidth: window.innerWidth,
+      };
+    });
+
+    expect(geometry.left, `${width}px band left`).toBe(0);
+    expect(Math.abs(geometry.right - geometry.clientWidth), `${width}px band right`).toBeLessThanOrEqual(
+      1,
+    );
+    expect(geometry.width, `${width}px band width`).toBe(geometry.clientWidth);
+    expect(geometry.scrollWidth <= geometry.innerWidth, `${width}px no horizontal overflow`).toBe(true);
+
+    const cssText = await page.evaluate(async () => {
+      const parts: string[] = [];
+      for (const node of Array.from(document.querySelectorAll('link[rel="stylesheet"]'))) {
+        const href = node.getAttribute('href');
+        if (!href) continue;
+        const response = await fetch(new URL(href, window.location.href));
+        if (response.ok) parts.push(await response.text());
+      }
+      for (const node of Array.from(document.querySelectorAll('style'))) {
+        parts.push(node.textContent ?? '');
+      }
+      return parts.join('\n');
+    });
+    expect(cssText.length, `${width}px served CSS`).toBeGreaterThan(0);
+    expect(cssText, `${width}px no CSS 100vw`).not.toMatch(/width\s*:\s*100vw/);
+  }
 });

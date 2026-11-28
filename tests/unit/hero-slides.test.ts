@@ -7,25 +7,30 @@ import { heroSlides, isLocalSlidePath } from '../../lib/hero-slides';
 
 const ROOT = process.cwd();
 
-// DD-HOME-22 §4.7: source, destination and verified SHA-256 per slide.
 const approvedSlides = [
   {
     id: 'slide-01',
-    source: 'Imagenes/475978267_941094554864692_7081155730124177924_n.jpg',
-    destination: 'public/slides/hero-01.jpg',
-    sha256: 'ee61df8813bd344bc25ccdb404f4f13823556395edee2583d30623517e70f1cc',
+    source: 'hero-1.jpg',
+    destination: 'public/slides/hero-1.jpg',
+    sha256: '59127cdadf561af0d9d4acdaa14e2601b471bb31b683aac538a9a0de89e15d45',
   },
   {
     id: 'slide-02',
-    source: 'Imagenes/476352299_941094471531367_8294340225166205945_n.jpg',
-    destination: 'public/slides/hero-02.jpg',
-    sha256: '07d8ea3ba01d156cc67e9983468d8d90fe6e216e5d550ea4f297fd43815bd5b9',
+    source: 'hero-2.jpg',
+    destination: 'public/slides/hero-2.jpg',
+    sha256: '70b830e0c52e0e0b6712113ae79b9f34c6de01ce5317df7d5a9250387ca31836',
   },
   {
     id: 'slide-03',
-    source: 'Imagenes/905462971_1477563607884448_2853981617253828113_n.jpeg',
-    destination: 'public/slides/hero-03-crema-hidratante.jpg',
-    sha256: 'dab0ad1827b379d985d3e0887149c621d4c78bf9e63ff5940b5fac381d0e1ed2',
+    source: 'hero-3.jpg',
+    destination: 'public/slides/hero-3.jpg',
+    sha256: 'c9c834c87e3037a638a2bc722b7c49d02cdacb8bba4942a02c4038e859886cbd',
+  },
+  {
+    id: 'slide-04',
+    source: 'hero-4.jpg',
+    destination: 'public/slides/hero-4.jpg',
+    sha256: 'd1931b2782e3e5546d8f273f38bc737b7d2cd7de811ae94c01b24a9063bcab48',
   },
 ] as const;
 
@@ -39,18 +44,20 @@ function sha256(relativePath: string): string {
   return createHash('sha256').update(readFileSync(absolutePath)).digest('hex');
 }
 
-describe('hero slides manifest (DD-HOME-22 §4.7)', () => {
-  it('exposes exactly three slides with the approved ids and paths', () => {
-    expect(heroSlides).toHaveLength(3);
+describe('hero slides manifest', () => {
+  it('exposes exactly four slides with the approved ids and paths', () => {
+    expect(heroSlides).toHaveLength(4);
     expect(heroSlides.map((slide) => slide.id)).toEqual([
       'slide-01',
       'slide-02',
       'slide-03',
+      'slide-04',
     ]);
     expect(heroSlides.map((slide) => slide.src)).toEqual([
-      '/slides/hero-01.jpg',
-      '/slides/hero-02.jpg',
-      '/slides/hero-03-crema-hidratante.jpg',
+      '/slides/hero-1.jpg',
+      '/slides/hero-2.jpg',
+      '/slides/hero-3.jpg',
+      '/slides/hero-4.jpg',
     ]);
   });
 
@@ -72,10 +79,11 @@ describe('hero slides manifest (DD-HOME-22 §4.7)', () => {
   });
 
   it('rejects remote, raw and misplaced paths with the shared allowlist', () => {
-    expect(isLocalSlidePath('/slides/hero-03-crema-hidratante.jpg')).toBe(true);
+    expect(isLocalSlidePath('/slides/hero-1.jpg')).toBe(true);
+    expect(isLocalSlidePath('/slides/hero-4.jpg')).toBe(true);
     for (const path of [
-      'https://example.com/slides/hero-01.jpg',
-      'http://example.com/slides/hero-01.jpg',
+      'https://example.com/slides/hero-1.jpg',
+      'http://example.com/slides/hero-1.jpg',
       '/Imagenes/475978267_941094554864692_7081155730124177924_n.jpg',
       '/products/crema-hidratante-piel-sensible.jpg',
     ]) {
@@ -84,7 +92,7 @@ describe('hero slides manifest (DD-HOME-22 §4.7)', () => {
   });
 
   it.each(approvedSlides)(
-    '$id matches the approved SHA-256 in Imagenes/ and in public/slides/',
+    '$id matches the approved SHA-256 in the root source and in public/slides/',
     ({ source, destination, sha256: expected }) => {
       expect(sha256(source)).toBe(expected);
       expect(sha256(destination)).toBe(expected);

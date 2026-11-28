@@ -93,9 +93,9 @@ test.describe('HOME-E2E-26 — brand logo @smoke', () => {
       };
 
       await expectNoOverflow();
-      for (const slide of [2, 3, 1]) {
+      for (const slide of [2, 3, 4, 5, 1]) {
         await page
-          .getByRole('button', { name: `Ir a la diapositiva ${slide} de 3` })
+          .getByRole('button', { name: `Ir a la diapositiva ${slide} de 5` })
           .click();
         await expectNoOverflow();
       }

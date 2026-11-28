@@ -78,9 +78,9 @@
   }
 }
 
-/* DD-HOME-24: the header and the slide are compact blocks in normal flow.
-   The square frame reserves its own height before the image loads, so the
-   stage no longer fills the viewport or needs any overlay. */
+/* DD-HOME-27: the header and the slide are normal-flow blocks. The full-width
+   frame reserves its own height before the image loads, so the stage no longer
+   fills the viewport or needs any overlay. */
 .home-stage__viewport {
   display: flex;
   flex-direction: column;
@@ -99,12 +99,13 @@ section.hero {
   background-color: var(--color-white);
 }
 
+/* Hero frame ratio matches the 3000x1100 source bitmaps, reserving height
+   before load (CLS 0) and filling the slider width with no gaps. */
 .hero__frame {
   position: relative;
-  width: min(100%, 48svh, 28rem);
-  aspect-ratio: 1 / 1;
-  margin-inline: auto;
-  background-color: var(--color-surface);
+  width: 100%;
+  aspect-ratio: 3000 / 1100;
+  height: auto;
   overflow: hidden;
 }
 

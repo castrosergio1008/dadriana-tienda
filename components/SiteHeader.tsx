@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import type { HomeContent } from '@/lib/home-content';
+import { HeaderSearch } from './HeaderSearch';
 import { WhatsAppCta } from './WhatsAppCta';
 
 type SiteHeaderProps = {
@@ -23,15 +24,15 @@ function BrandMark() {
 export function SiteHeader({ navigation, whatsappUrl }: SiteHeaderProps) {
   return (
     <header data-surface="light" className="border-b-2 border-primary bg-white text-ink">
-      <div className="mx-auto flex w-full max-w-[var(--content-max)] flex-wrap items-center gap-4 px-5 py-4 md:px-6 lg:px-8">
-        <a href="/" className="inline-flex items-center gap-3 rounded-card">
+      <div className="relative mx-auto flex w-full max-w-[var(--content-max)] flex-nowrap items-center gap-2 px-5 py-2 md:px-6 lg:px-8">
+        <a href="/" className="order-2 flex shrink-0 flex-col items-center gap-0.5 rounded-card">
           <BrandMark />
-          <span aria-hidden="true" className="hidden font-semibold sm:inline">
+          <span aria-hidden="true" className="whitespace-nowrap text-sm font-semibold leading-[21px]">
             D&apos;Adriana Tienda
           </span>
         </a>
 
-        <nav aria-label="Principal" className="order-3 w-full md:order-none md:ml-auto md:w-auto">
+        <nav aria-label="Principal" className="order-1 min-w-0 flex-1">
           <ul className="hidden items-center gap-6 md:flex">
             {navigation.map((item) => (
               <li key={item.href}>
@@ -46,12 +47,23 @@ export function SiteHeader({ navigation, whatsappUrl }: SiteHeaderProps) {
           </ul>
 
           <details className="md:hidden">
-            <summary className="w-fit cursor-pointer list-none rounded-pill border border-primary px-4 py-2 text-sm font-semibold text-ink">
-              Menú
+            <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center p-0 text-ink">
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                viewBox="0 0 59.5 28.27"
+                className="h-[22px] w-[22px] md:h-7 md:w-7"
+                fill="currentColor"
+              >
+                <rect x="0.5" y="0.5" width="58.5" height="6.8" rx="3.4" />
+                <rect x="0.5" y="10.72" width="58.5" height="6.8" rx="3.4" />
+                <rect x="0.5" y="20.95" width="58.5" height="6.8" rx="3.4" />
+              </svg>
+              <span className="sr-only">Menú</span>
             </summary>
             <ul
               data-surface="light"
-              className="mt-3 grid gap-1 rounded-card bg-surface p-4 text-ink shadow-soft"
+              className="absolute left-5 top-full z-20 mt-2 grid w-[min(280px,calc(100vw_-_40px))] gap-1 rounded-card bg-surface p-4 text-ink shadow-soft"
             >
               {navigation.map((item) => (
                 <li key={item.href}>
@@ -67,34 +79,13 @@ export function SiteHeader({ navigation, whatsappUrl }: SiteHeaderProps) {
           </details>
         </nav>
 
-        <form
-          data-surface="light"
-          action="/buscar"
-          method="get"
-          role="search"
-          className="order-2 ml-auto flex min-w-0 items-center gap-2 rounded-card border border-primary bg-surface p-1.5 md:order-none md:ml-0"
-        >
-          <label htmlFor="site-search" className="sr-only">
-            Buscar en la tienda
-          </label>
-          <input
-            data-surface="light"
-            id="site-search"
-            name="q"
-            type="search"
-            placeholder="Buscar"
-            className="w-full min-w-0 rounded-small bg-surface px-3 py-2 text-ink placeholder:text-ink md:w-40"
-          />
-          <button
-            data-surface="light"
-            type="submit"
-            className="rounded-pill bg-primary px-4 py-2 text-sm font-semibold text-white outline-ink transition-colors duration-200 hover:bg-primary-hover"
-          >
-            Buscar
-          </button>
-        </form>
-
-        <WhatsAppCta href={whatsappUrl} label="WhatsApp" variant="header" />
+        {/* Static wrapper: the search panel must anchor to the header container. */}
+        <div className="order-3 flex min-w-0 flex-1 items-center justify-end gap-2">
+          <HeaderSearch />
+          <span className="hidden md:inline-flex">
+            <WhatsAppCta href={whatsappUrl} label="WhatsApp" variant="header" />
+          </span>
+        </div>
       </div>
     </header>
   );
